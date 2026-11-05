@@ -1,0 +1,99 @@
+/*
+Header
+==================================================
+Contains custom styles for the header at the top of the page.
+The header contains the shop logo, the search form and various actions like the offcanvas cart button.
+*/
+
+.header-row {
+    padding-block: 16px;
+}
+
+.header-logo-picture {
+    max-width: 216px;
+    width: 100%;
+}
+
+.header-cart .header-actions-btn {
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header-cart-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border: 2px solid #000000;
+    margin-right: 16px;
+    border-radius: 50px;
+}
+
+
+.header-search-input {
+    display: flex;
+    align-items: center;
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+    color: #000000;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+
+    &:focus-visible,
+    &:focus {
+        box-shadow: none;
+        background: transparent;
+    }
+
+    &::placeholder {
+        color: #000000;
+    }
+}
+
+.header-close-btn,
+.header-search-btn {
+    visibility: hidden;
+    position: absolute !important;
+    z-index: -2 !important;
+    pointer-events: none;
+}
+
+.header-search .form-control:valid:focus {
+    box-shadow: none;
+    background: transparent;
+}
+
+.header-search {
+
+    .input-group {
+        position: relative;
+        background-color: #E3E3E3;
+        padding: 9px 16px;
+
+        .header-search-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 32px;
+        }
+    }
+}
+
+.nav-main {
+    background-color: $secondary;
+}
+
+.nav-item .nav-link {
+    color: #ffffff;
+}
+
+@include media-breakpoint-up(sm) {
+    .header-search {
+        max-width: 936px;
+    }
+}

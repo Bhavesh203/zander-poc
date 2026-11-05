@@ -1,0 +1,29 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_body_inner %}
+    <script>
+        (function() {
+            try {
+                var verified = localStorage.getItem('zanders_age_verified') === 'true';
+                if (!verified) {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        if (cookies[i].trim().indexOf('zanders_age_verified=true') === 0) {
+                            verified = true;
+                            break;
+                        }
+                    }
+                }
+                if (verified) {
+                    document.documentElement.classList.add('zanders-age-verified');
+                } else {
+                    document.documentElement.classList.add('age-verification-modal-open');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    {{ parent() }}
+
+    {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
+{% endblock %}
