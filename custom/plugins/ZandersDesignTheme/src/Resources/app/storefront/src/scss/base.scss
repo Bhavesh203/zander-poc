@@ -1,0 +1,44 @@
+@import 'layout/fonts';
+@import 'layout/top-bar';
+@import 'skin/shopware/layout/header';
+@import 'layout/header';
+@import 'layout/age-verification';
+
+// Container width & padding inline
+.container {
+    max-width: 1440px;
+}
+
+.container,
+.container-fluid {
+    padding-inline: 14px;
+}
+
+.navbar-nav {
+    li.dropdown.nav-item {
+        &:first-of-type {
+            width: 280px;
+            padding: 0;
+
+            .dropdown-menu {
+                display: block;
+                width: 280px;
+
+                .navigation-flyout-categories {
+                    display: flex;
+                    flex-direction: column;
+
+                    .col-3 {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+.header-logo-picture {
+    max-width: 216px;
+    width: 100%;
+}

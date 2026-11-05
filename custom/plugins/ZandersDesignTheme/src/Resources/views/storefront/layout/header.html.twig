@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/layout/header.html.twig' %}
+
+{% block base_header_inner %}
+    {% block layout_top_bar %}
+        {% sw_include '@Storefront/storefront/layout/header/top-bar.html.twig' %}
+    {% endblock %}
+
+    <div class="container">
+        {% sw_include '@Storefront/storefront/layout/header/header.html.twig' %}
+    </div>
+{% endblock %}
+
