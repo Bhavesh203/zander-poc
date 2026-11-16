@@ -1,0 +1,12 @@
+{
+  "main.js": {
+    "file": "zanders-product-grid.js",
+    "name": "zanders-product-grid",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "zanders-product-grid.css"
+    ]
+  }
+}
+

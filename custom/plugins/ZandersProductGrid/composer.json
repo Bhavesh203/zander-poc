@@ -1,0 +1,33 @@
+{
+    "name": "zanders/product-grid",
+    "description": "Zanders Product Grid CMS element & block with AJAX infinite scroll and load more functionality",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Zanders Sporting Goods"
+        }
+    ],
+    "require": {
+        "shopware/core": "~6.6.0 || ~6.7.0",
+        "shopware/storefront": "~6.6.0 || ~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "ZandersProductGrid\\ZandersProductGrid",
+        "label": {
+            "en-GB": "Zanders Product Grid",
+            "de-DE": "Zanders Produkt-Grid"
+        },
+        "description": {
+            "en-GB": "Configurable responsive product grid with AJAX infinite scroll and load more support.",
+            "de-DE": "Konfigurierbares responsives Produkt-Grid mit AJAX Infinite Scroll und Mehr Laden Unterstützung."
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "ZandersProductGrid\\": "src/"
+        }
+    }
+}
+

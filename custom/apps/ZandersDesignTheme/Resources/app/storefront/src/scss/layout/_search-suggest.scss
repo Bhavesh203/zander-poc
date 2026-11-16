@@ -1,0 +1,295 @@
+/*
+Search Suggest Popover
+==================================================
+Styles for the search suggest dropdown matching Zanders design:
+- Crimson red header bar with product count
+- "Matches In:" category pill badges
+- Detailed product cards (Image, Highlighted Title, Item Number, UPC, Manufacturer number, MSRP)
+- Custom scrollbar and dropdown positioning
+*/
+
+.search-suggest {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    margin-top: 0;
+    background: transparent;
+}
+
+.search-suggest-container {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: #ffffff !important;
+    border: 1px solid #dcdcdc !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+    max-height: 520px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+
+    // Remove Shopware default triangle arrow
+    &::after {
+        display: none !important;
+    }
+
+    // Slim, clean scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: #999999 #f1f1f1;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #999999;
+        border-radius: 3px;
+
+        &:hover {
+            background: #777777;
+        }
+    }
+}
+
+// 1. Red Header Bar: Products (Count)
+.search-suggest-header {
+    background-color: #991020;
+    color: #ffffff;
+    padding: 10px 18px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    .search-suggest-header-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #ffffff;
+        display: block;
+    }
+}
+
+// 2. Matches In: Category Pills Bar
+.search-suggest-matches-bar {
+    background-color: #FDF2F4;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-bottom: 1px solid #F6DDE1;
+
+    .matches-bar-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #111111;
+        margin-right: 4px;
+    }
+
+    .matches-bar-pill {
+        background-color: #991020;
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 1;
+        padding: 4px 12px;
+        border-radius: 12px;
+        display: inline-block;
+        letter-spacing: 0.2px;
+    }
+}
+
+// 3. Product Result Row
+.search-suggest-product {
+    border-bottom: 1px solid #ECECEC;
+    background-color: #ffffff;
+    transition: background-color 0.15s ease;
+
+    &:last-of-type {
+        border-bottom: 0;
+    }
+
+    &:hover {
+        background-color: #FAFAFA;
+    }
+
+    .search-suggest-product-link {
+        display: block;
+        padding: 14px 18px;
+        text-decoration: none !important;
+        color: inherit;
+
+        &:hover,
+        &:focus {
+            text-decoration: none;
+            color: inherit;
+            outline: none;
+        }
+    }
+
+    .search-suggest-product-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .search-suggest-product-image-container {
+        width: 90px;
+        min-width: 90px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin: 0;
+
+        .search-suggest-product-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+    }
+
+    .search-suggest-product-info {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .search-suggest-product-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #111111;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+
+    // Highlight search term matches
+    .search-highlight {
+        background-color: #991020;
+        color: #ffffff;
+        font-weight: 700;
+        padding: 0 3px;
+        border-radius: 2px;
+        display: inline;
+    }
+
+    .search-suggest-product-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .search-suggest-meta-item {
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        line-height: 1.4;
+
+        .meta-label {
+            font-weight: 700;
+            color: #111111;
+            margin-right: 4px;
+        }
+
+        .meta-value {
+            font-weight: 400;
+            color: #444444;
+        }
+    }
+}
+
+// 4. Total Count / Show All Results Footer
+.search-suggest-total {
+    padding: 12px 18px;
+    background-color: #F8F9FA;
+    border-top: 1px solid #ECECEC;
+
+    .search-suggest-total-link {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: #991020;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        &:hover {
+            color: #7b0a17;
+            text-decoration: underline;
+        }
+
+        .icon {
+            color: #991020;
+            fill: #991020;
+
+            svg {
+                fill: #991020;
+            }
+        }
+    }
+
+    .search-suggest-total-count {
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #666666;
+    }
+}
+
+// 5. No Results Message
+.search-suggest-no-result {
+    padding: 24px 18px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #666666;
+    text-align: center;
+}
+
+// Search icon circular button styling
+.header-search {
+    .input-group {
+        .header-search-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            // background-color: #2E3338;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+
+            // svg {
+            //     width: 16px;
+            //     height: 16px;
+
+            //     path {
+            //         fill: #ffffff !important;
+            //     }
+            // }
+        }
+    }
+}

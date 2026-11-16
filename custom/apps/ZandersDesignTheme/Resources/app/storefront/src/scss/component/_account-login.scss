@@ -1,0 +1,253 @@
+/*
+Login / Register Page Design
+==================================================
+Matches Zanders design:
+- Page Header: Bold uppercase "LOGIN OR CREATE AN ACCOUNT" with full-width crimson underline rule
+- 2-Column Split:
+  - Left: "NEW DEALERS" grey box with red underline bar, dealer qualification text, and solid crimson button
+  - Right: "REGISTERED CUSTOMERS" white box with dark underline bar, email/password inputs, remember me, solid crimson LOGIN button, and forgot password link
+*/
+
+.zanders-account-header {
+    .zanders-account-title {
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        color: #8c1d2f !important;
+        letter-spacing: 0.5px !important;
+        line-height: 1.2 !important;
+
+        @media (max-width: 575.98px) {
+            font-size: 22px !important;
+        }
+    }
+
+    .zanders-account-title-rule {
+        height: 2px !important;
+        background-color: #8c1d2f !important;
+        width: 100% !important;
+        margin-top: 4px !important;
+    }
+}
+
+.zanders-account-login-row {
+    font-family: 'Poppins', sans-serif !important;
+
+    /* Left Card: NEW DEALERS */
+    .zanders-new-dealers-card {
+        background-color: #f2f2f2 !important;
+        border: none !important;
+        border-radius: 4px !important;
+        box-shadow: none !important;
+
+        .zanders-new-dealers-title {
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            color: #8c1d2f !important;
+            letter-spacing: 0.8px !important;
+            margin: 0 !important;
+
+            @media (max-width: 575.98px) {
+                font-size: 20px !important;
+            }
+        }
+
+        .zanders-title-underline-red {
+            width: 80px !important;
+            height: 2px !important;
+            background-color: #8c1d2f !important;
+        }
+
+        .zanders-new-dealers-desc {
+            font-size: 14px !important;
+            line-height: 1.7 !important;
+            color: #333333 !important;
+            max-width: 480px !important;
+            margin: 0 auto !important;
+        }
+
+        .zanders-btn-new-dealer {
+            background-color: #8c1d2f !important;
+            border-color: #8c1d2f !important;
+            color: #ffffff !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            padding: 12px 36px !important;
+            border-radius: 2px !important;
+            box-shadow: none !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+
+            &:hover,
+            &:focus {
+                background-color: #6e1322 !important;
+                border-color: #6e1322 !important;
+                color: #ffffff !important;
+            }
+        }
+    }
+
+    /* Right Card: REGISTERED CUSTOMERS */
+    .zanders-registered-customers-card {
+        background-color: #ffffff !important;
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+
+        .zanders-registered-title {
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            color: #222222 !important;
+            letter-spacing: 0.5px !important;
+            margin: 0 !important;
+
+            @media (max-width: 575.98px) {
+                font-size: 20px !important;
+            }
+        }
+
+        .zanders-title-underline-dark {
+            width: 140px !important;
+            height: 2px !important;
+            background-color: #222222 !important;
+        }
+
+        .zanders-registered-subtitle {
+            font-size: 14px !important;
+            color: #555555 !important;
+        }
+
+        .zanders-form-label {
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            color: #222222 !important;
+            margin-bottom: 6px !important;
+
+            .text-danger {
+                color: #8c1d2f !important;
+            }
+        }
+
+        .zanders-form-input {
+            background-color: #f7f7f7 !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 2px !important;
+            padding: 10px 14px !important;
+            font-size: 14px !important;
+            color: #333333 !important;
+            box-shadow: none !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+
+            &:focus {
+                background-color: #ffffff !important;
+                border-color: #8c1d2f !important;
+                outline: none !important;
+            }
+
+            &.is-invalid {
+                border-color: #dc3545 !important;
+            }
+        }
+
+        .zanders-form-check {
+            .zanders-check-input {
+                width: 16px !important;
+                height: 16px !important;
+                margin-top: 2px !important;
+                border-color: #cccccc !important;
+                border-radius: 2px !important;
+                cursor: pointer !important;
+
+                &:checked {
+                    background-color: #8c1d2f !important;
+                    border-color: #8c1d2f !important;
+                }
+            }
+
+            .zanders-check-label {
+                font-size: 13px !important;
+                color: #444444 !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+            }
+        }
+
+        .zanders-required-note {
+            font-size: 12px !important;
+            color: #777777 !important;
+        }
+
+        .zanders-btn-login {
+            background-color: #8c1d2f !important;
+            border-color: #8c1d2f !important;
+            color: #ffffff !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            padding: 12px 48px !important;
+            border-radius: 2px !important;
+            min-width: 160px !important;
+            box-shadow: none !important;
+            transition: background-color 0.2s ease, border-color 0.2s ease !important;
+
+            &:hover,
+            &:focus {
+                background-color: #6e1322 !important;
+                border-color: #6e1322 !important;
+                color: #ffffff !important;
+            }
+        }
+
+        .zanders-link-recover {
+            color: #222222 !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            text-decoration: none !important;
+            transition: color 0.15s ease !important;
+
+            &:hover {
+                color: #8c1d2f !important;
+                text-decoration: underline !important;
+            }
+        }
+    }
+}
+
+/* Collapsible Registration Section */
+.zanders-register-collapse-wrapper {
+    font-family: 'Poppins', sans-serif !important;
+
+    .card.register-card {
+        border: 1px solid #e8e8e8 !important;
+        border-radius: 4px !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+        padding: 24px !important;
+
+        .card-title {
+            color: #8c1d2f !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            font-size: 20px !important;
+        }
+
+        .btn-primary {
+            background-color: #8c1d2f !important;
+            border-color: #8c1d2f !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+
+            &:hover {
+                background-color: #6e1322 !important;
+                border-color: #6e1322 !important;
+            }
+        }
+    }
+}
+

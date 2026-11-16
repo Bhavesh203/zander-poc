@@ -1,0 +1,10 @@
+{
+    "zandersProductGrid": {
+        "loadMore": "Load more products",
+        "loading": "Loading products...",
+        "allLoaded": "All products loaded",
+        "error": "Failed to load products. Please try again.",
+        "noProducts": "No products found."
+    }
+}
+
