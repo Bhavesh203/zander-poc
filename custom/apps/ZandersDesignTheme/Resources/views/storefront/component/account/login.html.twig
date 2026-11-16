@@ -1,0 +1,127 @@
+{% block component_account_login %}
+    <div class="zanders-login-box">
+        {% block component_account_login_header %}
+            <h2 class="zanders-registered-title text-uppercase fw-bold mb-2">
+                {{ 'zanders.accountPage.registeredCustomersTitle'|trans|default('REGISTERED CUSTOMERS') }}
+            </h2>
+            <div class="zanders-title-underline-dark mb-3"></div>
+
+            <p class="zanders-registered-subtitle text-muted mb-4">
+                {{ 'zanders.accountPage.registeredCustomersSubtitle'|trans|default('If You Have An Account With Us, Please Log In.') }}
+            </p>
+        {% endblock %}
+
+        {% block component_account_login_form %}
+            <form class="login-form"
+                  action="{{ path('frontend.account.login') }}"
+                  method="post"
+                  data-form-handler="true">
+                {% block component_account_login_form_redirect %}
+                    <input type="hidden"
+                           name="redirectTo"
+                           value="{{ redirectTo }}">
+
+                    <input type="hidden"
+                           name="redirectParameters"
+                           value="{{ redirectParameters is iterable ? redirectParameters|json_encode : redirectParameters }}">
+                {% endblock %}
+
+                {% block component_account_login_form_error %}
+                    {% if loginError %}
+                        <div class="mb-3">
+                            {% if errorSnippet != null %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'danger',
+                                    content: errorSnippet|trans|sw_sanitize({}, true),
+                                    announceOnLoad: true,
+                                    ariaLive: 'assertive'
+                                } %}
+                            {% elseif waitTime != null %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'info',
+                                    content: 'account.loginThrottled'|trans({'%seconds%': waitTime|number_format})|sw_sanitize,
+                                    announceOnLoad: true
+                                } %}
+                            {% else %}
+                                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                    type: 'danger',
+                                    content: 'account.loginBadCredentials'|trans|sw_sanitize,
+                                    announceOnLoad: true,
+                                    ariaLive: 'assertive'
+                                } %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block component_account_login_form_fields %}
+                    {# Email Address #}
+                    <div class="mb-3">
+                        <label for="loginMail" class="form-label zanders-form-label">
+                            {{ 'account.loginMailLabel'|trans|default('Email Address') }} <span class="text-danger">*</span>
+                        </label>
+                        <input type="email"
+                               class="form-control zanders-form-input{% if loginError %} is-invalid{% endif %}"
+                               id="loginMail"
+                               name="username"
+                               placeholder="{{ 'account.loginMailLabel'|trans|default('Email Address') }}"
+                               autocomplete="username webauthn"
+                               required="required" />
+                    </div>
+
+                    {# Password #}
+                    <div class="mb-3">
+                        <label for="loginPassword" class="form-label zanders-form-label">
+                            {{ 'account.loginPasswordLabel'|trans|default('Password') }} <span class="text-danger">*</span>
+                        </label>
+                        <input type="password"
+                               class="form-control zanders-form-input{% if loginError %} is-invalid{% endif %}"
+                               id="loginPassword"
+                               name="password"
+                               placeholder="{{ 'account.loginPasswordLabel'|trans|default('Password') }}"
+                               autocomplete="current-password"
+                               required="required" />
+                    </div>
+
+                    {# Remember Me Checkbox #}
+                    <div class="form-check zanders-form-check mb-2">
+                        <input type="checkbox"
+                               class="form-check-input zanders-check-input"
+                               id="loginRememberMe"
+                               name="remember_me"
+                               checked="checked" />
+                        <label class="form-check-label zanders-check-label" for="loginRememberMe">
+                            {{ 'zanders.accountPage.rememberMe'|trans|default('Remember Me') }}
+                            <span class="text-muted small ms-1" title="Keeps you logged in on this browser">{{ 'zanders.accountPage.whatsThis'|trans|default("What's This?") }}</span>
+                        </label>
+                    </div>
+
+                    {# Required Fields Note #}
+                    <div class="zanders-required-note text-muted small mb-4">
+                        {{ 'zanders.accountPage.requiredFields'|trans|default('* Required Fields') }}
+                    </div>
+                {% endblock %}
+
+                {# Submit Button & Recover Password #}
+                {% block component_account_login_submit %}
+                    <div class="text-center d-flex flex-column align-items-center gap-3">
+                        <button type="submit"
+                                class="btn btn-primary zanders-btn-login">
+                            {{ 'zanders.accountPage.loginButton'|trans|default('LOGIN') }}
+                        </button>
+
+                        {% block component_account_login_password_recover %}
+                            <div class="login-password-recover">
+                                <a href="{{ seoUrl('frontend.account.recover.page') }}"
+                                   class="zanders-link-recover">
+                                    {{ 'zanders.accountPage.forgotPassword'|trans|default('Forgot Your Password?') }}
+                                </a>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </form>
+        {% endblock %}
+    </div>
+{% endblock %}
+

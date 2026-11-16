@@ -1,0 +1,112 @@
+{% block sw_cms_element_product_grid_config %}
+<div class="sw-cms-el-config-product-grid" v-if="element && element.config">
+    <sw-tabs default-item="content">
+        <template #default="{ active }">
+            <sw-tabs-item
+                name="content"
+                :title="$t('sw-cms.elements.productGrid.config.tab.content')"
+                :active-tab="active"
+            >
+                {{ $t('sw-cms.elements.productGrid.config.tab.content') }}
+            </sw-tabs-item>
+
+            <sw-tabs-item
+                name="settings"
+                :title="$t('sw-cms.elements.productGrid.config.tab.settings')"
+                :active-tab="active"
+            >
+                {{ $t('sw-cms.elements.productGrid.config.tab.settings') }}
+            </sw-tabs-item>
+        </template>
+
+        <template #content="{ active }">
+            <div v-if="active === 'content' || !active" class="sw-cms-el-config-product-grid__tab-content" style="padding: 20px 0; display: flex; flex-direction: column; gap: 20px;">
+                <sw-text-field
+                    v-if="element.config.title"
+                    v-model:value="element.config.title.value"
+                    :label="$t('sw-cms.elements.productGrid.config.label.title')"
+                    :placeholder="$t('sw-cms.elements.productGrid.config.placeholder.title')"
+                />
+
+                <sw-single-select
+                    v-if="element.config.products"
+                    v-model:value="element.config.products.source"
+                    :label="$t('sw-cms.elements.productGrid.config.label.productAssignmentType')"
+                    :options="productAssignmentTypes"
+                    @update:value="onChangeAssignmentType"
+                />
+
+                <div v-if="element.config.products && element.config.products.source === 'product_stream'" style="display: flex; flex-direction: column; gap: 20px;">
+                    <sw-entity-single-select
+                        v-model:value="element.config.products.value"
+                        entity="product_stream"
+                        :criteria="productStreamCriteria"
+                        :label="$t('sw-cms.elements.productGrid.config.label.productStreamChoice')"
+                        :placeholder="$t('sw-cms.elements.productGrid.config.placeholder.productStreamChoice')"
+                        show-clearable-button
+                        @update:value="onChangeProductStream"
+                    />
+
+                    <sw-container columns="1fr 1fr" gap="20px">
+                        <sw-single-select
+                            v-if="element.config.productStreamSorting"
+                            v-model:value="element.config.productStreamSorting.value"
+                            :options="productStreamSortingOptions"
+                            :label="$t('sw-cms.elements.productGrid.config.label.productStreamSorting')"
+                        />
+                        <sw-number-field
+                            v-if="element.config.productStreamLimit"
+                            v-model:value="element.config.productStreamLimit.value"
+                            :min="0"
+                            :label="$t('sw-cms.elements.productGrid.config.label.productStreamLimit')"
+                        />
+                    </sw-container>
+                </div>
+
+                <div v-else style="display: flex; flex-direction: column; gap: 10px;">
+                    <sw-entity-multi-select
+                        v-if="productCollection"
+                        v-model:entity-collection="productCollection"
+                        :label="$t('sw-cms.elements.productGrid.config.label.selection')"
+                        :criteria="productMediaFilter"
+                        :context="productMultiSelectContext"
+                        @update:entity-collection="onProductsChange"
+                    />
+                </div>
+            </div>
+
+            <div v-if="active === 'settings'" class="sw-cms-el-config-product-grid__tab-settings" style="padding: 20px 0; display: flex; flex-direction: column; gap: 20px;">
+                <sw-single-select
+                    v-if="element.config.loadMode"
+                    v-model:value="element.config.loadMode.value"
+                    :label="$t('sw-cms.elements.productGrid.config.label.loadMode')"
+                    :options="loadModeOptions"
+                />
+
+                <sw-single-select
+                    v-if="element.config.mobileLayout"
+                    v-model:value="element.config.mobileLayout.value"
+                    :label="$t('sw-cms.elements.productGrid.config.label.mobileLayout')"
+                    :options="mobileLayoutOptions"
+                />
+
+                <sw-container columns="1fr 1fr" gap="20px">
+                    <sw-number-field
+                        v-if="element.config.productLimit"
+                        v-model:value="element.config.productLimit.value"
+                        :min="1"
+                        :max="48"
+                        :label="$t('sw-cms.elements.productGrid.config.label.itemsPerPage')"
+                    />
+                    <sw-single-select
+                        v-if="element.config.columns"
+                        v-model:value="element.config.columns.value"
+                        :options="columnOptions"
+                        :label="$t('sw-cms.elements.productGrid.config.label.columns')"
+                    />
+                </sw-container>
+            </div>
+        </template>
+    </sw-tabs>
+</div>
+{% endblock %}

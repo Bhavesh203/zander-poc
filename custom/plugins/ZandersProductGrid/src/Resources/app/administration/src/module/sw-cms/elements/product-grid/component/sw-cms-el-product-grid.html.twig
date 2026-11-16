@@ -1,0 +1,40 @@
+{% block sw_cms_element_product_grid %}
+<div class="sw-cms-el-product-grid">
+    <div v-if="element.config.title && element.config.title.value" class="sw-cms-el-product-grid__title">
+        {{ element.config.title.value }}
+    </div>
+
+    <div class="sw-cms-el-product-grid__content" :style="gridStyle">
+        <template v-if="!products">
+            <sw-cms-el-product-box
+                v-for="index in gridColumns"
+                :key="index"
+                :element="demoProductElement"
+            />
+        </template>
+
+        <template v-else>
+            <sw-cms-el-product-box
+                v-for="(product, index) in products.slice(0, gridColumns * 2)"
+                :key="product.id || index"
+                :element="getProductEl(product)"
+            />
+        </template>
+    </div>
+
+    <div class="sw-cms-el-product-grid__footer">
+        <div v-if="loadMode === 'load_more'" class="sw-cms-el-product-grid__load-more-preview">
+            <button class="sw-cms-el-product-grid__mock-btn" type="button" disabled>
+                {{ $t('sw-cms.elements.productGrid.config.label.loadModeButton') }}
+            </button>
+        </div>
+        <div v-else class="sw-cms-el-product-grid__infinite-preview">
+            <span class="sw-cms-el-product-grid__mock-infinite">
+                <mt-icon name="regular-circle" size="14px" />
+                {{ $t('sw-cms.elements.productGrid.config.label.loadModeInfinite') }}
+            </span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

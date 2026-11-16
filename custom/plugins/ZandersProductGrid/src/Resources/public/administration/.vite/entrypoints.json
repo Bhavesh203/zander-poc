@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/zandersproductgrid/administration/",
+  "entryPoints": {
+    "zanders-product-grid": {
+      "css": [
+        "/bundles/zandersproductgrid/administration/zanders-product-grid.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/zandersproductgrid/administration/zanders-product-grid.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ]
+}
+

@@ -1,0 +1,10 @@
+.sw-cms-el-config-product-grid {
+    &__tab-content,
+    &__tab-settings {
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+

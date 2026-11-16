@@ -1,0 +1,46 @@
+{
+    "sw-cms": {
+        "elements": {
+            "productGrid": {
+                "label": "Produkt-Grid",
+                "preview": {
+                    "label": "Produkt-Grid"
+                },
+                "config": {
+                    "tab": {
+                        "content": "Inhalt",
+                        "settings": "Einstellungen"
+                    },
+                    "label": {
+                        "title": "Titel",
+                        "productAssignmentType": "Produktzuweisung",
+                        "productStreamChoice": "Product Stream",
+                        "productStreamSorting": "Stream-Sortierung",
+                        "productStreamLimit": "Stream Max. Limit (0 = alle)",
+                        "selection": "Manuelle Produktauswahl",
+                        "loadMode": "Seiten-/Scroll-Modus",
+                        "loadModeButton": "Mehr laden Button",
+                        "loadModeInfinite": "Infinite Scroll (automatisches Nachladen)",
+                        "itemsPerPage": "Produkte pro Seite / Charge",
+                        "columns": "Grid-Spalten (Desktop)",
+                        "mobileLayout": "Mobil-Layout",
+                        "mobileLayoutSlider": "Slider / Karussell (Wischen auf Mobilgeräten)",
+                        "mobileLayoutGrid": "Grid (2 Spalten auf Mobilgeräten)"
+                    },
+                    "placeholder": {
+                        "title": "z.B. Ausgewählte Produkte",
+                        "productStreamChoice": "Product Stream auswählen...",
+                        "productStreamSorting": "Sortierung auswählen..."
+                    }
+                }
+            }
+        },
+        "blocks": {
+            "commerce": {
+                "productGrid": {
+                    "label": "Produkt-Grid"
+                }
+            }
+        }
+    }
+}
