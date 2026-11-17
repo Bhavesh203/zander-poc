@@ -92,10 +92,11 @@
                                                 </div>
                                             {% endif %}
 
-                                            {% if product.ean %}
+                                            {% set upcVal = product.translated.customFields.upc ?: (product.customFields.upc ?: product.ean) %}
+                                            {% if upcVal %}
                                                 <div class="search-suggest-meta-item">
                                                     <span class="meta-label">{{ 'zanders.search.upc'|trans }}:</span>
-                                                    <span class="meta-value">{{ product.ean }}</span>
+                                                    <span class="meta-value">{{ upcVal }}</span>
                                                 </div>
                                             {% endif %}
 

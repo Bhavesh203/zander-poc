@@ -24,6 +24,22 @@
 {# Rendered above header container in storefront/layout/header.html.twig #}
 {% endblock %}
 
+{% block layout_header_actions_wishlist %}
+    <div class="col-auto">
+        <div class="header-wishlist">
+            {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+            {% set wishlistUrl = isCustomerLoggedIn ? path('frontend.wishlist.page') : path('frontend.account.login.page', { redirectTo: 'frontend.wishlist.page' }) %}
+            <a class="btn header-wishlist-btn header-actions-btn"
+               href="{{ wishlistUrl }}"
+               title="{{ 'header.wishlist'|trans|striptags }}"
+               aria-labelledby="wishlist-basket-live-area"
+            >
+                {% sw_include '@Storefront/storefront/layout/header/actions/wishlist-widget.html.twig' %}
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
 {% block layout_header_actions_account %}
 {# Moved to top-bar #}
 {% endblock %}

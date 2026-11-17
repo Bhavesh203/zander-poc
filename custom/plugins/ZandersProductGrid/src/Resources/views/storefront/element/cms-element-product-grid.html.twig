@@ -1,246 +1,239 @@
 {% block element_product_grid %}
-    {% set grid = element.data %}
+{% set grid = element.data %}
 
-    <div class="cms-element-{{ element.type }} {% if grid and grid.mobileLayout == 'slider' %}has-mobile-slider{% endif %}">
-        {% if grid %}
-            {% block element_product_grid_title %}
-                {% if grid.title %}
-                    <div class="product-grid-header mb-4 text-center">
-                        <h2 class="product-grid-title">{{ grid.title }}</h2>
-                    </div>
-                {% endif %}
+<div class="cms-element-{{ element.type }} {% if grid and grid.mobileLayout == 'slider' %}has-mobile-slider{% endif %}">
+    {% if grid %}
+    {% block element_product_grid_title %}
+    {% if grid.title %}
+    <div class="product-grid-header mb-4 text-center">
+        <h2 class="product-grid-title">{{ grid.title }}</h2>
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    {% block element_product_grid_content %}
+    {% set productGridOptions = {
+    slotId: element.id,
+    endpoint: path('widgets.cms.product-grid.load', { slotId: element.id }),
+    page: grid.page,
+    limit: grid.limit,
+    loadMode: grid.loadMode,
+    mobileLayout: grid.mobileLayout,
+    hasMore: grid.hasMore,
+    total: grid.total
+    } %}
+
+    <div class="product-grid-wrapper" data-product-grid="true"
+        data-product-grid-options="{{ productGridOptions|json_encode }}">
+
+        {% if grid.mobileLayout == 'slider' %}
+        <div class="product-grid-slider-controls d-md-none" data-product-grid-controls="true">
+            <button type="button" class="product-grid-slider-btn prev" data-product-grid-prev="true"
+                aria-label="Previous">
+                <span>&#10094;</span>
+            </button>
+            <button type="button" class="product-grid-slider-btn next" data-product-grid-next="true" aria-label="Next">
+                <span>&#10095;</span>
+            </button>
+        </div>
+        {% endif %}
+
+        <div class="row product-grid-container" data-product-grid-container="true">
+            {% block element_product_grid_inner_items %}
+            {% sw_include '@Storefront/storefront/element/cms-element-product-grid-items.html.twig' with {
+            grid: grid
+            } %}
             {% endblock %}
+        </div>
 
-            {% block element_product_grid_content %}
-                {% set productGridOptions = {
-                    slotId: element.id,
-                    endpoint: path('widgets.cms.product-grid.load', { slotId: element.id }),
-                    page: grid.page,
-                    limit: grid.limit,
-                    loadMode: grid.loadMode,
-                    mobileLayout: grid.mobileLayout,
-                    hasMore: grid.hasMore,
-                    total: grid.total
-                } %}
+        {% block element_product_grid_loader %}
+        <div class="product-grid-loader text-center my-4 d-none" data-product-grid-loader="true">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'zandersProductGrid.loading'|trans }}</span>
+            </div>
+            <p class="mt-2 text-muted small">{{ 'zandersProductGrid.loading'|trans }}</p>
+        </div>
+        {% endblock %}
 
-                <div class="product-grid-wrapper"
-                     data-product-grid="true"
-                     data-product-grid-options="{{ productGridOptions|json_encode }}">
+        {% block element_product_grid_actions %}
+        {% if grid.loadMode == 'load_more' %}
+        <div class="product-grid-action text-center mt-3 mb-4" data-product-grid-action="true">
+            <button type="button" class="btn btn-primary product-grid-load-more-btn px-4 py-2 font-weight-bold"
+                data-product-grid-button="true" {% if not grid.hasMore %}style="display: none;" {% endif %}>
+                {{ 'zandersProductGrid.loadMore'|trans }}
+            </button>
+        </div>
+        {% endif %}
 
-                    {% if grid.mobileLayout == 'slider' %}
-                        <div class="product-grid-slider-controls d-md-none" data-product-grid-controls="true">
-                            <button type="button" class="product-grid-slider-btn prev" data-product-grid-prev="true" aria-label="Previous">
-                                <span>&#10094;</span>
-                            </button>
-                            <button type="button" class="product-grid-slider-btn next" data-product-grid-next="true" aria-label="Next">
-                                <span>&#10095;</span>
-                            </button>
-                        </div>
-                    {% endif %}
+        {% if grid.loadMode == 'infinite_scroll' %}
+        <div class="product-grid-sentinel" data-product-grid-sentinel="true" {% if not grid.hasMore
+            %}style="display: none;" {% endif %}>
+        </div>
+        {% endif %}
 
-                    <div class="row product-grid-container" data-product-grid-container="true">
-                        {% block element_product_grid_inner_items %}
-                            {% sw_include '@Storefront/storefront/element/cms-element-product-grid-items.html.twig' with {
-                                grid: grid
-                            } %}
-                        {% endblock %}
-                    </div>
+        {% endblock %}
 
-                    {% block element_product_grid_loader %}
-                        <div class="product-grid-loader text-center my-4 d-none" data-product-grid-loader="true">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">{{ 'zandersProductGrid.loading'|trans }}</span>
-                            </div>
-                            <p class="mt-2 text-muted small">{{ 'zandersProductGrid.loading'|trans }}</p>
-                        </div>
-                    {% endblock %}
-
-                    {% block element_product_grid_actions %}
-                        {% if grid.loadMode == 'load_more' %}
-                            <div class="product-grid-action text-center mt-3 mb-4" data-product-grid-action="true">
-                                <button type="button"
-                                        class="btn btn-primary product-grid-load-more-btn px-4 py-2 font-weight-bold"
-                                        data-product-grid-button="true"
-                                        {% if not grid.hasMore %}style="display: none;"{% endif %}>
-                                    {{ 'zandersProductGrid.loadMore'|trans }}
-                                </button>
-                            </div>
-                        {% endif %}
-
-                        {% if grid.loadMode == 'infinite_scroll' %}
-                            <div class="product-grid-sentinel"
-                                 data-product-grid-sentinel="true"
-                                 {% if not grid.hasMore %}style="display: none;"{% endif %}>
-                            </div>
-                        {% endif %}
-
-                        <div class="product-grid-end text-center mt-3 mb-4 text-muted small {% if grid.hasMore or (grid.products and grid.products.count == 0) %}d-none{% endif %}"
-                             data-product-grid-end="true">
-                            {{ 'zandersProductGrid.allLoaded'|trans }}
-                        </div>
-                    {% endblock %}
-
-                    {% if not grid.products or grid.products.count == 0 %}
-                        {% block element_product_grid_empty %}
-                            <div class="product-grid-empty text-center my-5 text-muted">
-                                <p>{{ 'zandersProductGrid.noProducts'|trans }}</p>
-                            </div>
-                        {% endblock %}
-                    {% endif %}
-                </div>
-
-                {% block element_product_grid_script %}
-                    <script>
-                        (function() {
-                            function initGridElement() {
-                                var gridWrappers = document.querySelectorAll('[data-product-grid="true"]');
-                                gridWrappers.forEach(function(gridEl) {
-                                    if (gridEl.dataset.gridInitialized) return;
-                                    gridEl.dataset.gridInitialized = 'true';
-
-                                    var rawOptions = gridEl.getAttribute('data-product-grid-options');
-                                    var options = {};
-                                    try {
-                                        options = JSON.parse(rawOptions);
-                                    } catch (e) {
-                                        console.error('[ProductGrid] Invalid options JSON', e);
-                                    }
-
-                                    var container = gridEl.querySelector('[data-product-grid-container="true"]');
-                                    var button = gridEl.querySelector('[data-product-grid-button="true"]');
-                                    var loader = gridEl.querySelector('[data-product-grid-loader="true"]');
-                                    var sentinel = gridEl.querySelector('[data-product-grid-sentinel="true"]');
-                                    var endMsg = gridEl.querySelector('[data-product-grid-end="true"]');
-                                    var prevBtn = gridEl.querySelector('[data-product-grid-prev="true"]');
-                                    var nextBtn = gridEl.querySelector('[data-product-grid-next="true"]');
-
-                                    var isLoading = false;
-                                    var currentPage = parseInt(options.page, 10) || 1;
-                                    var hasMore = Boolean(options.hasMore);
-
-                                    function showLoader() {
-                                        if (loader) loader.classList.remove('d-none');
-                                    }
-
-                                    function hideLoader() {
-                                        if (loader) loader.classList.add('d-none');
-                                    }
-
-                                    function onAllLoaded() {
-                                        hasMore = false;
-                                        if (button) button.style.display = 'none';
-                                        if (sentinel) sentinel.style.display = 'none';
-                                        if (endMsg) endMsg.classList.remove('d-none');
-                                    }
-
-                                    function loadNextPage() {
-                                        if (isLoading || !hasMore) return;
-                                        isLoading = true;
-                                        showLoader();
-                                        if (button) button.disabled = true;
-
-                                        var nextPage = currentPage + 1;
-                                        var endpointUrl = new URL(options.endpoint, window.location.origin);
-                                        endpointUrl.searchParams.set('page', nextPage);
-
-                                        fetch(endpointUrl.toString(), {
-                                            method: 'GET',
-                                            headers: {
-                                                'X-Requested-With': 'XMLHttpRequest',
-                                                'Accept': 'application/json'
-                                            }
-                                        })
-                                        .then(function(res) {
-                                            if (!res.ok) throw new Error('HTTP ' + res.status);
-                                            return res.json();
-                                        })
-                                        .then(function(data) {
-                                            if (data.success && data.html) {
-                                                container.insertAdjacentHTML('beforeend', data.html);
-                                                currentPage = parseInt(data.page, 10);
-                                                hasMore = Boolean(data.hasMore);
-
-                                                if (window.PluginManager && typeof window.PluginManager.initializePlugins === 'function') {
-                                                    window.PluginManager.initializePlugins();
-                                                }
-
-                                                if (!hasMore) {
-                                                    onAllLoaded();
-                                                }
-                                            } else {
-                                                onAllLoaded();
-                                            }
-                                        })
-                                        .catch(function(err) {
-                                            console.error('[ProductGrid] Load error:', err);
-                                        })
-                                        .finally(function() {
-                                            isLoading = false;
-                                            hideLoader();
-                                            if (button) button.disabled = false;
-                                        });
-                                    }
-
-                                    // Load More Button Click
-                                    if (button) {
-                                        button.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            loadNextPage();
-                                        });
-                                    }
-
-                                    // Mobile Slider Arrow Buttons Click
-                                    if (prevBtn) {
-                                        prevBtn.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            var scrollAmount = container.firstElementChild ? (container.firstElementChild.offsetWidth + 14) : 260;
-                                            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                                        });
-                                    }
-
-                                    if (nextBtn) {
-                                        nextBtn.addEventListener('click', function(e) {
-                                            e.preventDefault();
-                                            var scrollAmount = container.firstElementChild ? (container.firstElementChild.offsetWidth + 14) : 260;
-                                            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                                        });
-                                    }
-
-                                    // Horizontal Infinite Scroll on Mobile
-                                    if (options.mobileLayout === 'slider' && container) {
-                                        container.addEventListener('scroll', function() {
-                                            if (window.innerWidth < 768 && options.loadMode === 'infinite_scroll' && !isLoading && hasMore) {
-                                                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 120) {
-                                                    loadNextPage();
-                                                }
-                                            }
-                                        }, { passive: true });
-                                    }
-
-                                    // Vertical Intersection Observer for Infinite Scroll
-                                    if (options.loadMode === 'infinite_scroll' && sentinel && 'IntersectionObserver' in window) {
-                                        var observer = new IntersectionObserver(function(entries) {
-                                            entries.forEach(function(entry) {
-                                                if (entry.isIntersecting && !isLoading && hasMore) {
-                                                    loadNextPage();
-                                                }
-                                            });
-                                        }, { rootMargin: '250px 0px', threshold: 0.1 });
-
-                                        observer.observe(sentinel);
-                                    }
-                                });
-                            }
-
-                            if (document.readyState === 'loading') {
-                                document.addEventListener('DOMContentLoaded', initGridElement);
-                            } else {
-                                initGridElement();
-                            }
-                        })();
-                    </script>
-                {% endblock %}
-            {% endblock %}
+        {% if not grid.products or grid.products.count == 0 %}
+        {% block element_product_grid_empty %}
+        <div class="product-grid-empty text-center my-5 text-muted">
+            <p>{{ 'zandersProductGrid.noProducts'|trans }}</p>
+        </div>
+        {% endblock %}
         {% endif %}
     </div>
+
+    {% block element_product_grid_script %}
+    <script>
+        (function () {
+            function initGridElement() {
+                var gridWrappers = document.querySelectorAll('[data-product-grid="true"]');
+                gridWrappers.forEach(function (gridEl) {
+                    if (gridEl.dataset.gridInitialized) return;
+                    gridEl.dataset.gridInitialized = 'true';
+
+                    var rawOptions = gridEl.getAttribute('data-product-grid-options');
+                    var options = {};
+                    try {
+                        options = JSON.parse(rawOptions);
+                    } catch (e) {
+                        console.error('[ProductGrid] Invalid options JSON', e);
+                    }
+
+                    var container = gridEl.querySelector('[data-product-grid-container="true"]');
+                    var button = gridEl.querySelector('[data-product-grid-button="true"]');
+                    var loader = gridEl.querySelector('[data-product-grid-loader="true"]');
+                    var sentinel = gridEl.querySelector('[data-product-grid-sentinel="true"]');
+                    var endMsg = gridEl.querySelector('[data-product-grid-end="true"]');
+                    var prevBtn = gridEl.querySelector('[data-product-grid-prev="true"]');
+                    var nextBtn = gridEl.querySelector('[data-product-grid-next="true"]');
+
+                    var isLoading = false;
+                    var currentPage = parseInt(options.page, 10) || 1;
+                    var hasMore = Boolean(options.hasMore);
+
+                    function showLoader() {
+                        if (loader) loader.classList.remove('d-none');
+                    }
+
+                    function hideLoader() {
+                        if (loader) loader.classList.add('d-none');
+                    }
+
+                    function onAllLoaded() {
+                        hasMore = false;
+                        if (button) button.style.display = 'none';
+                        if (sentinel) sentinel.style.display = 'none';
+                        if (endMsg) endMsg.classList.remove('d-none');
+                    }
+
+                    function loadNextPage() {
+                        if (isLoading || !hasMore) return;
+                        isLoading = true;
+                        showLoader();
+                        if (button) button.disabled = true;
+
+                        var nextPage = currentPage + 1;
+                        var endpointUrl = new URL(options.endpoint, window.location.origin);
+                        endpointUrl.searchParams.set('page', nextPage);
+
+                        fetch(endpointUrl.toString(), {
+                            method: 'GET',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
+                            .then(function (res) {
+                                if (!res.ok) throw new Error('HTTP ' + res.status);
+                                return res.json();
+                            })
+                            .then(function (data) {
+                                if (data.success && data.html) {
+                                    container.insertAdjacentHTML('beforeend', data.html);
+                                    currentPage = parseInt(data.page, 10);
+                                    hasMore = Boolean(data.hasMore);
+
+                                    if (window.PluginManager && typeof window.PluginManager.initializePlugins === 'function') {
+                                        window.PluginManager.initializePlugins();
+                                    }
+
+                                    if (!hasMore) {
+                                        onAllLoaded();
+                                    }
+                                } else {
+                                    onAllLoaded();
+                                }
+                            })
+                            .catch(function (err) {
+                                console.error('[ProductGrid] Load error:', err);
+                            })
+                            .finally(function () {
+                                isLoading = false;
+                                hideLoader();
+                                if (button) button.disabled = false;
+                            });
+                    }
+
+                    // Load More Button Click
+                    if (button) {
+                        button.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            loadNextPage();
+                        });
+                    }
+
+                    // Mobile Slider Arrow Buttons Click
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            var scrollAmount = container.firstElementChild ? (container.firstElementChild.offsetWidth + 14) : 260;
+                            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                        });
+                    }
+
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            var scrollAmount = container.firstElementChild ? (container.firstElementChild.offsetWidth + 14) : 260;
+                            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                        });
+                    }
+
+                    // Horizontal Infinite Scroll on Mobile
+                    if (options.mobileLayout === 'slider' && container) {
+                        container.addEventListener('scroll', function () {
+                            if (window.innerWidth < 768 && options.loadMode === 'infinite_scroll' && !isLoading && hasMore) {
+                                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 120) {
+                                    loadNextPage();
+                                }
+                            }
+                        }, { passive: true });
+                    }
+
+                    // Vertical Intersection Observer for Infinite Scroll
+                    if (options.loadMode === 'infinite_scroll' && sentinel && 'IntersectionObserver' in window) {
+                        var observer = new IntersectionObserver(function (entries) {
+                            entries.forEach(function (entry) {
+                                if (entry.isIntersecting && !isLoading && hasMore) {
+                                    loadNextPage();
+                                }
+                            });
+                        }, { rootMargin: '250px 0px', threshold: 0.1 });
+
+                        observer.observe(sentinel);
+                    }
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initGridElement);
+            } else {
+                initGridElement();
+            }
+        })();
+    </script>
+    {% endblock %}
+    {% endblock %}
+    {% endif %}
+</div>
 {% endblock %}

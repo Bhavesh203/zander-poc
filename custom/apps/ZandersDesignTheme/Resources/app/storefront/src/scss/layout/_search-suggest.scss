@@ -19,27 +19,28 @@ Styles for the search suggest dropdown matching Zanders design:
     background: transparent;
 }
 
-.search-suggest-container {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    background-color: #ffffff !important;
-    border: 1px solid #dcdcdc !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-    max-height: 520px !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    list-style: none !important;
+.search-suggest .search-suggest-container,
+ul.search-suggest-container {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 
     // Remove Shopware default triangle arrow
     &::after {
-        display: none !important;
+        display: none;
     }
 
     // Slim, clean scrollbar
@@ -133,7 +134,7 @@ Styles for the search suggest dropdown matching Zanders design:
     .search-suggest-product-link {
         display: block;
         padding: 14px 18px;
-        text-decoration: none !important;
+        text-decoration: none;
         color: inherit;
 
         &:hover,
@@ -287,7 +288,7 @@ Styles for the search suggest dropdown matching Zanders design:
             //     height: 16px;
 
             //     path {
-            //         fill: #ffffff !important;
+            //         fill: #ffffff;
             //     }
             // }
         }

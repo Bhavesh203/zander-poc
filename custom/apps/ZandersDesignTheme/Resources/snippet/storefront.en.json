@@ -27,6 +27,10 @@
       "manufacturerNumber": "Manufacturer number",
       "msrp": "MSRP"
     },
+    "listing": {
+      "shoppingOptions": "SHOPPING OPTIONS",
+      "filterCategory": "Category"
+    },
     "productCard": {
       "itemNumber": "Item Number",
       "upc": "UPC",
@@ -66,6 +70,11 @@
       "requiredFields": "* Required Fields",
       "loginButton": "LOGIN",
       "forgotPassword": "Forgot Your Password?"
+    },
+    "wishlist": {
+      "loginRequired": "Please log in or register to add products to your wishlist.",
+      "loginTitle": "Wishlist Is For Registered Customers",
+      "loginDescription": "To view, save, and manage your wishlist, please log in or create an account."
     }
   }
 }

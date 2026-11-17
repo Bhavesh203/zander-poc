@@ -8,8 +8,7 @@
 @import 'component/quickview-modal';
 @import 'component/cart-drawer';
 @import 'component/account-login';
-@import 'component/cart-drawer';
-@import 'component/account-login';
+@import 'component/filter-panel';
 @import 'layout/footer';
 @import 'layout/age-verification';
 
@@ -28,6 +27,10 @@
     padding: 0;
 }
 
+.is-act-home .navbar-nav li.dropdown.nav-item:first-of-type .dropdown-menu {
+    display: block;
+}
+
 .navbar-nav {
     li.dropdown.nav-item {
         &:first-of-type {
@@ -35,7 +38,7 @@
             box-sizing: content-box;
 
             .dropdown-menu {
-                display: block;
+                // display: block;
                 width: 280px;
                 top: 100%;
                 padding: 0;
@@ -72,9 +75,22 @@
                 .navigation-flyout-categories {
                     display: flex;
                     flex-direction: column;
+                    position: relative;
+
 
                     .col-3 {
                         width: 100%;
+                    }
+
+                    .navigation-flyout-categories {
+                        display: none;
+                        position: absolute;
+                        left: 100%;
+                        margin: 0;
+                        top: 0;
+                        min-width: 210px;
+                        max-height: 350px;
+                        overflow: auto;
                     }
                 }
             }
@@ -169,19 +185,40 @@
     }
 }
 
-.category-list {
-    .cms-section-default {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+.featured_categories {
+    .cms-block-container-row {
+        margin-inline: -12px;
 
-        .products {
-            .cms-block-container-row {
-                flex-direction: column;
-
-                .col-md-4 {
-                    width: 100%;
-                }
-            }
+        .col-md-3 {
+            padding-inline: 12px;
         }
     }
+}
+
+.product-grid-header {
+    padding-bottom: 16px;
+    border-bottom: 3px solid #991020;
+    text-align: left;
+    margin-bottom: 44px;
+}
+
+.cms-element-product-grid .product-grid-header .product-grid-title {
+    font-size: 49px;
+    line-height: 57px;
+    color: #991020;
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+}
+
+.featured_categories_products {
+    .cms-block-container-row {
+        margin-inline: -12px;
+
+        .col-md-3 {
+            padding-inline: 12px;
+        }
+    }
+
 }

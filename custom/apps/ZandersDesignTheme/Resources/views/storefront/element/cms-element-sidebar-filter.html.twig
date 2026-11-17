@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/element/cms-element-sidebar-filter.html.twig' %}
+
+{% block element_sidebar_filter_panel %}
+    <div
+        id="filter-panel-wrapper"
+        class="filter-panel-wrapper"
+        data-off-canvas-filter-content="true"
+    >
+        {% sw_include '@Storefront/storefront/component/listing/filter-panel.html.twig' with {
+            listing: listing,
+            sidebar: true,
+            page: page,
+            ariaLiveUpdates: true
+        } %}
+    </div>
+{% endblock %}
