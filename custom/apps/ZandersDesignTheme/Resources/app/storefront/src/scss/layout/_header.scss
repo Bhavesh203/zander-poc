@@ -14,13 +14,32 @@ The header contains the shop logo, the search form and various actions like the 
     width: 100%;
 }
 
-.header-cart .header-actions-btn {
-    padding: 0;
-    display: flex;
+.header-cart,
+.header-wishlist {
+    display: inline-flex;
     align-items: center;
+
+    .header-actions-btn {
+        padding: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        text-decoration: none;
+        border: none;
+        background: transparent;
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
 }
 
-.header-cart-icon {
+.header-wishlist {
+    margin-right: 18px;
+}
+
+.header-cart-icon,
+.header-wishlist-icon {
     width: 35px;
     height: 35px;
     display: flex;
@@ -28,8 +47,65 @@ The header contains the shop logo, the search form and various actions like the 
     justify-content: center;
     padding: 6px;
     border: 2px solid #000000;
-    margin-right: 16px;
     border-radius: 50px;
+    position: relative;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+
+    svg {
+        display: block;
+        width: 18px;
+        height: 18px;
+
+        path {
+            transition: fill 0.2s ease;
+        }
+    }
+}
+
+.header-cart-icon {
+    margin-right: 16px;
+}
+
+// Hover states
+.header-cart .header-actions-btn:hover,
+.header-wishlist .header-actions-btn:hover {
+    .header-cart-icon,
+    .header-wishlist-icon {
+        border-color: $primary;
+        transform: scale(1.06);
+
+        svg path {
+            fill: $primary;
+        }
+    }
+}
+
+// Badges
+.header-wishlist .header-wishlist-badge,
+.header-cart .header-cart-badge {
+    position: absolute;
+    top: -5px;
+    left: 22px;
+    right: auto;
+    background-color: #8c1d2f;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+
+    &:empty {
+        display: none;
+    }
 }
 
 
@@ -55,11 +131,13 @@ The header contains the shop logo, the search form and various actions like the 
     }
 }
 
+header .header-close-btn,
+header .header-search-btn,
 .header-close-btn,
 .header-search-btn {
     visibility: hidden;
-    position: absolute !important;
-    z-index: -2 !important;
+    position: absolute;
+    z-index: -2;
     pointer-events: none;
 }
 

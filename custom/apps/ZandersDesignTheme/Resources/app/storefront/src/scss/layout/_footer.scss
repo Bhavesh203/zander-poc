@@ -9,10 +9,11 @@ Zanders Footer:
 - Crimson red bottom strip ($primary) with social icons and copyright
 */
 
+footer.footer-main,
 .footer-main {
-    background-color: transparent !important;
-    padding: 0 !important;
-    border-top: 0 !important;
+    background-color: transparent;
+    padding: 0;
+    border-top: 0;
 }
 
 .footer-top {

@@ -12,132 +12,141 @@ Zanders-styled Quick View modal for previewing products:
 - Specifications grid for firearm / product attributes
 */
 
-.quickview-modal,
+.modal.quickview-modal,
 #zanders-quickview-modal {
     .modal-dialog {
-        max-width: 860px !important;
-        margin: 1.75rem auto !important;
+        max-width: 860px;
+        margin: 1.75rem auto;
 
         @media (max-width: 575.98px) {
-            margin: 0.5rem !important;
-            max-width: 100% !important;
+            margin: 0.5rem;
+            max-width: 100%;
         }
     }
 
     .modal-content {
-        background-color: #ffffff !important;
-        border: none !important;
-        border-radius: 4px !important;
-        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18) !important;
-        overflow: hidden !important;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
     }
 
     .modal-header {
-        background-color: #ffffff !important;
-        border-bottom: 1px solid #f0f0f0 !important;
-        padding: 14px 24px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
+        background-color: #ffffff;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         .quickview-modal-header-badge {
-            font-family: 'Poppins', sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            color: #8c1d2f !important;
-            letter-spacing: 0.8px !important;
-            text-transform: uppercase !important;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #8c1d2f;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
         }
 
         .btn-close {
-            margin: 0 !important;
-            padding: 8px !important;
-            opacity: 0.65 !important;
-            transition: opacity 0.2s ease, transform 0.2s ease !important;
+            margin: 0;
+            padding: 8px;
+            opacity: 0.65;
+            transition: opacity 0.2s ease, transform 0.2s ease;
 
             &:hover {
-                opacity: 1 !important;
-                transform: scale(1.1) !important;
+                opacity: 1;
+                transform: scale(1.1);
             }
         }
     }
 
     .modal-body {
-        padding: 24px 28px 28px !important;
+        padding: 24px 28px 28px;
 
         @media (max-width: 575.98px) {
-            padding: 16px !important;
+            padding: 16px;
+        }
+
+        .quickview-loading-spinner {
+            .spinner-border {
+                color: #8c1d2f;
+                width: 3rem;
+                height: 3rem;
+                border-width: 0.25rem;
+            }
         }
     }
 }
 
 .zanders-quickview-container {
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Poppins', sans-serif;
 
     /* Left Column: Media */
     .quickview-media-col {
         .quickview-main-image-wrapper {
-            background-color: #fbfbfb !important;
-            border: 1px solid #ebebeb !important;
-            border-radius: 4px !important;
-            height: 320px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 16px !important;
-            overflow: hidden !important;
+            background-color: #fbfbfb;
+            border: 1px solid #ebebeb;
+            border-radius: 4px;
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow: hidden;
 
             @media (max-width: 767.98px) {
-                height: 240px !important;
+                height: 240px;
             }
 
             .quickview-main-image {
-                max-height: 100% !important;
-                max-width: 100% !important;
-                width: auto !important;
-                height: auto !important;
-                object-fit: contain !important;
-                display: block !important;
-                transition: transform 0.2s ease !important;
+                max-height: 100%;
+                max-width: 100%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                display: block;
+                transition: transform 0.2s ease;
             }
 
             .quickview-placeholder {
-                max-width: 140px !important;
-                opacity: 0.4 !important;
+                max-width: 140px;
+                opacity: 0.4;
             }
         }
 
         .quickview-thumbnails-row {
-            display: flex !important;
-            gap: 8px !important;
-            margin-top: 10px !important;
-            overflow-x: auto !important;
-            padding-bottom: 4px !important;
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 4px;
 
             .qv-thumb-btn {
-                width: 54px !important;
-                height: 54px !important;
-                border: 1px solid #e0e0e0 !important;
-                border-radius: 3px !important;
-                background-color: #ffffff !important;
-                padding: 3px !important;
-                cursor: pointer !important;
-                flex-shrink: 0 !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+                width: 54px;
+                height: 54px;
+                border: 1px solid #e0e0e0;
+                border-radius: 3px;
+                background-color: #ffffff;
+                padding: 3px;
+                cursor: pointer;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
                 img {
-                    max-width: 100% !important;
-                    max-height: 100% !important;
-                    object-fit: contain !important;
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
                 }
 
                 &:hover,
                 &.is-active {
-                    border-color: #8c1d2f !important;
-                    box-shadow: 0 0 0 1px #8c1d2f !important;
+                    border-color: #8c1d2f;
+                    box-shadow: 0 0 0 1px #8c1d2f;
                 }
             }
         }
@@ -145,66 +154,66 @@ Zanders-styled Quick View modal for previewing products:
 
     /* Right Column: Details */
     .quickview-details-col {
-        display: flex !important;
-        flex-direction: column !important;
+        display: flex;
+        flex-direction: column;
 
         .quickview-brand {
-            font-size: 12px !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.6px !important;
-            color: #777777 !important;
-            margin-bottom: 4px !important;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #777777;
+            margin-bottom: 4px;
         }
 
         .quickview-title {
-            font-size: 18px !important;
-            font-weight: 700 !important;
-            line-height: 1.35 !important;
-            text-transform: uppercase !important;
-            margin-bottom: 12px !important;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.35;
+            text-transform: uppercase;
+            margin-bottom: 12px;
 
             a {
-                color: #1a2530 !important;
-                text-decoration: none !important;
-                transition: color 0.2s ease !important;
+                color: #1a2530;
+                text-decoration: none;
+                transition: color 0.2s ease;
 
                 &:hover {
-                    color: #8c1d2f !important;
+                    color: #8c1d2f;
                 }
             }
         }
 
         /* Metadata Block */
         .quickview-meta {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 3px !important;
-            margin-bottom: 12px !important;
-            padding-bottom: 12px !important;
-            border-bottom: 1px solid #f0f0f0 !important;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
 
             .quickview-meta-row {
-                font-size: 13px !important;
-                line-height: 1.45 !important;
-                color: #222222 !important;
+                font-size: 13px;
+                line-height: 1.45;
+                color: #222222;
 
                 .meta-label {
-                    color: #777777 !important;
-                    font-weight: 400 !important;
-                    margin-right: 4px !important;
+                    color: #777777;
+                    font-weight: 400;
+                    margin-right: 4px;
                 }
 
                 .meta-val {
-                    color: #1a2530 !important;
-                    font-weight: 700 !important;
+                    color: #1a2530;
+                    font-weight: 700;
 
                     &.stock-in {
-                        color: #1a2530 !important;
+                        color: #1a2530;
                     }
 
                     &.stock-out {
-                        color: #c20017 !important;
+                        color: #c20017;
                     }
                 }
             }
@@ -212,33 +221,33 @@ Zanders-styled Quick View modal for previewing products:
 
         /* Pricing */
         .quickview-price-section {
-            margin-bottom: 12px !important;
+            margin-bottom: 12px;
 
             .quickview-price-primary {
-                font-size: 24px !important;
-                font-weight: 700 !important;
-                color: #8c1d2f !important;
-                line-height: 1.2 !important;
-                margin-bottom: 4px !important;
+                font-size: 24px;
+                font-weight: 700;
+                color: #8c1d2f;
+                line-height: 1.2;
+                margin-bottom: 4px;
             }
 
             .quickview-price-secondary {
-                display: flex !important;
-                gap: 16px !important;
-                font-size: 13px !important;
-                font-weight: 600 !important;
-                color: #8c1d2f !important;
+                display: flex;
+                gap: 16px;
+                font-size: 13px;
+                font-weight: 600;
+                color: #8c1d2f;
 
                 .price-item {
-                    display: inline-flex !important;
-                    gap: 4px !important;
+                    display: inline-flex;
+                    gap: 4px;
 
                     .price-lbl {
-                        color: #8c1d2f !important;
+                        color: #8c1d2f;
                     }
 
                     .price-amt {
-                        color: #8c1d2f !important;
+                        color: #8c1d2f;
                     }
                 }
             }
@@ -246,72 +255,72 @@ Zanders-styled Quick View modal for previewing products:
 
         /* Short Description */
         .quickview-short-desc {
-            font-size: 13px !important;
-            line-height: 1.55 !important;
-            color: #555555 !important;
-            margin-bottom: 16px !important;
+            font-size: 13px;
+            line-height: 1.55;
+            color: #555555;
+            margin-bottom: 16px;
         }
 
         /* Buy & Quantity Form */
         .quickview-buy-form {
-            width: 100% !important;
-            margin-bottom: 14px !important;
+            width: 100%;
+            margin-bottom: 14px;
         }
 
         /* Quantity row */
         .quickview-qty-row {
-            display: flex !important;
-            align-items: center !important;
-            gap: 10px !important;
-            margin-bottom: 14px !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
 
             .quickview-qty-label {
-                font-size: 14px !important;
-                font-weight: 500 !important;
-                color: #495057 !important;
-                margin: 0 !important;
+                font-size: 14px;
+                font-weight: 500;
+                color: #495057;
+                margin: 0;
             }
 
             .quickview-qty-control {
-                display: inline-flex !important;
-                align-items: center !important;
-                border: 1px solid #d2d6dc !important;
-                border-radius: 3px !important;
-                overflow: hidden !important;
-                background-color: #ffffff !important;
+                display: inline-flex;
+                align-items: center;
+                border: 1px solid #d2d6dc;
+                border-radius: 3px;
+                overflow: hidden;
+                background-color: #ffffff;
 
                 .qv-qty-btn {
-                    width: 32px !important;
-                    height: 34px !important;
-                    background-color: #f4f6f8 !important;
-                    border: none !important;
-                    font-size: 15px !important;
-                    font-weight: 600 !important;
-                    color: #333333 !important;
-                    cursor: pointer !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    transition: background-color 0.15s ease !important;
+                    width: 32px;
+                    height: 34px;
+                    background-color: #f4f6f8;
+                    border: none;
+                    font-size: 15px;
+                    font-weight: 600;
+                    color: #333333;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: background-color 0.15s ease;
 
                     &:hover {
-                        background-color: #e5e8ec !important;
+                        background-color: #e5e8ec;
                     }
                 }
 
                 .quickview-qty-input {
-                    width: 50px !important;
-                    height: 34px !important;
-                    border: none !important;
-                    border-left: 1px solid #e0e4e8 !important;
-                    border-right: 1px solid #e0e4e8 !important;
-                    border-radius: 0 !important;
-                    text-align: center !important;
-                    font-size: 14px !important;
-                    font-weight: 600 !important;
-                    color: #212529 !important;
-                    padding: 0 !important;
-                    box-shadow: none !important;
+                    width: 50px;
+                    height: 34px;
+                    border: none;
+                    border-left: 1px solid #e0e4e8;
+                    border-right: 1px solid #e0e4e8;
+                    border-radius: 0;
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #212529;
+                    padding: 0;
+                    box-shadow: none;
                     -moz-appearance: textfield;
 
                     &::-webkit-inner-spin-button,
@@ -321,8 +330,8 @@ Zanders-styled Quick View modal for previewing products:
                     }
 
                     &:focus {
-                        outline: none !important;
-                        box-shadow: none !important;
+                        outline: none;
+                        box-shadow: none;
                     }
                 }
             }
@@ -330,121 +339,122 @@ Zanders-styled Quick View modal for previewing products:
 
         /* Action buttons row */
         .quickview-action-buttons {
-            display: flex !important;
-            gap: 10px !important;
-            width: 100% !important;
+            display: flex;
+            gap: 10px;
+            width: 100%;
 
             .qv-btn-add,
             .qv-btn-buy {
-                flex: 1 1 0 !important;
-                background-color: #8c1d2f !important;
-                border: 1px solid #8c1d2f !important;
-                color: #ffffff !important;
-                font-family: 'Poppins', sans-serif !important;
-                font-size: 13px !important;
-                font-weight: 700 !important;
-                text-transform: uppercase !important;
-                letter-spacing: 0.3px !important;
-                border-radius: 2px !important;
-                padding: 10px 6px !important;
-                line-height: 1.2 !important;
-                text-align: center !important;
-                white-space: nowrap !important;
-                box-shadow: none !important;
-                text-decoration: none !important;
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                transition: background-color 0.2s ease, border-color 0.2s ease !important;
+                flex: 1 1 0;
+                background-color: #8c1d2f;
+                border: 1px solid #8c1d2f;
+                color: #ffffff;
+                font-family: 'Poppins', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                border-radius: 2px;
+                padding: 10px 6px;
+                line-height: 1.2;
+                text-align: center;
+                white-space: nowrap;
+                box-shadow: none;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: background-color 0.2s ease, border-color 0.2s ease;
 
                 &:hover,
                 &:focus {
-                    background-color: #6e1322 !important;
-                    border-color: #6e1322 !important;
-                    color: #ffffff !important;
-                    text-decoration: none !important;
+                    background-color: #6e1322;
+                    border-color: #6e1322;
+                    color: #ffffff;
+                    text-decoration: none;
                 }
             }
         }
 
         /* Secondary actions */
         .quickview-secondary-actions {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            padding-top: 10px !important;
-            border-top: 1px solid #f0f0f0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
 
+            button.qv-wishlist-action-btn,
             .qv-wishlist-action-btn {
-                background: none !important;
-                border: none !important;
-                padding: 4px 0 !important;
-                font-size: 13px !important;
-                font-weight: 500 !important;
-                color: #666666 !important;
-                cursor: pointer !important;
-                display: inline-flex !important;
-                align-items: center !important;
-                gap: 6px !important;
-                text-decoration: none !important;
-                transition: color 0.2s ease !important;
+                background: none;
+                border: none;
+                padding: 4px 0;
+                font-size: 13px;
+                font-weight: 500;
+                color: #666666;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                text-decoration: none;
+                transition: color 0.2s ease;
 
                 svg {
-                    width: 16px !important;
-                    height: 16px !important;
-                    stroke: currentColor !important;
-                    fill: none !important;
-                    pointer-events: none !important;
-                    transition: transform 0.2s ease, fill 0.2s ease !important;
+                    width: 16px;
+                    height: 16px;
+                    stroke: currentColor;
+                    fill: none;
+                    pointer-events: none;
+                    transition: transform 0.2s ease, fill 0.2s ease;
                 }
 
                 .icon-wishlist-added {
-                    display: none !important;
+                    display: none;
                 }
 
                 .icon-wishlist-not-added {
-                    display: inline-flex !important;
+                    display: inline-flex;
                 }
 
                 &:hover {
-                    color: #8c1d2f !important;
+                    color: #8c1d2f;
 
                     svg {
-                        transform: scale(1.15) !important;
+                        transform: scale(1.15);
                     }
                 }
 
                 &.product-wishlist-added,
                 &.is-wishlist,
                 &.is-active {
-                    color: #8c1d2f !important;
-                    font-weight: 600 !important;
+                    color: #8c1d2f;
+                    font-weight: 600;
 
                     .icon-wishlist-not-added {
-                        display: none !important;
+                        display: none;
                     }
 
                     .icon-wishlist-added {
-                        display: inline-flex !important;
+                        display: inline-flex;
 
                         svg {
-                            fill: #8c1d2f !important;
-                            stroke: #8c1d2f !important;
+                            fill: #8c1d2f;
+                            stroke: #8c1d2f;
                         }
                     }
                 }
             }
 
             .qv-view-detail-link {
-                font-size: 13px !important;
-                font-weight: 600 !important;
-                color: #8c1d2f !important;
-                text-decoration: none !important;
-                transition: color 0.2s ease !important;
+                font-size: 13px;
+                font-weight: 600;
+                color: #8c1d2f;
+                text-decoration: none;
+                transition: color 0.2s ease;
 
                 &:hover {
-                    color: #6e1322 !important;
-                    text-decoration: underline !important;
+                    color: #6e1322;
+                    text-decoration: underline;
                 }
             }
         }
@@ -453,35 +463,35 @@ Zanders-styled Quick View modal for previewing products:
     /* Specifications section */
     .quickview-properties-section {
         .quickview-section-heading {
-            font-size: 14px !important;
-            font-weight: 700 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            color: #1a2530 !important;
-            margin-bottom: 10px !important;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1a2530;
+            margin-bottom: 10px;
         }
 
         .quickview-properties-grid {
             .qv-prop-item {
-                background-color: #fbfbfb !important;
-                border: 1px solid #f0f0f0 !important;
-                border-radius: 3px !important;
-                padding: 6px 12px !important;
-                font-size: 12px !important;
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
+                background-color: #fbfbfb;
+                border: 1px solid #f0f0f0;
+                border-radius: 3px;
+                padding: 6px 12px;
+                font-size: 12px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
 
                 .qv-prop-label {
-                    color: #777777 !important;
-                    font-weight: 400 !important;
-                    margin-right: 8px !important;
+                    color: #777777;
+                    font-weight: 400;
+                    margin-right: 8px;
                 }
 
                 .qv-prop-val {
-                    color: #1a2530 !important;
-                    font-weight: 600 !important;
-                    text-align: right !important;
+                    color: #1a2530;
+                    font-weight: 600;
+                    text-align: right;
                 }
             }
         }
@@ -495,57 +505,64 @@ Wishlist Notification Toast
 Default Shopware-style notification for adding/removing items to wishlist
 */
 .zanders-toast-container {
-    position: fixed !important;
-    top: 24px !important;
-    right: 24px !important;
-    z-index: 1070 !important;
-    max-width: 440px !important;
-    width: calc(100% - 48px) !important;
-    pointer-events: none !important;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1070;
+    max-width: 440px;
+    width: calc(100% - 48px);
+    pointer-events: none;
 
+    .alert.zanders-wishlist-alert,
     .zanders-wishlist-alert {
-        pointer-events: auto !important;
-        margin-bottom: 10px !important;
-        background-color: #d1e7dd !important;
-        border: 1px solid #badbcc !important;
-        color: #0f5132 !important;
-        border-radius: 4px !important;
-        padding: 12px 16px !important;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-        animation: toastSlideIn 0.3s ease-out !important;
+        pointer-events: auto;
+        margin-bottom: 10px;
+        background-color: #d1e7dd;
+        border: 1px solid #badbcc;
+        color: #0f5132;
+        border-radius: 4px;
+        padding: 12px 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        animation: toastSlideIn 0.3s ease-out;
 
         &.alert-info {
-            background-color: #cff4fc !important;
-            border-color: #b6effb !important;
-            color: #055160 !important;
+            background-color: #cff4fc;
+            border-color: #b6effb;
+            color: #055160;
+        }
+
+        &.alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffe69c;
+            color: #664d03;
         }
 
         .alert-icon {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: currentColor !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: currentColor;
 
             svg {
-                width: 20px !important;
-                height: 20px !important;
+                width: 20px;
+                height: 20px;
             }
         }
 
         .alert-content-container {
-            font-family: 'Poppins', sans-serif !important;
-            font-size: 14px !important;
-            font-weight: 500 !important;
-            line-height: 1.4 !important;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
         }
 
         .btn-close {
-            padding: 10px !important;
-            font-size: 11px !important;
-            opacity: 0.7 !important;
+            padding: 10px;
+            font-size: 11px;
+            opacity: 0.7;
 
             &:hover {
-                opacity: 1 !important;
+                opacity: 1;
             }
         }
     }

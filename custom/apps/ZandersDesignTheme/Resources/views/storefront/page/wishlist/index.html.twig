@@ -1,0 +1,32 @@
+{% sw_extends '@Storefront/storefront/page/wishlist/index.html.twig' %}
+
+{% block page_wishlist %}
+    <div class="cms-page wishlist-page container py-5">
+        {% if context.customer and not context.customer.guest %}
+            {% set searchResult = page.wishlist.productListing %}
+            {% sw_include '@Storefront/storefront/page/wishlist/wishlist-pagelet.html.twig' with { searchResult: searchResult } %}
+        {% else %}
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-6">
+                    <div class="card text-center p-4 p-md-5 border-0 shadow-sm" style="background-color: #fcfcfc;">
+                        <div class="mb-3">
+                            <span class="d-inline-flex align-items-center justify-content-center rounded-circle border border-2 border-dark" style="width: 64px; height: 64px;">
+                                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z" fill="#8c1d2f"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <h2 class="h3 fw-bold text-uppercase mb-2" style="color: #8c1d2f; font-family: 'Poppins', sans-serif;">{{ 'zanders.wishlist.loginTitle'|trans|default('Wishlist Is For Registered Customers') }}</h2>
+                        <p class="text-muted mb-4" style="font-size: 15px;">{{ 'zanders.wishlist.loginDescription'|trans|default('To view, save, and manage your wishlist, please log in or create an account.') }}</p>
+                        <div class="d-flex justify-content-center">
+                            <a href="{{ path('frontend.account.login.page', { redirectTo: 'frontend.wishlist.page' }) }}" class="btn text-white fw-bold text-uppercase px-4 py-2" style="background-color: #8c1d2f; border-color: #8c1d2f; border-radius: 2px;">
+                                {{ 'account.loginSubmit'|trans|default('Log In') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
