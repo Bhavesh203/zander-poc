@@ -1,0 +1,85 @@
+{#
+    Zanders Compare Content Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/content.html.twig` to:
+    - Render a branded empty-state card with a "Continue Shopping" CTA when
+      no products have been added to compare.
+    - Preserve exact comparison table DOM structure (`thead`, `tbody#overview`,
+      `tbody#specification`, and bottom action row) required by
+      `CompareWidgetPlugin` for dynamic column deletion and difference filtering.
+#}
+{% sw_extends '@Storefront/storefront/component/compare/content.html.twig' %}
+
+{% block frosh_product_compare_table_container %}
+    <div class="comparison-table zanders-comparison-table">
+        {% set products = page.products %}
+        {% set hideAttributes = config('FroshProductCompare.config.hideAttributes') %}
+
+        {% set hideOverview = 'overview' in hideAttributes %}
+        {% set hideDescription = 'description' in hideAttributes %}
+        {% set hidePrice = 'price' in hideAttributes %}
+        {% set hideRating = 'rating' in hideAttributes %}
+        {% set hideManufacturer = 'manufacturer' in hideAttributes %}
+        {% set hideSpecs = 'specs' in hideAttributes %}
+
+        {% set productsCount = products.count %}
+        {% set isAjaxContent = activeRoute == 'frontend.compare.content' %}
+
+        {% if productsCount is same as(0) %}
+            {# Branded empty state when compare list has no items #}
+            <div class="zanders-compare-empty">
+                <div class="zanders-compare-empty-icon" aria-hidden="true">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                        <path d="M7 21h10" />
+                        <path d="M12 3v18" />
+                        <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                    </svg>
+                </div>
+                <h2 class="zanders-compare-empty-title">
+                    {{ 'froshProductCompare.general.headline'|trans|sw_sanitize }}
+                </h2>
+                <p class="zanders-compare-empty-text">
+                    {{ 'froshProductCompare.general.empty'|trans|sw_sanitize }}
+                </p>
+                <a href="{{ path('frontend.home.page') }}"
+                   class="btn zanders-compare-empty-cta"
+                   title="{{ 'checkout.continueShopping'|trans|striptags }}">
+                    {{ 'checkout.continueShopping'|trans|sw_sanitize }}
+                </a>
+            </div>
+        {% else %}
+            {% block frosh_product_compare_table %}
+                <table class="table table-bordered accordion zanders-compare-table">
+                    {% sw_include '@Storefront/storefront/component/compare/section/header.html.twig' %}
+
+                    {% if not hideOverview %}
+                        {% sw_include '@Storefront/storefront/component/compare/section/overview.html.twig' %}
+                    {% endif %}
+
+                    {% if not hideSpecs %}
+                        {% sw_include '@Storefront/storefront/component/compare/section/specification.html.twig' %}
+                    {% endif %}
+
+                    {% if isAjaxContent %}
+                        <tbody class="zanders-compare-footer-actions hide-on-print d-print-none">
+                            <tr>
+                                <th></th>
+                                {% for product in products %}
+                                    <td>
+                                        <div class="zanders-compare-card-action">
+                                            {% sw_include '@Storefront/storefront/component/product/card/action.html.twig' %}
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    {% endif %}
+                </table>
+            {% endblock %}
+        {% endif %}
+    </div>
+{% endblock %}
+

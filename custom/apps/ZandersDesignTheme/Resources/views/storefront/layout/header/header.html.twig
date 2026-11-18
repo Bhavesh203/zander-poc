@@ -4,16 +4,100 @@
 <div class="zanders-custom-header">
     {% block layout_header_navigation %}
     <div class="row align-items-center header-row">
+        {# Mobile & Tablet Left Hamburger Button (<= 991.98px) #}
+        {% block layout_header_navigation_toggle %}
+            <div class="col-auto d-lg-none order-1 header-menu-col">
+                <div class="menu-button">
+                    {% block layout_header_navigation_toggle_button %}
+                        <button
+                            class="btn nav-main-toggle-btn header-actions-btn"
+                            type="button"
+                            data-off-canvas-menu="true"
+                            aria-label="{{ 'general.menuLink'|trans|striptags }}"
+                        >
+                            {% block layout_header_navigation_toggle_button_icon %}
+                                <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <rect y="0" width="24" height="2" rx="1" fill="#333333"/>
+                                    <rect y="8" width="24" height="2" rx="1" fill="#333333"/>
+                                    <rect y="16" width="24" height="2" rx="1" fill="#333333"/>
+                                </svg>
+                            {% endblock %}
+                        </button>
+                    {% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+
+        {# Logo: Centered on Tablet/Mobile (order-2), Left on Desktop (order-lg-1) #}
         {% block layout_header_logo %}
-        {{ parent() }}
+            <div class="col col-lg-auto order-2 order-lg-1 header-logo-col m-lg-0">
+                {% sw_include '@Storefront/storefront/layout/header/logo.html.twig' %}
+            </div>
         {% endblock %}
 
+        {# Search Bar: Always-visible full-width Row 2 on Tablet/Mobile (order-4), Inline center on Desktop (order-lg-2) #}
         {% block layout_header_search %}
-        {{ parent() }}
+            <div class="col-12 order-4 col-lg order-lg-2 header-search-col">
+                <div class="row">
+                    <div class="col">
+                        {% sw_include '@Storefront/storefront/layout/header/search.html.twig' %}
+                    </div>
+                </div>
+            </div>
         {% endblock %}
 
+        {# Actions: Right on Tablet/Mobile (order-3) & Desktop (order-lg-3) #}
         {% block layout_header_actions %}
-        {{ parent() }}
+            <div class="col-auto order-3 order-lg-3 header-actions-col">
+                <div class="row g-0 align-items-center">
+                    {# Show header wishlist icon only for logged-in (non-guest) customers #}
+                    {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+                    {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                        {% block layout_header_actions_wishlist %}
+                            <div class="col-auto d-none d-lg-block">
+                                <div class="header-wishlist">
+                                    <a class="btn header-wishlist-btn header-actions-btn"
+                                       href="{{ path('frontend.wishlist.page') }}"
+                                       title="{{ 'header.wishlist'|trans|striptags }}"
+                                       aria-labelledby="wishlist-basket-live-area"
+                                    >
+                                        {% sw_include '@Storefront/storefront/layout/header/actions/wishlist-widget.html.twig' %}
+                                    </a>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    {% endif %}
+
+                    {% block layout_header_actions_account %}
+                        {# Moved to top-bar #}
+                    {% endblock %}
+
+                    {% set offcanvasCartOptions = {
+                        autoFocus: true
+                    } %}
+
+                    {% block layout_header_actions_cart %}
+                        <div class="col-auto">
+                            <div
+                                class="header-cart"
+                                data-off-canvas-cart="true"
+                                data-off-canvas-cart-options="{{ offcanvasCartOptions|json_encode }}"
+                            >
+                                <a
+                                    class="btn header-cart-btn header-actions-btn"
+                                    href="{{ path('frontend.checkout.cart.page') }}"
+                                    data-cart-widget="true"
+                                    title="{{ 'checkout.cartTitle'|trans|striptags }}"
+                                    aria-labelledby="cart-widget-aria-label"
+                                    aria-haspopup="dialog"
+                                >
+                                    {% sw_include '@Storefront/storefront/layout/header/actions/cart-widget.html.twig' %}
+                                </a>
+                            </div>
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
         {% endblock %}
     </div>
     {% endblock %}
@@ -22,24 +106,4 @@
 
 {% block layout_top_bar %}
 {# Rendered above header container in storefront/layout/header.html.twig #}
-{% endblock %}
-
-{% block layout_header_actions_wishlist %}
-    <div class="col-auto">
-        <div class="header-wishlist">
-            {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
-            {% set wishlistUrl = isCustomerLoggedIn ? path('frontend.wishlist.page') : path('frontend.account.login.page', { redirectTo: 'frontend.wishlist.page' }) %}
-            <a class="btn header-wishlist-btn header-actions-btn"
-               href="{{ wishlistUrl }}"
-               title="{{ 'header.wishlist'|trans|striptags }}"
-               aria-labelledby="wishlist-basket-live-area"
-            >
-                {% sw_include '@Storefront/storefront/layout/header/actions/wishlist-widget.html.twig' %}
-            </a>
-        </div>
-    </div>
-{% endblock %}
-
-{% block layout_header_actions_account %}
-{# Moved to top-bar #}
 {% endblock %}

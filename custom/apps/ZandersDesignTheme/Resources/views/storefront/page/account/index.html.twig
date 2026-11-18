@@ -1,0 +1,17 @@
+{#
+    Zanders Account Overview Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/account/index.html.twig` to add quick
+    Zanders-styled action links ("Edit Profile", "Manage Addresses") inside the
+    overview cards while preserving all core Shopware blocks and data.
+#}
+{% sw_extends '@Storefront/storefront/page/account/index.html.twig' %}
+
+{% block page_account_overview_profile_actions_content %}
+    <a href="{{ path('frontend.account.profile.page') }}"
+       class="btn zanders-account-outline-btn"
+       title="{{ 'account.profileLink'|trans|striptags }}">
+        {{ 'account.profileLink'|trans|sw_sanitize }}
+    </a>
+{% endblock %}
+

@@ -1,0 +1,161 @@
+{#
+    Zanders Account Sidebar & Header Dropdown Menu Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/account/sidebar.html.twig` to render
+    a cohesive Zanders-branded account menu used in both:
+    - Desktop left sidebar (`not headerWidget`): crimson greeting header with
+      customer initials badge, customer number, crisp SVG nav icons, Wishlist
+      link, and Logout footer button.
+    - Header account dropdown (`headerWidget`): compact crimson-accented menu
+      with identical icon navigation and Logout action.
+#}
+{% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
+
+{% block page_account_sidebar_inner %}
+    {% set isGuest = context.customer and context.customer.guest %}
+    {% set firstInitial = context.customer ? context.customer.firstName|slice(0, 1)|upper : '' %}
+    {% set lastInitial = context.customer ? context.customer.lastName|slice(0, 1)|upper : '' %}
+
+    <div class="{% if not headerWidget %}account-aside zanders-account-aside{% else %}header-account-menu zanders-header-account-menu{% endif %}">
+        <div class="card account-menu-inner">
+            {% block page_account_sidebar_header %}
+                {% if context.customer and not isGuest %}
+                    <div class="card-header account-aside-header zanders-account-aside-header">
+                        <div class="zanders-account-avatar" aria-hidden="true">
+                            {{ firstInitial ~ lastInitial ?: 'Z' }}
+                        </div>
+                        <div class="zanders-account-user-meta">
+                            <div class="zanders-account-greeting">
+                                {{ 'account.greetings'|trans|sw_sanitize }}
+                                {{ context.customer.firstName }} {{ context.customer.lastName }}
+                            </div>
+                            {% if context.customer.customerNumber %}
+                                <div class="zanders-account-number">
+                                    #{{ context.customer.customerNumber }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endblock %}
+
+            {% block page_account_sidebar_menu %}
+                {% if context.customer and not isGuest %}
+                    <nav class="list-group list-group-flush account-aside-list-group"{% if headerWidget == null %} aria-label="{{ 'account.myAccount'|trans|striptags }}"{% endif %}>
+                        {% block page_account_sidebar_menu_inner %}
+                            {% block page_account_sidebar_link_home %}
+                                <a href="{{ path('frontend.account.home.page') }}"
+                                   title="{{ 'account.overviewLink'|trans|striptags }}"
+                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}"
+                                   {% if activeRoute is same as('frontend.account.home.page') %} aria-current="page"{% endif %}>
+                                    <svg class="zanders-account-nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <rect x="3" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="3" width="7" height="7"></rect>
+                                        <rect x="14" y="14" width="7" height="7"></rect>
+                                        <rect x="3" y="14" width="7" height="7"></rect>
+                                    </svg>
+                                    <span>{{ 'account.overviewLink'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+
+                            {% block page_account_sidebar_link_profile %}
+                                <a href="{{ path('frontend.account.profile.page') }}"
+                                   title="{{ 'account.profileLink'|trans|striptags }}"
+                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}"
+                                   {% if activeRoute is same as('frontend.account.profile.page') %} aria-current="page"{% endif %}>
+                                    <svg class="zanders-account-nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    <span>{{ 'account.profileLink'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+
+                            {% block page_account_sidebar_link_address %}
+                                <a href="{{ path('frontend.account.address.page') }}"
+                                   title="{{ 'account.addressLink'|trans|striptags }}"
+                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}"
+                                   {% if activeRoute starts with('frontend.account.address') %} aria-current="page"{% endif %}>
+                                    <svg class="zanders-account-nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <span>{{ 'account.addressLink'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+
+                            {% block page_account_sidebar_link_orders %}
+                                <a href="{{ path('frontend.account.order.page') }}"
+                                   title="{{ 'account.ordersLink'|trans|striptags }}"
+                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.order') or activeRoute is same as('frontend.account.edit-order.page') %} is-active{% endif %}"
+                                   {% if activeRoute starts with('frontend.account.order') %} aria-current="page"{% endif %}>
+                                    <svg class="zanders-account-nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                    <span>{{ 'account.ordersLink'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+
+                            {% if config('core.cart.wishlistEnabled') %}
+                                <a href="{{ path('frontend.wishlist.page') }}"
+                                   title="{{ 'header.wishlist'|trans|default('Wishlist')|striptags }}"
+                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}"
+                                   {% if activeRoute is same as('frontend.wishlist.page') %} aria-current="page"{% endif %}>
+                                    <svg class="zanders-account-nav-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    <span>{{ 'header.wishlist'|trans|default('Wishlist')|sw_sanitize }}</span>
+                                </a>
+                            {% endif %}
+                        {% endblock %}
+                    </nav>
+                {% endif %}
+            {% endblock %}
+
+            {% block page_account_sidebar_footer %}
+                {% if context.customer %}
+                    {% if not isGuest %}
+                        <div class="card-footer account-aside-footer">
+                            {% block page_account_sidebar_logout %}
+                                <a href="{{ path('frontend.account.logout.page') }}"
+                                   class="btn account-aside-btn zanders-account-logout-btn">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    <span>{{ 'account.logout'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+                        </div>
+                    {% else %}
+                        <div class="card-footer account-aside-footer account-guest-abort">
+                            {% block page_account_sidebar_guest_abort %}
+                                <a href="{{ path('frontend.account.logout.page') }}"
+                                   data-account-guest-abort-button="true"
+                                   class="btn account-aside-btn zanders-account-logout-btn">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                    </svg>
+                                    <span>{{ 'account.guestAbort'|trans|sw_sanitize }}</span>
+                                </a>
+                            {% endblock %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+

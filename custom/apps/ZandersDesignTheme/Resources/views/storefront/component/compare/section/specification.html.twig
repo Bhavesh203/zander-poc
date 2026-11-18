@@ -1,0 +1,51 @@
+{#
+    Zanders Compare Specification Section Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/section/specification.html.twig`
+    to remove Bootstrap's `.text-black` (`!important`) utility class from the
+    section accordion toggle while preserving `#specification` and `tr.property`
+    markup required by `CompareWidgetPlugin`'s "Show only differences" filter.
+#}
+{% sw_extends '@Storefront/storefront/component/compare/section/specification.html.twig' %}
+
+{% block frosh_product_compare_specification_section %}
+    <tbody id="specification">
+        <tr>
+            <th class="text-uppercase">
+                <a href="javascript:void(0);"
+                   class="accordion-button zanders-compare-section-toggle p-0 bg-transparent text-decoration-none"
+                   role="button"
+                   data-bs-toggle="collapse"
+                   data-bs-target=".collapseSpecifications"
+                   aria-expanded="true"
+                   aria-controls="collapseSpecifications">
+                    {{ 'froshProductCompare.section.specification.title'|trans|sw_sanitize }}
+                </a>
+            </th>
+            <th colspan="{{ productsCount }}"></th>
+        </tr>
+
+        {% for property in page.properties %}
+            <tr class="property collapseSpecifications accordion-collapse collapse show" data-bs-parent="#specification">
+                <th>{{ property.translated.name|e }}</th>
+                {% sw_include '@Storefront/storefront/component/compare/partial/properties.html.twig' with {
+                    property: property,
+                    linePropertyId: property.id,
+                } %}
+            </tr>
+        {% endfor %}
+
+        {% for customField in page.customFields %}
+            {% set customFieldLabel = customField.config.label[app.request.locale] ?? customField.config.label['en-GB'] %}
+            {% if customFieldLabel is not empty %}
+                <tr class="property collapseSpecifications accordion-collapse collapse show" data-bs-parent="#specification">
+                    <th>{{ customFieldLabel|e }}</th>
+                    {% sw_include '@Storefront/storefront/component/compare/partial/custom-field.html.twig' with {
+                        customField: customField,
+                    } %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+{% endblock %}
+

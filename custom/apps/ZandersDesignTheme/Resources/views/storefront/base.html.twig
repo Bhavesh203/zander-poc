@@ -1,6 +1,11 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
 {% block base_body_inner %}
+    {#
+        Pre-paint Age Verification Check
+        Runs synchronously before page content paints to avoid FOUC (flash of modal/scroll)
+        by immediately tagging <html> with either `zanders-age-verified` or `age-verification-modal-open`.
+    #}
     <script>
         (function() {
             try {
@@ -25,12 +30,21 @@
 
     {{ parent() }}
 
+    {# Global overlays: product finder tabs/drawer, sticky mobile bottom bar & age verification gate #}
+    {% sw_include '@Storefront/storefront/component/product-finder.html.twig' %}
+    {% sw_include '@Storefront/storefront/layout/footer/mobile-bottom-bar.html.twig' %}
     {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
 {% endblock %}
 
 {% block base_body_script %}
     {{ parent() }}
 
+    {#
+        Global Storefront Client Script
+        1. Customer-only Wishlist Manager (enforces login requirement, syncs localStorage + header badge + AJAX)
+        2. Toast Notification Helper (floating top-right alert banners)
+        3. Product Quick View Modal Launcher (fetches minimal product view via AJAX into Bootstrap modal)
+    #}
     <script>
     (function() {
         {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
@@ -40,17 +54,25 @@
         var msgRemoved = {{ 'wishlist.itemDeleteSuccess'|trans|json_encode|raw }};
         var msgLoginRequired = {{ 'zanders.wishlist.loginRequired'|trans|default('Please log in or register to add products to your wishlist.')|json_encode|raw }};
 
+        /**
+         * Returns the sales-channel-scoped localStorage key used by Shopware for wishlist items.
+         * @returns {string}
+         */
         function getWishlistStorageKey() {
             return 'wishlist-' + (window.salesChannelId || '');
         }
 
-        // If not logged in, clear any existing guest wishlist data
+        // Security/UX: clear any leftover guest wishlist entries when not logged in
         if (!isCustomerLoggedIn) {
             try {
                 localStorage.removeItem(getWishlistStorageKey());
             } catch (e) {}
         }
 
+        /**
+         * Reads the logged-in customer's wishlist product map from localStorage.
+         * @returns {Object<string, string>} Map of productId => ISO timestamp
+         */
         function getLocalWishlist() {
             if (!isCustomerLoggedIn) return {};
             try {
@@ -61,6 +83,10 @@
             }
         }
 
+        /**
+         * Persists the wishlist product map to localStorage (or clears key if empty).
+         * @param {Object<string, string>} products
+         */
         function saveLocalWishlist(products) {
             if (!isCustomerLoggedIn) return;
             try {
@@ -72,6 +98,10 @@
             } catch (e) {}
         }
 
+        /**
+         * Updates all header wishlist count badges and the screen-reader live region.
+         * @param {number} count Number of items in the customer's wishlist
+         */
         function updateBadge(count) {
             var badges = document.querySelectorAll('#wishlist-basket, .header-wishlist-badge');
             badges.forEach(function(badge) {
@@ -84,6 +114,11 @@
             }
         }
 
+        /**
+         * Displays a floating auto-dismissing Bootstrap toast alert in `#zanders-toast-container`.
+         * @param {string} msg Message text or HTML to display
+         * @param {'success'|'info'|'warning'} [alertType='success'] Bootstrap alert style
+         */
         function showWishlistNotification(msg, alertType) {
             alertType = alertType || 'success';
 
@@ -133,6 +168,11 @@
             }, 4000);
         }
 
+        /**
+         * Applies active/inactive wishlist CSS classes to a single wishlist button element.
+         * @param {HTMLElement} btn
+         * @param {boolean} isAdded
+         */
         function syncButtonState(btn, isAdded) {
             btn.classList.toggle('product-wishlist-added', isAdded);
             btn.classList.toggle('is-wishlist', isAdded);
@@ -140,6 +180,10 @@
             btn.classList.remove('product-wishlist-loading');
         }
 
+        /**
+         * Synchronizes every `.product-wishlist-btn` in the DOM and the header badge
+         * against the current customer's stored wishlist state.
+         */
         function syncAllButtons() {
             if (!isCustomerLoggedIn) {
                 var buttons = document.querySelectorAll('.product-wishlist-btn');
@@ -166,12 +210,16 @@
             updateBadge(Object.keys(products).length);
         }
 
+        // Initial sync of all wishlist buttons on page load
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', syncAllButtons);
         } else {
             syncAllButtons();
         }
 
+        // Capture-phase click handler for all `.product-wishlist-btn` triggers:
+        // - Guests: display warning toast and redirect to login page
+        // - Logged-in customers: toggle item in localStorage, update UI/badge, and POST to Shopware router
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.product-wishlist-btn');
             if (!btn) return;
@@ -252,6 +300,7 @@
             } catch (err) {}
         }, true);
 
+        // Keep wishlist button states synchronized across multiple open browser tabs
         window.addEventListener('storage', function(e) {
             if (e.key === getWishlistStorageKey()) {
                 syncAllButtons();
@@ -263,6 +312,11 @@
            ========================================================= */
         var qvTitleText = {{ 'zanders.productCard.quickView'|trans|default('Quick View')|json_encode|raw }};
 
+        /**
+         * Returns the shared Quick View Bootstrap modal element, creating and appending it
+         * to `document.body` on first use. Auto-closes when an Add-to-Cart form opens the offcanvas cart.
+         * @returns {HTMLElement}
+         */
         function getOrCreateQuickviewModal() {
             var modalEl = document.getElementById('zanders-quickview-modal');
             if (modalEl) return modalEl;
@@ -308,6 +362,9 @@
             return modalEl;
         }
 
+        // Delegated click handler for `.product-quickview-btn`:
+        // Opens the Quick View modal with a spinner, fetches the minimal product view via AJAX,
+        // injects `.zanders-quickview-container`, and initializes Shopware JS plugins inside it.
         document.addEventListener('click', function(e) {
             var btn = e.target.closest('.product-quickview-btn');
             if (!btn) return;
@@ -366,6 +423,7 @@
             });
         }, true);
 
+        // Re-sync wishlist button states whenever new product cards are dynamically added (e.g. Load More / filters)
         var observer = new MutationObserver(function() {
             syncAllButtons();
         });

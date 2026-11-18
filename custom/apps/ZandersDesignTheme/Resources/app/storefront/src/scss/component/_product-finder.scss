@@ -1,0 +1,369 @@
+// =============================================================================
+// Zanders Product Finder (Firearms Finder & Ammo Finder)
+// - Fixed left-edge vertical tabs (Crimson red + Charcoal gray)
+// - Slide-out left drawer with live cascading select dropdowns & red clear buttons
+// - Zero !important | Standard Shopware breakpoint mixins
+// =============================================================================
+
+body.zanders-finder-open {
+    overflow: hidden;
+}
+
+// 1. Fixed Left-Edge Vertical Floating Tabs
+.zanders-finder-tabs {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1035;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .zanders-finder-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 40px;
+        padding: 14px 8px;
+        border: 0;
+        border-radius: 0;
+        color: #ffffff;
+        cursor: pointer;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.22);
+        transition: background-color 0.2s ease, padding-left 0.2s ease, width 0.2s ease;
+
+        &:hover,
+        &:focus {
+            width: 44px;
+            outline: none;
+        }
+
+        &--firearms {
+            background-color: #991020;
+
+            &:hover,
+            &:focus {
+                background-color: #7b0a17;
+            }
+        }
+
+        &--ammo {
+            background-color: #6d6d6d;
+
+            &:hover,
+            &:focus {
+                background-color: #555555;
+            }
+        }
+    }
+
+    .zanders-finder-tab-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+
+        svg {
+            display: block;
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    .zanders-finder-tab-label {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+        user-select: none;
+    }
+}
+
+// 2. Dark Backdrop Overlay
+.zanders-finder-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.48);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+
+    &.is-open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+
+// 3. Slide-Out Left Drawer
+.zanders-finder-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    background-color: #ffffff;
+    z-index: 1055;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.28s ease, visibility 0.28s ease;
+
+    &.is-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .zanders-finder-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 52px 14px 24px;
+        flex-shrink: 0;
+    }
+
+    .zanders-finder-title {
+        font-size: 22px;
+        line-height: 1.25;
+        font-weight: 500;
+        color: #111111;
+        margin: 0;
+    }
+
+    // Flush top-right crimson square close button
+    .zanders-finder-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        border: 0;
+        border-radius: 0;
+        background-color: #991020;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: #7b0a17;
+            outline: none;
+        }
+    }
+
+    .zanders-finder-body {
+        padding: 4px 24px 24px;
+        overflow-y: auto;
+        flex: 1 1 auto;
+    }
+
+    .zanders-finder-loader {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #666666;
+        margin-bottom: 10px;
+
+        .spinner-border {
+            color: #991020;
+        }
+    }
+
+    .zanders-finder-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: opacity 0.15s ease;
+
+        &.is-loading {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+    }
+
+    .zanders-finder-field-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .zanders-finder-select {
+        flex: 1 1 auto;
+        min-width: 0;
+        width: 100%;
+        height: 40px;
+        padding: 6px 32px 6px 12px;
+        font-size: 13.5px;
+        line-height: 1.3;
+        color: #111111;
+        background-color: #ffffff;
+        border: 1px solid #8a8a8a;
+        border-radius: 0;
+        box-shadow: none;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        transition: border-color 0.15s ease;
+
+        &:focus {
+            border-color: #991020;
+            box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15);
+            outline: none;
+        }
+
+        &.is-empty,
+        &:disabled {
+            border-color: #b8b8b8;
+            color: #666666;
+            background-color: #ffffff;
+            opacity: 1;
+            cursor: not-allowed;
+        }
+    }
+
+    // Per-field crimson "×" clear button outside right edge of select
+    .zanders-finder-clear-btn {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: #991020;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.15s ease, color 0.15s ease;
+
+        &:hover,
+        &:focus {
+            color: #6e1322;
+            transform: scale(1.15);
+            outline: none;
+        }
+    }
+
+    .zanders-finder-count {
+        font-size: 15px;
+        font-weight: 700;
+        color: #111111;
+        margin: 18px 0 16px;
+    }
+
+    .zanders-finder-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        .zanders-finder-btn {
+            background-color: #991020;
+            border: 1px solid #991020;
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 9px 22px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+
+            &:hover,
+            &:focus {
+                background-color: #7b0a17;
+                border-color: #7b0a17;
+                color: #ffffff;
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+// =============================================================================
+// Responsive Adjustments (Standard Shopware media-breakpoint-down(sm) down to 320px)
+// =============================================================================
+
+@include media-breakpoint-down(sm) {
+    .zanders-finder-tabs {
+        gap: 6px;
+
+        .zanders-finder-tab {
+            width: 34px;
+            padding: 10px 6px;
+            gap: 6px;
+
+            &:hover,
+            &:focus {
+                width: 36px;
+            }
+        }
+
+        .zanders-finder-tab-icon svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .zanders-finder-tab-label {
+            font-size: 12px;
+        }
+    }
+
+    .zanders-finder-drawer {
+        width: 304px;
+        max-width: calc(100vw - 16px);
+
+        .zanders-finder-header {
+            padding: 16px 46px 12px 16px;
+        }
+
+        .zanders-finder-title {
+            font-size: 19px;
+        }
+
+        .zanders-finder-close {
+            width: 36px;
+            height: 36px;
+        }
+
+        .zanders-finder-body {
+            padding: 4px 16px 20px;
+        }
+
+        .zanders-finder-select {
+            height: 38px;
+            font-size: 12.5px;
+        }
+
+        .zanders-finder-actions {
+            gap: 10px;
+
+            .zanders-finder-btn {
+                flex: 1 1 0;
+                padding: 9px 12px;
+                font-size: 12.5px;
+                text-align: center;
+            }
+        }
+    }
+}
+

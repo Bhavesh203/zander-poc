@@ -1,6 +1,14 @@
+{#
+    Zanders Sidebar Filter Panel Override ("SHOPPING OPTIONS")
+    Extends vendor `@Storefront/storefront/component/listing/filter-panel.html.twig`:
+    - Replaces mobile offcanvas title & adds desktop red "SHOPPING OPTIONS" banner
+    - Prepends a collapsible "Category" navigation accordion (child -> sibling -> root fallback)
+    - Includes scoped component CSS directly in the template for portability
+#}
 {% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
 
 {% block component_filter_panel_header %}
+    {# Mobile/tablet offcanvas header shown when filter drawer opens #}
     <div class="filter-panel-offcanvas-header">
         <span data-id="off-canvas-headline" class="filter-panel-offcanvas-only filter-panel-offcanvas-title">
             {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
@@ -12,14 +20,14 @@
 {% endblock %}
 
 {% block component_filter_panel_items_container %}
+    {# Crimson header banner at top of filter panel #}
     <div class="filter-panel-header-banner">
         {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
-        <span class="d-none">DBG:[{{ page ? 'PAGE_OK' : 'NO_PAGE' }}|{{ (page and page.header) ? 'HEADER_OK' : 'NO_HEADER' }}|{{ (page and page.navigation) ? 'NAV_OK' : 'NO_NAV' }}]</span>
     </div>
 
     <div class="filter-panel-items-container" role="list">
         {% block component_filter_panel_items %}
-            {# Category filter option matching reference design #}
+            {# Resolve relevant category links for the Category accordion (children -> parent siblings -> root tree) #}
             {% set nav = page.navigation ?? (page.header ? page.header.navigation : null) %}
             {% set activeId = shopware.navigation.id ?? context.salesChannel.navigationCategoryId %}
             {% set categoryTree = nav ? nav.getChildren(activeId) : null %}

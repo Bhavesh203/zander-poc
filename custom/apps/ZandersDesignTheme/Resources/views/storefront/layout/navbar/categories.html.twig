@@ -1,0 +1,84 @@
+{#
+    Zanders Catalog Dropdown & Subcategory Flyout Override
+    ==========================================================================
+    Extends `@Storefront/storefront/layout/navbar/categories.html.twig` to:
+    - Render a right-pointing dark triangle caret on every Level-0 Catalog
+      category that has child subcategories.
+    - Render nested Level-1 subcategories in a flush, single-column scrollable
+      flyout panel (`.zanders-subcat-flyout`) matching Zanders' light-gray
+      horizontal-divider menu style.
+#}
+{% sw_extends '@Storefront/storefront/layout/navbar/categories.html.twig' %}
+
+{% block layout_navbar_categories %}
+    {% set navigationMaxDepth = 3 %}
+
+    {% if not level %}
+        {% set level = 0 %}
+    {% endif %}
+
+    <div class="{% if level == 0 %}row {% endif %}navigation-flyout-categories is-level-{{ level|raw }}{% if level == 1 %} zanders-subcat-flyout-list{% endif %}">
+        {% for treeItem in navigationTree %}
+            {% set category = treeItem.category %}
+            {% set id = category.id %}
+            {% set name = category.translated.name %}
+            {% set link = category.seoUrl %}
+            {% set hasChildren = (level < navigationMaxDepth and treeItem.children is defined and treeItem.children|length > 0) %}
+
+            {% block layout_navbar_categories_item %}
+                {% set columnCount = navigationMedia ? 3 : 4 %}
+                <div class="{% if level == 0 %}col-{{ (12 / columnCount)|raw }} zanders-catalog-item{% if hasChildren %} has-subcategories{% endif %}{% else %}zanders-subcat-item{% endif %}{% if loop.index0 % columnCount != 0 %} navigation-flyout-col{% endif %}">
+                    {% block layout_navbar_categories_item_link %}
+                        {% if category.type == 'folder' %}
+                            <div class="nav-item nav-item-{{ id|raw }} nav-link nav-item-{{ id|raw }}-link navigation-flyout-link is-level-{{ level|raw }}"
+                                 title="{{ name }}">
+                                <span class="zanders-nav-item-label">{{ name }}</span>
+                                {% if level == 0 and hasChildren %}
+                                    <span class="zanders-catalog-caret" aria-hidden="true">
+                                        <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor">
+                                            <polygon points="1,1 7,6 1,11"></polygon>
+                                        </svg>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <a class="nav-item nav-item-{{ id|raw }} nav-link nav-item-{{ id|raw }}-link navigation-flyout-link is-level-{{ level|raw }}"
+                               href="{{ link }}"
+                               {% if category.shouldOpenInNewTab %}target="_blank"{% if category.linkType == 'external' %} rel="noopener noreferrer"{% endif %}{% endif %}
+                               title="{{ name }}">
+                                <span class="zanders-nav-item-label">{{ name }}</span>
+                                {% if level == 0 and hasChildren %}
+                                    <span class="zanders-catalog-caret" aria-hidden="true">
+                                        <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor">
+                                            <polygon points="1,1 7,6 1,11"></polygon>
+                                        </svg>
+                                    </span>
+                                {% endif %}
+                            </a>
+                        {% endif %}
+                    {% endblock %}
+
+                    {% block layout_navbar_categories_recoursion %}
+                        {% if hasChildren %}
+                            {% if level == 0 %}
+                                <div class="zanders-subcat-flyout">
+                                    {% sw_include '@Storefront/storefront/layout/navbar/categories.html.twig' with {
+                                        navigationTree: treeItem.children,
+                                        level: level + 1,
+                                        page: page
+                                    } only %}
+                                </div>
+                            {% else %}
+                                {% sw_include '@Storefront/storefront/layout/navbar/categories.html.twig' with {
+                                    navigationTree: treeItem.children,
+                                    level: level + 1,
+                                    page: page
+                                } only %}
+                            {% endif %}
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{#
+    Zanders Product Wishlist Guard Override
+    ==========================================================================
+    Extends `@Storefront/storefront/component/product/card/wishlist.html.twig`
+    so the default Shopware wishlist button (used on PDP and shared components)
+    renders ONLY when a customer is logged in (non-guest).
+#}
+{% sw_extends '@Storefront/storefront/component/product/card/wishlist.html.twig' %}
+
+{% block component_product_wishlist %}
+    {% if context.customer is not null and not context.customer.guest %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+

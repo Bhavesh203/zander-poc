@@ -1,0 +1,734 @@
+// =============================================================================
+// Zanders Shopping Cart Page (/checkout/cart)
+// - Crimson SHOPPING CART header + 2-column Cart Table & Dark-Header SUMMARY
+// - Colored action bar (Continue Shopping, Clear Cart, Update Cart)
+// - Zanders Freight Policy card & 4-column YOU MIGHT ALSO LIKE grid
+// - Zero !important | Standard Shopware breakpoint mixins (single block each)
+// =============================================================================
+
+.zanders-cart-page {
+    font-family: 'Poppins', sans-serif;
+    padding-top: 24px;
+    padding-bottom: 56px;
+}
+
+// 1. Page Header
+.zanders-cart-header {
+    margin-bottom: 24px;
+
+    .zanders-cart-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: #991020;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        line-height: 1.2;
+        margin: 0;
+    }
+
+    .zanders-cart-title-rule {
+        height: 2px;
+        background-color: #991020;
+        width: 100%;
+        margin-top: 8px;
+    }
+}
+
+.zanders-cart-flashbags {
+    margin-bottom: 20px;
+}
+
+// 2. Empty Cart State
+.zanders-cart-empty {
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-top: 3px solid #991020;
+    border-radius: 4px;
+    padding: 48px 24px;
+    text-align: center;
+    max-width: 600px;
+    margin: 12px auto 44px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+
+    .zanders-cart-empty-icon {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        background-color: rgba(153, 16, 32, 0.08);
+        color: #991020;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .zanders-cart-empty-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111111;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+    }
+
+    .zanders-cart-empty-text {
+        font-size: 14px;
+        color: #666666;
+        margin: 0 0 22px;
+    }
+
+    .zanders-cart-empty-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 11px 30px;
+        background-color: #991020;
+        border: 1px solid #991020;
+        border-radius: 2px;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.45px;
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            background-color: #7b0a17;
+            border-color: #7b0a17;
+            color: #ffffff;
+        }
+    }
+}
+
+// 3. Cart Line Items Table
+.zanders-cart-table-wrap {
+    width: 100%;
+    border: 1px solid #ececec;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: #ffffff;
+    margin-bottom: 18px;
+}
+
+.zanders-cart-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+        background-color: #f2f2f2;
+        border-bottom: 1px solid #e4e4e4;
+
+        th {
+            padding: 12px 12px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #991020;
+            text-align: left;
+            white-space: nowrap;
+        }
+    }
+
+    tbody {
+        tr.zanders-cart-row {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ececec;
+
+            &:nth-child(even) {
+                background-color: #f5f5f5;
+            }
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
+            td {
+                padding: 14px 12px;
+                vertical-align: middle;
+                font-size: 13px;
+                color: #222222;
+            }
+        }
+    }
+
+    .zanders-cart-col-thumb {
+        width: 96px;
+    }
+
+    .zanders-cart-col-sku {
+        width: 130px;
+    }
+
+    .zanders-cart-col-price,
+    .zanders-cart-col-total {
+        width: 105px;
+        white-space: nowrap;
+    }
+
+    .zanders-cart-col-qty {
+        width: 86px;
+        text-align: center;
+    }
+
+    .zanders-cart-col-actions {
+        width: 72px;
+        text-align: right;
+    }
+
+    .zanders-cart-thumb-box {
+        width: 74px;
+        height: 60px;
+        padding: 4px;
+        background-color: #ffffff;
+        border: 1px solid #e8e8e8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .zanders-cart-thumb-img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .zanders-cart-thumb-placeholder {
+            width: 34px;
+            height: 34px;
+            opacity: 0.35;
+        }
+    }
+
+    .zanders-cart-sku-val {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #333333;
+        word-break: break-word;
+    }
+
+    .zanders-cart-name-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .zanders-cart-item-name {
+        font-size: 12.5px;
+        font-weight: 700;
+        line-height: 1.4;
+        color: #111111;
+        text-transform: uppercase;
+        text-decoration: none;
+
+        &:hover {
+            color: #991020;
+        }
+    }
+
+    .zanders-cart-prop65-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        background-color: #fffbe6;
+        border: 1px solid #eedc9a;
+        border-radius: 2px;
+        font-size: 10.5px;
+        line-height: 1.3;
+        color: #222222;
+        cursor: pointer;
+
+        &:hover {
+            border-color: #d6b656;
+        }
+    }
+
+    .zanders-cart-price-val {
+        font-size: 13px;
+        font-weight: 500;
+        color: #222222;
+    }
+
+    .zanders-cart-qty-input {
+        width: 58px;
+        height: 34px;
+        padding: 4px 6px;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+        color: #111111;
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 2px;
+        box-shadow: none;
+
+        &:focus {
+            border-color: #991020;
+            box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.14);
+        }
+    }
+
+    .zanders-cart-total-val {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #111111;
+    }
+
+    .zanders-cart-row-actions {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    .zanders-cart-wishlist-btn {
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .icon-wishlist-added {
+            display: none;
+        }
+
+        .icon-wishlist-not-added {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        &.product-wishlist-added {
+            .icon-wishlist-added {
+                display: inline-flex;
+                align-items: center;
+            }
+
+            .icon-wishlist-not-added {
+                display: none;
+            }
+        }
+    }
+
+    .zanders-cart-remove-form {
+        margin: 0;
+        display: inline-flex;
+    }
+
+    .zanders-cart-remove-btn {
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background-color: #991020;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.15s ease, transform 0.15s ease;
+
+        svg {
+            display: block;
+        }
+
+        &:hover,
+        &:focus {
+            background-color: #7b0a17;
+            transform: scale(1.08);
+            outline: none;
+        }
+    }
+}
+
+// 4. Colored Cart Action Buttons Bar
+.zanders-cart-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+
+    .zanders-cart-actions-left,
+    .zanders-cart-actions-right {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .zanders-cart-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        padding: 9px 18px;
+        border-radius: 2px;
+        border: 1px solid transparent;
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        text-decoration: none;
+        box-shadow: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease;
+
+        &--continue {
+            background-color: #559e2b;
+            border-color: #559e2b;
+
+            &:hover,
+            &:focus {
+                background-color: #468323;
+                border-color: #468323;
+                color: #ffffff;
+            }
+        }
+
+        &--clear {
+            background-color: #991020;
+            border-color: #991020;
+
+            &:hover,
+            &:focus {
+                background-color: #7b0a17;
+                border-color: #7b0a17;
+                color: #ffffff;
+            }
+        }
+
+        &--update {
+            background-color: #d8731c;
+            border-color: #d8731c;
+
+            &:hover,
+            &:focus {
+                background-color: #b85e12;
+                border-color: #b85e12;
+                color: #ffffff;
+            }
+        }
+    }
+}
+
+// 5. Zanders Freight Policy Card
+.zanders-cart-freight-card {
+    background-color: #ffffff;
+    border: 1px solid #e4e4e4;
+    border-radius: 3px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+
+    .zanders-cart-freight-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #991020;
+        text-transform: uppercase;
+        letter-spacing: 0.35px;
+        margin: 0 0 12px;
+    }
+
+    p {
+        font-size: 12.5px;
+        line-height: 1.65;
+        color: #333333;
+        margin: 0 0 8px;
+    }
+
+    .zanders-cart-freight-subhead {
+        margin-top: 10px;
+        font-weight: 600;
+        color: #222222;
+    }
+
+    .zanders-cart-freight-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 210px));
+        gap: 4px 20px;
+        margin: 6px 0 0;
+        padding-left: 18px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #222222;
+    }
+}
+
+// 6. Right Sidebar SUMMARY Card
+.zanders-cart-summary-card {
+    background-color: #ffffff;
+
+    .zanders-cart-summary-header {
+        background-color: #3a3a3a;
+        color: #ffffff;
+        font-size: 13.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+        padding: 11px 14px;
+        margin-bottom: 6px;
+    }
+
+    .zanders-cart-summary-rows {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 10px;
+    }
+
+    .zanders-cart-summary-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        background-color: #e9e9e9;
+        font-size: 12.5px;
+        line-height: 1.35;
+        color: #333333;
+
+        .zanders-cart-summary-label {
+            font-weight: 500;
+        }
+
+        .zanders-cart-summary-val {
+            font-weight: 600;
+            color: #111111;
+            white-space: nowrap;
+        }
+
+        &--total {
+            background-color: #dedede;
+            font-size: 13.5px;
+
+            .zanders-cart-summary-label,
+            .zanders-cart-summary-val {
+                font-weight: 700;
+                color: #111111;
+            }
+        }
+    }
+
+    .zanders-cart-checkout-btn {
+        width: 100%;
+        display: block;
+        padding: 11px 16px;
+        background-color: #991020;
+        border: 1px solid #991020;
+        border-radius: 2px;
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.45px;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: #7b0a17;
+            border-color: #7b0a17;
+            color: #ffffff;
+            box-shadow: none;
+        }
+    }
+}
+
+// 7. Bottom "YOU MIGHT ALSO LIKE:" Recommendations Section
+.zanders-cart-recs {
+    margin-top: 48px;
+
+    .zanders-cart-recs-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-bottom: 10px;
+        margin-bottom: 22px;
+        border-bottom: 2px solid #991020;
+    }
+
+    .zanders-cart-recs-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #991020;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .zanders-cart-recs-stock-btn {
+        padding: 7px 16px;
+        background-color: #991020;
+        border: 1px solid #991020;
+        border-radius: 2px;
+        color: #ffffff;
+        font-family: 'Poppins', sans-serif;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        box-shadow: none;
+
+        &:hover,
+        &:focus {
+            background-color: #7b0a17;
+            border-color: #7b0a17;
+            color: #ffffff;
+            box-shadow: none;
+        }
+
+        &.is-active {
+            background-color: #222222;
+            border-color: #222222;
+        }
+    }
+
+    .zanders-cart-rec-col.is-hidden {
+        display: none;
+    }
+}
+
+// =============================================================================
+// Responsive Adjustments (Standard Shopware Breakpoints — Single Block Each)
+// =============================================================================
+
+@include media-breakpoint-down(lg) {
+    .zanders-cart-header .zanders-cart-title {
+        font-size: 24px;
+    }
+
+    .zanders-cart-recs .zanders-cart-recs-title {
+        font-size: 20px;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    // Transform cart table into clean stacked item cards on mobile & small tablet
+    .zanders-cart-table {
+        thead {
+            display: none;
+        }
+
+        tbody tr.zanders-cart-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 12px;
+            gap: 8px 12px;
+
+            td {
+                padding: 0;
+                width: auto;
+            }
+        }
+
+        .zanders-cart-col-thumb {
+            flex: 0 0 74px;
+        }
+
+        .zanders-cart-col-name {
+            flex: 1 1 calc(100% - 90px);
+            min-width: 0;
+        }
+
+        .zanders-cart-col-sku,
+        .zanders-cart-col-price,
+        .zanders-cart-col-qty,
+        .zanders-cart-col-total {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+
+            &::before {
+                content: attr(data-label) ':';
+                font-weight: 700;
+                color: #991020;
+            }
+        }
+
+        .zanders-cart-col-sku,
+        .zanders-cart-col-price {
+            flex: 1 1 45%;
+        }
+
+        .zanders-cart-col-qty,
+        .zanders-cart-col-total {
+            flex: 1 1 40%;
+            text-align: left;
+        }
+
+        .zanders-cart-qty-input {
+            margin: 0;
+        }
+
+        .zanders-cart-col-actions {
+            margin-left: auto;
+        }
+    }
+
+    .zanders-cart-freight-card .zanders-cart-freight-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .zanders-cart-page {
+        padding-top: 14px;
+        padding-bottom: 36px;
+    }
+
+    .zanders-cart-header {
+        margin-bottom: 16px;
+
+        .zanders-cart-title {
+            font-size: clamp(20px, 6vw, 24px);
+        }
+    }
+
+    .zanders-cart-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+
+        .zanders-cart-actions-left,
+        .zanders-cart-actions-right {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .zanders-cart-btn {
+            width: 100%;
+        }
+    }
+
+    .zanders-cart-freight-card {
+        padding: 16px;
+    }
+
+    .zanders-cart-recs {
+        margin-top: 32px;
+
+        .zanders-cart-recs-title {
+            font-size: 18px;
+        }
+    }
+}
+

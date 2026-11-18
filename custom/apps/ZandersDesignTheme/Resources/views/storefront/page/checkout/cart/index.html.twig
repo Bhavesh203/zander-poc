@@ -1,0 +1,578 @@
+{#
+    Zanders Shopping Cart Page Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/checkout/cart/index.html.twig` to
+    render the complete Zanders Sporting Goods Shopping Cart experience:
+    1. Branded crimson "SHOPPING CART" header with 2px solid crimson rule
+    2. 2-Column Cart Grid:
+       - Left (col-lg-9): Structured cart table (Thumbnail, Item Number,
+         Product Name + Prop 65 Warning badge, Price, Quantity input, Total,
+         logged-in-only Wishlist icon & circular crimson remove button),
+         3 action buttons (Continue Shopping, Clear Shopping Cart, Update
+         Shopping Cart), and Zanders Freight Policy card
+       - Right (col-lg-3): Dark charcoal "SUMMARY" header card with Free
+         Shipping threshold counter ($500), Subtotal, Shipping, Tax, Order
+         Total, and full-width crimson "PROCEED TO CHECKOUT" CTA
+    3. Bottom "YOU MIGHT ALSO LIKE:" 4-column product grid with live
+       "HIDE OUT OF STOCK ITEMS" toggle
+    4. Clean branded Empty Cart state when cart has 0 items
+#}
+{% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
+
+{% block page_checkout_container %}
+    {% set cart = page.cart %}
+    {% set lineItems = cart.lineItems %}
+    {% set isEmpty = lineItems.count is same as(0) %}
+    {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+
+    {% set freeShippingThreshold = 500.00 %}
+    {% set subtotalPrice = cart.price.positionPrice ?? 0 %}
+    {% set freeShippingRemaining = (freeShippingThreshold - subtotalPrice) > 0 ? (freeShippingThreshold - subtotalPrice) : 0 %}
+    {% set shippingCost = cart.shippingCosts ? cart.shippingCosts.totalPrice : 0 %}
+    {% set totalTax = 0 %}
+    {% if cart.price.calculatedTaxes is defined %}
+        {% for taxItem in cart.price.calculatedTaxes %}
+            {% set totalTax = totalTax + taxItem.tax %}
+        {% endfor %}
+    {% endif %}
+    {% set orderTotal = cart.price.totalPrice ?? 0 %}
+    {% set shippingMethodName = context.shippingMethod ? context.shippingMethod.translated.name : 'Standard' %}
+
+    {% set recommendations = (page.extensions.zandersCartRecommendations is defined and page.extensions.zandersCartRecommendations.products is defined)
+        ? page.extensions.zandersCartRecommendations.products
+        : [] %}
+
+    <div class="zanders-cart-page">
+        {# Page Header #}
+        <div class="zanders-cart-header">
+            <h1 class="zanders-cart-title">SHOPPING CART</h1>
+            <div class="zanders-cart-title-rule"></div>
+        </div>
+
+        {# Flash Messages #}
+        {% set flashMessages = app.flashes %}
+        {% if flashMessages|length > 0 %}
+            <div class="flashbags zanders-cart-flashbags">
+                {% for type, messages in flashMessages %}
+                    {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                        type: type,
+                        list: messages,
+                        announceOnLoad: true
+                    } %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if isEmpty %}
+            {# Branded Empty Cart State #}
+            <div class="zanders-cart-empty" data-checkout-customer-storage-reset="true">
+                <div class="zanders-cart-empty-icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                </div>
+                <h2 class="zanders-cart-empty-title">Your Shopping Cart Is Empty</h2>
+                <p class="zanders-cart-empty-text">
+                    {{ 'checkout.cartEmpty'|trans|sw_sanitize }}
+                </p>
+                <a href="{{ path('frontend.home.page') }}" class="btn zanders-cart-empty-cta">
+                    CONTINUE SHOPPING
+                </a>
+            </div>
+        {% else %}
+            {# Main 2-Column Cart & Summary Layout #}
+            <div class="row g-4 align-items-start zanders-cart-layout">
+
+                {# Left Column: Cart Table, Action Buttons & Freight Policy #}
+                <div class="col-12 col-lg-9 zanders-cart-main-col">
+                    <div class="zanders-cart-table-wrap">
+                        <table class="zanders-cart-table">
+                            <thead>
+                                <tr>
+                                    <th class="zanders-cart-col-thumb"><span class="visually-hidden">Image</span></th>
+                                    <th class="zanders-cart-col-sku">Item Number</th>
+                                    <th class="zanders-cart-col-name">Product Name</th>
+                                    <th class="zanders-cart-col-price">Price</th>
+                                    <th class="zanders-cart-col-qty">Quantity</th>
+                                    <th class="zanders-cart-col-total">Total</th>
+                                    <th class="zanders-cart-col-actions"><span class="visually-hidden">Actions</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lineItem in lineItems %}
+                                    {% set itemId = lineItem.id %}
+                                    {% set refId = lineItem.referencedId %}
+                                    {% set isProduct = (lineItem.type == 'product') %}
+                                    {% set itemLabel = lineItem.label|trans|sw_sanitize %}
+                                    {% set itemLabel = itemLabel !== '' ? itemLabel : lineItem.label %}
+                                    {% set itemSku = lineItem.payload.productNumber ?? '' %}
+                                    {% set detailUrl = (isProduct and refId) ? seoUrl('frontend.detail.page', { productId: refId }) : null %}
+                                    {% set deleteUrl = path('frontend.checkout.line-item.delete', { id: itemId }) %}
+                                    {% set changeQtyUrl = path('frontend.checkout.line-item.change-quantity', { id: itemId }) %}
+
+                                    <tr class="zanders-cart-row js-zanders-cart-row"
+                                        data-line-item-id="{{ itemId }}"
+                                        {% if lineItem.removable %}data-delete-url="{{ deleteUrl }}"{% endif %}>
+
+                                        {# Thumbnail #}
+                                        <td class="zanders-cart-col-thumb">
+                                            <div class="zanders-cart-thumb-box">
+                                                {% if lineItem.cover and lineItem.cover.url %}
+                                                    {% if detailUrl %}
+                                                        <a href="{{ detailUrl }}" title="{{ itemLabel }}">
+                                                            <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-cart-thumb-img">
+                                                        </a>
+                                                    {% else %}
+                                                        <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-cart-thumb-img">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="zanders-cart-thumb-placeholder">
+                                                        {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+
+                                        {# Item Number #}
+                                        <td class="zanders-cart-col-sku" data-label="Item Number">
+                                            <span class="zanders-cart-sku-val">{{ itemSku ?: '—' }}</span>
+                                        </td>
+
+                                        {# Product Name + Prop 65 Warning Badge #}
+                                        <td class="zanders-cart-col-name" data-label="Product Name">
+                                            <div class="zanders-cart-name-wrap">
+                                                {% if detailUrl %}
+                                                    <a href="{{ detailUrl }}" class="zanders-cart-item-name" title="{{ itemLabel }}">
+                                                        {{ itemLabel }}
+                                                    </a>
+                                                {% else %}
+                                                    <span class="zanders-cart-item-name">{{ itemLabel }}</span>
+                                                {% endif %}
+
+                                                {% if isProduct %}
+                                                    <button type="button"
+                                                            class="zanders-cart-prop65-badge"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#zandersCartProp65Modal">
+                                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="#f0b429" stroke="#9c6b00"
+                                                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                            <line x1="12" y1="9" x2="12" y2="13" stroke="#111111" stroke-width="2"></line>
+                                                            <line x1="12" y1="17" x2="12.01" y2="17" stroke="#111111" stroke-width="2.2"></line>
+                                                        </svg>
+                                                        <span><strong>WARNING:</strong> California Prop 65 Warning</span>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+
+                                        {# Unit Price #}
+                                        <td class="zanders-cart-col-price" data-label="Price">
+                                            <span class="zanders-cart-price-val">
+                                                {{ lineItem.price ? (lineItem.price.unitPrice|currency) : '—' }}
+                                            </span>
+                                        </td>
+
+                                        {# Quantity Input #}
+                                        <td class="zanders-cart-col-qty" data-label="Quantity">
+                                            {% if lineItem.quantityInformation and lineItem.stackable %}
+                                                <input type="number"
+                                                       name="quantity"
+                                                       value="{{ lineItem.quantity }}"
+                                                       min="{{ lineItem.quantityInformation.minPurchase ?: 1 }}"
+                                                       max="{{ lineItem.quantityInformation.maxPurchase ?: 999 }}"
+                                                       step="{{ lineItem.quantityInformation.purchaseSteps ?: 1 }}"
+                                                       data-original-qty="{{ lineItem.quantity }}"
+                                                       data-change-url="{{ changeQtyUrl }}"
+                                                       aria-label="Quantity for {{ itemLabel }}"
+                                                       class="form-control zanders-cart-qty-input js-zanders-cart-qty">
+                                            {% else %}
+                                                <span class="zanders-cart-qty-static">{{ lineItem.quantity }}</span>
+                                            {% endif %}
+                                        </td>
+
+                                        {# Line Total #}
+                                        <td class="zanders-cart-col-total" data-label="Total">
+                                            <span class="zanders-cart-total-val">
+                                                {{ lineItem.price ? (lineItem.price.totalPrice|currency) : '—' }}
+                                            </span>
+                                        </td>
+
+                                        {# Row Actions: Logged-in Wishlist + Circular Crimson Remove #}
+                                        <td class="zanders-cart-col-actions">
+                                            <div class="zanders-cart-row-actions">
+                                                {% if isProduct and refId and config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                                                    {% set wishlistOpts = {
+                                                        productId: refId,
+                                                        router: {
+                                                            add: {
+                                                                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: refId }),
+                                                                path: path('frontend.wishlist.product.add', { productId: refId }),
+                                                            },
+                                                            remove: {
+                                                                path: path('frontend.wishlist.product.remove', { productId: refId }),
+                                                            }
+                                                        },
+                                                        texts: {
+                                                            add: 'listing.addToWishlist'|trans|sw_sanitize,
+                                                            remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                                                        }
+                                                    } %}
+                                                    <button type="button"
+                                                            class="zanders-cart-wishlist-btn product-wishlist-btn product-wishlist-{{ refId }} product-wishlist-not-added"
+                                                            title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                                            aria-label="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                                            data-add-to-wishlist="true"
+                                                            data-product-id="{{ refId }}"
+                                                            data-add-to-wishlist-options="{{ wishlistOpts|json_encode }}">
+                                                        <span class="icon-wishlist-not-added">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#999999" aria-hidden="true">
+                                                                <path d="M16.44 3.1C14.63 3.1 13.01 3.98 12 5.33 10.99 3.98 9.37 3.1 7.56 3.1 4.49 3.1 2 5.6 2 8.69c0 1.19.19 2.29.52 3.31 1.58 5 6.45 7.99 8.86 8.81.34.12.9.12 1.24 0 2.41-.82 7.28-3.81 8.86-8.81.33-1.02.52-2.12.52-3.31 0-3.09-2.49-5.59-5.56-5.59Z"/>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="icon-wishlist-added">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#991020" aria-hidden="true">
+                                                                <path d="M16.44 3.1C14.63 3.1 13.01 3.98 12 5.33 10.99 3.98 9.37 3.1 7.56 3.1 4.49 3.1 2 5.6 2 8.69c0 1.19.19 2.29.52 3.31 1.58 5 6.45 7.99 8.86 8.81.34.12.9.12 1.24 0 2.41-.82 7.28-3.81 8.86-8.81.33-1.02.52-2.12.52-3.31 0-3.09-2.49-5.59-5.56-5.59Z"/>
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+                                                {% endif %}
+
+                                                {% if lineItem.removable %}
+                                                    <form action="{{ deleteUrl }}" method="post" class="zanders-cart-remove-form">
+                                                        <input type="hidden" name="redirectTo" value="frontend.checkout.cart.page">
+                                                        <button type="submit"
+                                                                class="zanders-cart-remove-btn"
+                                                                title="{{ 'checkout.removeLineItem'|trans|default('Remove item')|striptags }}"
+                                                                aria-label="{{ 'checkout.removeLineItem'|trans|default('Remove item')|striptags }}">
+                                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                 stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                            </svg>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {# 3 Colored Cart Action Buttons Bar #}
+                    <div class="zanders-cart-actions-bar">
+                        <div class="zanders-cart-actions-left">
+                            <a href="{{ path('frontend.home.page') }}" class="btn zanders-cart-btn zanders-cart-btn--continue">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                <span>CONTINUE SHOPPING</span>
+                            </a>
+
+                            <button type="button" class="btn zanders-cart-btn zanders-cart-btn--clear js-zanders-clear-cart">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                                <span>CLEAR SHOPPING CART</span>
+                            </button>
+                        </div>
+
+                        <div class="zanders-cart-actions-right">
+                            <button type="button" class="btn zanders-cart-btn zanders-cart-btn--update js-zanders-update-cart">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="23 4 23 10 17 10"></polyline>
+                                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                                </svg>
+                                <span>UPDATE SHOPPING CART</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {# Zanders Freight Policy Card #}
+                    <div class="zanders-cart-freight-card">
+                        <h2 class="zanders-cart-freight-title">ZANDERS FREIGHT POLICY</h2>
+                        <p><strong>Orders greater than $500.00</strong> of shippable product will be shipped <strong>FREE FREIGHT!</strong></p>
+                        <p><strong>Orders less than $500.00</strong> of shippable product are subject to a <strong>$15.00</strong> freight charge.</p>
+                        <p><strong>Orders less than $100.00</strong> will be charged an additional <strong>$7.50</strong> handling fee.</p>
+                        <p>
+                            To qualify for free freight, <strong>orders will be shipped</strong> via carrier of Zanders&rsquo; choice. When Zanders&rsquo; free freight policy is
+                            obtained, Zanders will ship orders based off of &ldquo;Best Way&rdquo; shipping. &ldquo;Best Way&rdquo; shipping could involve using
+                            multiple carriers for your order, consolidating multiple orders, or shipping larger orders with one of our trusted LTL
+                            carriers. If a customer requests a different freight carrier, the customer will be responsible for the freight charges.
+                        </p>
+                        <p>F.O.B. our dock for orders to Hawaii, Alaska, Puerto Rico, Virgin Islands, and Guam.</p>
+                        <p class="zanders-cart-freight-subhead">Additional charges apply for the following:</p>
+                        <ul class="zanders-cart-freight-list">
+                            <li>COD orders</li>
+                            <li>Liftgate Delivery</li>
+                            <li>Inside Delivery</li>
+                            <li>Redelivery Fee</li>
+                            <li>Hazardous Material</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {# Right Column: SUMMARY Sidebar #}
+                <div class="col-12 col-lg-3 zanders-cart-summary-col">
+                    <aside class="zanders-cart-summary-card" aria-label="Order Summary">
+                        <div class="zanders-cart-summary-header">SUMMARY</div>
+
+                        <div class="zanders-cart-summary-rows">
+                            <div class="zanders-cart-summary-row">
+                                <span class="zanders-cart-summary-label">Additional Amount Needed For Free Shipping</span>
+                                <span class="zanders-cart-summary-val">{{ freeShippingRemaining|currency }}</span>
+                            </div>
+
+                            <div class="zanders-cart-summary-row">
+                                <span class="zanders-cart-summary-label">Subtotal</span>
+                                <span class="zanders-cart-summary-val">{{ subtotalPrice|currency }}</span>
+                            </div>
+
+                            <div class="zanders-cart-summary-row">
+                                <span class="zanders-cart-summary-label">Shipping ({{ shippingMethodName }})</span>
+                                <span class="zanders-cart-summary-val">{{ shippingCost|currency }}</span>
+                            </div>
+
+                            <div class="zanders-cart-summary-row">
+                                <span class="zanders-cart-summary-label">Tax</span>
+                                <span class="zanders-cart-summary-val">{{ totalTax|currency }}</span>
+                            </div>
+
+                            <div class="zanders-cart-summary-row zanders-cart-summary-row--total">
+                                <span class="zanders-cart-summary-label">Order Total</span>
+                                <span class="zanders-cart-summary-val">{{ orderTotal|currency }}</span>
+                            </div>
+                        </div>
+
+                        <div class="zanders-cart-summary-cta-wrap">
+                            <a href="{{ path('frontend.checkout.confirm.page') }}"
+                               class="btn zanders-cart-checkout-btn begin-checkout-btn"
+                               title="{{ 'checkout.proceedLink'|trans|striptags }}">
+                                PROCEED TO CHECKOUT
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        {% endif %}
+
+        {# =================================================================
+           YOU MIGHT ALSO LIKE: 4-Column Product Grid
+           ================================================================= #}
+        {% if recommendations|length > 0 %}
+            <section class="zanders-cart-recs" id="zandersCartRecsSection">
+                <div class="zanders-cart-recs-header">
+                    <h2 class="zanders-cart-recs-title">YOU MIGHT ALSO LIKE:</h2>
+                    <button type="button"
+                            class="btn zanders-cart-recs-stock-btn js-zanders-cart-recs-stock"
+                            aria-pressed="false">
+                        HIDE OUT OF STOCK ITEMS
+                    </button>
+                </div>
+
+                <div class="row g-3 zanders-cart-recs-grid">
+                    {% for recProduct in recommendations|slice(0, 4) %}
+                        {% set recStock = recProduct.availableStock is not null ? recProduct.availableStock : (recProduct.stock ?: 0) %}
+                        <div class="col-12 col-sm-6 col-lg-3 zanders-cart-rec-col js-zanders-cart-rec-item"
+                             data-in-stock="{{ recStock > 0 ? '1' : '0' }}">
+                            {% sw_include '@Storefront/storefront/component/product/card/box-standard.html.twig' with {
+                                product: recProduct,
+                                layout: 'standard',
+                                displayMode: 'contain'
+                            } %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </div>
+
+    {# California Prop 65 Modal #}
+    <div class="modal fade" id="zandersCartProp65Modal" tabindex="-1" aria-labelledby="zandersCartProp65Label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content zanders-pdp-modal">
+                <div class="modal-header zanders-pdp-modal-header">
+                    <h5 class="modal-title" id="zandersCartProp65Label">CALIFORNIA PROPOSITION 65 WARNING</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">
+                        <strong>WARNING:</strong> This product can expose you to chemicals including lead, which is known to the State of California to cause cancer and birth defects or other reproductive harm.
+                    </p>
+                    <p class="mb-0">
+                        For more information go to <a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener">www.P65Warnings.ca.gov</a>.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn zanders-cart-checkout-btn" data-bs-dismiss="modal">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#
+        Zanders Shopping Cart Interactive Controller
+        1. Batch Update Shopping Cart: posts modified quantities to Shopware's
+           line-item change-quantity endpoints and reloads the cart cleanly.
+        2. Clear Shopping Cart: deletes all removable line items and reloads.
+        3. Hide Out of Stock Items toggle on the "YOU MIGHT ALSO LIKE:" grid.
+    #}
+    <script>
+    (function() {
+        var cartUrl = {{ path('frontend.checkout.cart.page')|json_encode|raw }};
+
+        /**
+         * Submits a Shopware cart mutation endpoint via POST FormData.
+         * @param {string} url - Endpoint path
+         * @param {Object} fields - Key-value form fields to submit
+         * @returns {Promise<Response>}
+         */
+        function postForm(url, fields) {
+            var fd = new FormData();
+            Object.keys(fields).forEach(function(k) {
+                fd.append(k, fields[k]);
+            });
+            return fetch(url, {
+                method: 'POST',
+                body: fd,
+                credentials: 'same-origin'
+            });
+        }
+
+        /**
+         * Sends all modified line-item quantities to Shopware sequentially, then reloads cart.
+         * @param {HTMLButtonElement} triggerBtn
+         */
+        function handleUpdateCart(triggerBtn) {
+            var inputs = document.querySelectorAll('.js-zanders-cart-qty');
+            var tasks = [];
+            inputs.forEach(function(input) {
+                var newQty = parseInt(input.value, 10);
+                var origQty = parseInt(input.getAttribute('data-original-qty'), 10);
+                var url = input.getAttribute('data-change-url');
+                if (url && !isNaN(newQty) && newQty > 0 && newQty !== origQty) {
+                    tasks.push({ url: url, qty: String(newQty) });
+                }
+            });
+
+            if (tasks.length === 0) {
+                window.location.href = cartUrl;
+                return;
+            }
+
+            if (triggerBtn) {
+                triggerBtn.disabled = true;
+            }
+
+            var chain = Promise.resolve();
+            tasks.forEach(function(task) {
+                chain = chain.then(function() {
+                    return postForm(task.url, {
+                        quantity: task.qty,
+                        redirectTo: 'frontend.checkout.cart.page'
+                    });
+                });
+            });
+
+            chain.finally(function() {
+                window.location.href = cartUrl;
+            });
+        }
+
+        /**
+         * Removes every removable line item in the cart sequentially, then reloads cart.
+         * @param {HTMLButtonElement} triggerBtn
+         */
+        function handleClearCart(triggerBtn) {
+            var rows = document.querySelectorAll('.js-zanders-cart-row[data-delete-url]');
+            if (!rows.length) {
+                return;
+            }
+
+            if (triggerBtn) {
+                triggerBtn.disabled = true;
+            }
+
+            var chain = Promise.resolve();
+            rows.forEach(function(row) {
+                var delUrl = row.getAttribute('data-delete-url');
+                if (delUrl) {
+                    chain = chain.then(function() {
+                        return postForm(delUrl, {
+                            redirectTo: 'frontend.checkout.cart.page'
+                        });
+                    });
+                }
+            });
+
+            chain.finally(function() {
+                window.location.href = cartUrl;
+            });
+        }
+
+        /**
+         * Bootstraps cart page interactive buttons and stock filter toggle.
+         */
+        function initZandersCartPage() {
+            var updateBtn = document.querySelector('.js-zanders-update-cart');
+            if (updateBtn) {
+                updateBtn.addEventListener('click', function() {
+                    handleUpdateCart(updateBtn);
+                });
+            }
+
+            // Allow pressing Enter in any qty box to immediately update the cart
+            document.querySelectorAll('.js-zanders-cart-qty').forEach(function(input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleUpdateCart(updateBtn);
+                    }
+                });
+            });
+
+            var clearBtn = document.querySelector('.js-zanders-clear-cart');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    handleClearCart(clearBtn);
+                });
+            }
+
+            var stockBtn = document.querySelector('.js-zanders-cart-recs-stock');
+            if (stockBtn) {
+                var hideOutOfStock = false;
+                stockBtn.addEventListener('click', function() {
+                    hideOutOfStock = !hideOutOfStock;
+                    stockBtn.setAttribute('aria-pressed', hideOutOfStock ? 'true' : 'false');
+                    stockBtn.classList.toggle('is-active', hideOutOfStock);
+                    stockBtn.textContent = hideOutOfStock
+                        ? 'SHOW OUT OF STOCK ITEMS'
+                        : 'HIDE OUT OF STOCK ITEMS';
+
+                    document.querySelectorAll('.js-zanders-cart-rec-item').forEach(function(col) {
+                        var inStock = col.getAttribute('data-in-stock') === '1';
+                        col.classList.toggle('is-hidden', hideOutOfStock && !inStock);
+                    });
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initZandersCartPage);
+        } else {
+            initZandersCartPage();
+        }
+    })();
+    </script>
+{% endblock %}
+

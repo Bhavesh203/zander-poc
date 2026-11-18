@@ -46,15 +46,12 @@ html.age-verification-modal-open {
     box-sizing: border-box;
     cursor: default;
 
-    @media (max-width: 576px) {
-        padding: 30px 20px;
-    }
-
     .age-verification-logo-wrap {
         margin-bottom: 24px;
 
         .age-verification-logo {
             max-width: 210px;
+            width: 100%;
             height: auto;
             display: inline-block;
         }
@@ -69,11 +66,6 @@ html.age-verification-modal-open {
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 18px;
-
-        @media (max-width: 576px) {
-            font-size: 20px;
-            margin-bottom: 14px;
-        }
     }
 
     .age-verification-desc {
@@ -83,11 +75,6 @@ html.age-verification-modal-open {
         line-height: 1.6;
         color: #111111;
         margin-bottom: 24px;
-
-        @media (max-width: 576px) {
-            font-size: 14px;
-            margin-bottom: 18px;
-        }
     }
 
     .age-verification-question {
@@ -97,11 +84,6 @@ html.age-verification-modal-open {
         line-height: 1.4;
         color: #000000;
         margin-bottom: 28px;
-
-        @media (max-width: 576px) {
-            font-size: 15px;
-            margin-bottom: 22px;
-        }
     }
 
     .age-verification-actions {
@@ -123,12 +105,6 @@ html.age-verification-modal-open {
             transition: all 0.2s ease-in-out;
             line-height: 1.5;
             text-decoration: none;
-
-            @media (max-width: 480px) {
-                min-width: 120px;
-                padding: 10px 20px;
-                flex: 1 1 0;
-            }
 
             &.btn-age-yes {
                 background-color: #991020;
@@ -154,6 +130,46 @@ html.age-verification-modal-open {
                     border-color: #991020;
                     color: #ffffff;
                 }
+            }
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .age-verification-backdrop {
+        padding: 12px;
+    }
+
+    .age-verification-modal {
+        padding: clamp(22px, 6vw, 28px) clamp(14px, 4.5vw, 20px);
+
+        .age-verification-logo-wrap .age-verification-logo {
+            max-width: clamp(150px, 44vw, 180px);
+        }
+
+        .age-verification-title {
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+
+        .age-verification-desc {
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .age-verification-question {
+            font-size: 15px;
+            margin-bottom: 22px;
+        }
+
+        .age-verification-actions {
+            gap: 10px;
+
+            .btn-age-verify {
+                min-width: 0;
+                padding: 10px 14px;
+                font-size: 13px;
+                flex: 1 1 0;
             }
         }
     }

@@ -25,7 +25,7 @@
 {% set msrpVal = price.unitPrice %}
 {% endif %}
 
-{% set mapVal = (product.translated.customFields.map or product.customFields.map) %}
+{% set mapVal = product.translated.customFields.map ?: (product.customFields.map ?: null) %}
 {% if not mapVal %}
 {% set mapVal = msrpVal %}
 {% endif %}
@@ -250,47 +250,50 @@
                                 </div>
                             </form>
 
-                            {# Secondary Actions: Wishlist and Full Details link #}
+                            {# Secondary Actions: Wishlist (logged-in only) and Full Details link #}
                             <div class="quickview-secondary-actions">
-                                {% set addToWishlistOptions = {
-                                productId: id,
-                                router: {
-                                add: {
-                                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
-                                path: path('frontend.wishlist.product.add', { productId: id }),
-                                },
-                                remove: {
-                                path: path('frontend.wishlist.product.remove', { productId: id }),
-                                }
-                                },
-                                texts: {
-                                add: 'listing.addToWishlist'|trans|sw_sanitize,
-                                remove: 'listing.removeFromWishlist'|trans|sw_sanitize
-                                },
-                                } %}
-                                <button type="button"
-                                    class="qv-wishlist-action-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
-                                    data-add-to-wishlist="true" data-product-id="{{ id }}"
-                                    data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
-                                    <span class="icon-wishlist-not-added">
-                                        <svg class="icon icon-heart" width="24" height="24" viewBox="0 0 24 24"
-                                            fill="#A1A1A1" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                                fill="#A1A1A1" />
-                                        </svg>
-                                    </span>
-                                    <span class="icon-wishlist-added">
-                                        <svg class="icon icon-heart-fill" width="24" height="24" viewBox="0 0 24 24"
-                                            fill="#8c1d2f" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                                fill="#8c1d2f" />
-                                        </svg>
-                                    </span>
-                                    <span class="qv-wishlist-text">{{ 'listing.addToWishlist'|trans|sw_sanitize
-                                        }}</span>
-                                </button>
+                                {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+                                {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                                    {% set addToWishlistOptions = {
+                                    productId: id,
+                                    router: {
+                                    add: {
+                                    afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                                    path: path('frontend.wishlist.product.add', { productId: id }),
+                                    },
+                                    remove: {
+                                    path: path('frontend.wishlist.product.remove', { productId: id }),
+                                    }
+                                    },
+                                    texts: {
+                                    add: 'listing.addToWishlist'|trans|sw_sanitize,
+                                    remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                                    },
+                                    } %}
+                                    <button type="button"
+                                        class="qv-wishlist-action-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                                        data-add-to-wishlist="true" data-product-id="{{ id }}"
+                                        data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                                        <span class="icon-wishlist-not-added">
+                                            <svg class="icon icon-heart" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="#A1A1A1" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
+                                                    fill="#A1A1A1" />
+                                            </svg>
+                                        </span>
+                                        <span class="icon-wishlist-added">
+                                            <svg class="icon icon-heart-fill" width="24" height="24" viewBox="0 0 24 24"
+                                                fill="#8c1d2f" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
+                                                    fill="#8c1d2f" />
+                                            </svg>
+                                        </span>
+                                        <span class="qv-wishlist-text">{{ 'listing.addToWishlist'|trans|sw_sanitize
+                                            }}</span>
+                                    </button>
+                                {% endif %}
 
                                 <a href="{{ detailUrl }}" class="qv-view-detail-link">
                                     {{ 'listing.boxProductDetails'|trans|default('View Full Details') }} &rarr;

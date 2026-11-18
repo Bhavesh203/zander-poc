@@ -1,4 +1,7 @@
 {
+  "header": {
+    "searchPlaceholder": "Item, UPC, Desc, Etc"
+  },
   "account": {
     "myAccount": "My Account",
     "logout": "LogOut",

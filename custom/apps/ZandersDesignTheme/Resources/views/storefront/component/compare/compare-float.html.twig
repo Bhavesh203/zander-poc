@@ -1,0 +1,28 @@
+{#
+    Zanders Floating Compare Button Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/compare-float.html.twig`
+    to:
+    - Replace the default `bag-product` icon with Zanders' comparison scale SVG
+    - Replace Bootstrap's `.bg-danger` utility class with a custom semantic
+      badge class (`zanders-compare-float-badge`) so theme colors apply cleanly
+      without needing `!important`.
+#}
+{% sw_extends '@Storefront/storefront/component/compare/compare-float.html.twig' %}
+
+{% block frosh_product_compare_float_button_inner %}
+    {% set buttonClasses = 'zanders-compare-float-btn' %}
+    {% set badgeClasses = 'zanders-compare-float-badge' %}
+    {{ parent() }}
+{% endblock %}
+
+{% block frosh_product_compare_float_icon %}
+    <svg class="zanders-compare-float-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+        <path d="M7 21h10" />
+        <path d="M12 3v18" />
+        <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+    </svg>
+{% endblock %}
