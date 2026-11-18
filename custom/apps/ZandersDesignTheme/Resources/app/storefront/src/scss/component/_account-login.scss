@@ -17,10 +17,6 @@ Matches Zanders design:
         color: #8c1d2f;
         letter-spacing: 0.5px;
         line-height: 1.2;
-
-        @media (max-width: 575.98px) {
-            font-size: 22px;
-        }
     }
 
     .zanders-account-title-rule {
@@ -50,10 +46,6 @@ Matches Zanders design:
             color: #8c1d2f;
             letter-spacing: 0.8px;
             margin: 0;
-
-            @media (max-width: 575.98px) {
-                font-size: 20px;
-            }
         }
 
         .zanders-title-underline-red {
@@ -109,10 +101,6 @@ Matches Zanders design:
             color: #222222;
             letter-spacing: 0.5px;
             margin: 0;
-
-            @media (max-width: 575.98px) {
-                font-size: 20px;
-            }
         }
 
         .zanders-title-underline-dark {
@@ -256,6 +244,23 @@ Matches Zanders design:
                 background-color: #6e1322;
                 border-color: #6e1322;
             }
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .account-register .zanders-account-page-header .zanders-account-page-title,
+    .zanders-account-page-header .zanders-account-page-title {
+        font-size: 22px;
+    }
+
+    .account-register .zanders-account-login-row,
+    .zanders-account-login-row {
+        .card.zanders-new-dealers-card .zanders-new-dealers-title,
+        .zanders-new-dealers-card .zanders-new-dealers-title,
+        .card.zanders-registered-customers-card .zanders-registered-title,
+        .zanders-registered-customers-card .zanders-registered-title {
+            font-size: 20px;
         }
     }
 }

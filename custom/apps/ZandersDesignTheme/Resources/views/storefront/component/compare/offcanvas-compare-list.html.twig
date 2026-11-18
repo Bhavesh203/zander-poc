@@ -1,0 +1,86 @@
+{#
+    Zanders Offcanvas Compare List Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/offcanvas-compare-list.html.twig`
+    to match Zanders' Cart Offcanvas drawer design:
+    - Clean white header (`utilities_offcanvas_header`) with bold uppercase
+      title, crimson item count badge, and native close button (replaces the
+      default dark "Continue shopping" bar).
+    - Elevated white product cards (`offcanvas-product.html.twig`).
+    - Helpful single-item hint and full-width crimson "COMPARE NOW" CTA button.
+#}
+{% sw_extends '@Storefront/storefront/component/compare/offcanvas-compare-list.html.twig' %}
+
+{% block utilities_offcanvas_header %}
+    {% set compareCount = page.products|length %}
+    <div class="offcanvas-header zanders-compare-drawer-header">
+        <div class="zanders-compare-drawer-title-group">
+            <h4 class="zanders-compare-drawer-title">
+                {{ 'froshProductCompare.offcanvas.header'|trans|sw_sanitize }}
+            </h4>
+            <span class="zanders-compare-offcanvas-badge">{{ compareCount }}</span>
+        </div>
+        <button type="button"
+                class="btn-close js-offcanvas-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="{{ 'global.default.close'|trans|striptags }}">
+        </button>
+    </div>
+{% endblock %}
+
+{% block component_offcanvas_product_compare %}
+    {% set compareCount = page.products|length %}
+    {% set isCompareProductsNotEmpty = (compareCount > 0) %}
+
+    <div class="offcanvas-cart zanders-compare-offcanvas">
+        {% block component_offcanvas_product_compare_header %}
+            {# Header is rendered cleanly in utilities_offcanvas_header above #}
+        {% endblock %}
+
+        {% if isCompareProductsNotEmpty %}
+            {% block component_offcanvas_product_compare_products %}
+                <div class="offcanvas-cart-items zanders-compare-offcanvas-items">
+                    {% for product in page.products %}
+                        {% block component_offcanvas_product_compare_item %}
+                            {% sw_include '@Storefront/storefront/component/compare/offcanvas-product.html.twig' %}
+                        {% endblock %}
+                    {% endfor %}
+                </div>
+            {% endblock %}
+        {% else %}
+            {% block component_offcanvas_product_compare_empty %}
+                <div class="zanders-compare-offcanvas-empty">
+                    <div class="zanders-compare-offcanvas-empty-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                            <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                            <path d="M7 21h10" />
+                            <path d="M12 3v18" />
+                            <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                        </svg>
+                    </div>
+                    <p>{{ 'froshProductCompare.general.empty'|trans|sw_sanitize }}</p>
+                </div>
+            {% endblock %}
+        {% endif %}
+
+        {% block component_offcanvas_product_compare_actions %}
+            <div class="offcanvas-cart-actions zanders-compare-offcanvas-actions">
+                {% if compareCount == 1 %}
+                    <p class="zanders-compare-offcanvas-hint">
+                        Add at least one more product to compare side-by-side.
+                    </p>
+                {% endif %}
+
+                {% block component_offcanvas_product_compare_actions_compare_now %}
+                    <a href="{{ path('frontend.compare.page') }}"
+                       class="btn btn-block begin-checkout-btn zanders-compare-offcanvas-cta{% if isCompareProductsNotEmpty and (compareCount > 1) %} btn-primary{% else %} btn-light disabled{% endif %}"
+                       title="{{ 'froshProductCompare.offcanvas.compareNow'|trans|striptags }}">
+                        {{ 'froshProductCompare.offcanvas.compareNow'|trans|sw_sanitize }}
+                    </a>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

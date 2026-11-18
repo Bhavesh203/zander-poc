@@ -1,0 +1,62 @@
+{#
+    Zanders Account Shell Layout Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/account/_page.html.twig` to:
+    - Provide balanced 3/9 column proportions on desktop (`col-lg-3` sidebar,
+      `col-lg-9` main content) inside `.zanders-account-shell`.
+    - Render a compact horizontal scrollable pill navigation bar on tablet &
+      mobile (`d-lg-none`) so logged-in customers can effortlessly switch
+      between Overview, Profile, Addresses, Orders, and Wishlist down to 320px.
+#}
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
+
+{% block page_account %}
+    {% set isLoggedInCustomer = context.customer is not null and not context.customer.guest %}
+
+    <div class="account account-content zanders-account-shell row g-4">
+        {% if isLoggedInCustomer %}
+            {# Mobile & Tablet Horizontal Account Navigation Tabs (<= 991.98px) #}
+            <div class="col-12 d-lg-none">
+                <nav class="zanders-account-mobile-nav" aria-label="{{ 'account.myAccount'|trans|striptags }}">
+                    <a href="{{ path('frontend.account.home.page') }}"
+                       class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}">
+                        {{ 'account.overviewLink'|trans|sw_sanitize }}
+                    </a>
+                    <a href="{{ path('frontend.account.profile.page') }}"
+                       class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}">
+                        {{ 'account.profileLink'|trans|sw_sanitize }}
+                    </a>
+                    <a href="{{ path('frontend.account.address.page') }}"
+                       class="zanders-account-mobile-tab{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}">
+                        {{ 'account.addressLink'|trans|sw_sanitize }}
+                    </a>
+                    <a href="{{ path('frontend.account.order.page') }}"
+                       class="zanders-account-mobile-tab{% if activeRoute starts with('frontend.account.order') or activeRoute is same as('frontend.account.edit-order.page') %} is-active{% endif %}">
+                        {{ 'account.ordersLink'|trans|sw_sanitize }}
+                    </a>
+                    {% if config('core.cart.wishlistEnabled') %}
+                        <a href="{{ path('frontend.wishlist.page') }}"
+                           class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}">
+                            {{ 'header.wishlist'|trans|default('Wishlist')|sw_sanitize }}
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+
+        {% block page_account_sidebar %}
+            <div class="account-content-aside col-lg-3 d-none d-lg-block">
+                {% if isLoggedInCustomer %}
+                    {% sw_include '@Storefront/storefront/page/account/sidebar.html.twig' %}
+                {% endif %}
+            </div>
+        {% endblock %}
+
+        {% block page_account_main %}
+            <div class="account-content-main {% if isLoggedInCustomer %}col-12 col-lg-9{% else %}col-12{% endif %}">
+                {% block page_account_main_content %}{% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}
+

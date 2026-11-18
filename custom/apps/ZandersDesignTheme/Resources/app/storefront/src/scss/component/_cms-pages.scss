@@ -1,0 +1,451 @@
+// =============================================================================
+// Zanders CMS Informational & Footer Pages Styling
+// - Applies cohesive Zanders branding to Shopping Experiences built with native
+//   Shopware CMS blocks (`text`, `text-two-column`, `text-three-column`,
+//   `image-text`, `form`) inside `.zanders-cms-page`.
+// - Zero !important | Standard Shopware breakpoint mixins (single block each)
+// =============================================================================
+
+.cms-page.zanders-cms-page {
+    font-family: 'Poppins', sans-serif;
+    padding-top: 24px;
+    padding-bottom: 56px;
+
+    .cms-section {
+        margin-bottom: 0;
+    }
+
+    .cms-block {
+        margin-bottom: 24px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    // 1. Page Hero Title Block (Crimson H1 + 2px Solid Crimson Underline Rule)
+    .cms-block.zanders-cms-hero {
+        margin-bottom: 28px;
+
+        .cms-block-container {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #991020;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            padding-bottom: 10px;
+            margin: 0 0 14px;
+            border-bottom: 2px solid #991020;
+        }
+
+        p {
+            font-size: 14.5px;
+            line-height: 1.65;
+            color: #444444;
+            margin: 0;
+            max-width: 920px;
+        }
+    }
+
+    // 2. Highlight Metric / Feature 3-Column Strip
+    .cms-block.zanders-cms-highlights {
+        .cms-block-container-row {
+            row-gap: 18px;
+        }
+
+        .cms-element-text {
+            height: 100%;
+            background-color: #f7f7f7;
+            border: 1px solid #e4e4e4;
+            border-top: 3px solid #991020;
+            border-radius: 4px;
+            padding: 20px 22px;
+
+            h2,
+            h3 {
+                font-family: 'Poppins', sans-serif;
+                font-size: 15px;
+                font-weight: 700;
+                color: #991020;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin: 0 0 8px;
+            }
+
+            p {
+                font-size: 13.5px;
+                line-height: 1.6;
+                color: #333333;
+                margin: 0;
+            }
+
+            a {
+                color: #991020;
+                font-weight: 600;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    // 3. Elevated Content Cards (2-Column & 3-Column CMS Blocks)
+    .cms-block.zanders-cms-cards {
+        .cms-block-container-row {
+            row-gap: 20px;
+        }
+
+        .cms-element-text {
+            height: 100%;
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-top: 3px solid #991020;
+            border-radius: 4px;
+            padding: 22px 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+
+            h2,
+            h3 {
+                font-family: 'Poppins', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: #111111;
+                text-transform: uppercase;
+                letter-spacing: 0.35px;
+                padding-bottom: 10px;
+                margin: 0 0 14px;
+                border-bottom: 1px solid #eeeeee;
+            }
+
+            h4 {
+                font-size: 14px;
+                font-weight: 700;
+                color: #991020;
+                margin: 14px 0 4px;
+
+                &:first-of-type {
+                    margin-top: 0;
+                }
+            }
+
+            p {
+                font-size: 13.5px;
+                line-height: 1.65;
+                color: #333333;
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            ul {
+                margin: 0;
+                padding-left: 18px;
+                font-size: 13.5px;
+                line-height: 1.7;
+                color: #333333;
+
+                li {
+                    margin-bottom: 6px;
+                }
+            }
+
+            a {
+                color: #991020;
+                font-weight: 600;
+                text-decoration: none;
+
+                &:hover,
+                &:focus {
+                    color: #6e1322;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    // 4. Full-Width Body / Policy / Table Block
+    .cms-block.zanders-cms-body {
+        .cms-element-text {
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-radius: 4px;
+            padding: 24px 28px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+
+            h2 {
+                font-family: 'Poppins', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: #991020;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin: 22px 0 10px;
+                padding-bottom: 6px;
+                border-bottom: 1px solid #ececec;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            h3 {
+                font-size: 15px;
+                font-weight: 700;
+                color: #111111;
+                margin: 16px 0 6px;
+            }
+
+            p,
+            li {
+                font-size: 13.5px;
+                line-height: 1.7;
+                color: #333333;
+            }
+
+            ul,
+            ol {
+                padding-left: 20px;
+                margin-bottom: 14px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 14px 0 18px;
+                font-size: 13px;
+
+                th,
+                td {
+                    padding: 11px 14px;
+                    border: 1px solid #e2e2e2;
+                    text-align: left;
+                    vertical-align: top;
+                }
+
+                thead th {
+                    background-color: #991020;
+                    color: #ffffff;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.3px;
+                    font-size: 12px;
+                }
+
+                tbody tr:nth-child(even) td {
+                    background-color: #fafafa;
+                }
+            }
+
+            a {
+                color: #991020;
+                font-weight: 600;
+                text-decoration: underline;
+            }
+        }
+    }
+
+    // 5. Callout / CTA Banner Block
+    .cms-block.zanders-cms-cta-box {
+        .cms-element-text {
+            background-color: #f4f4f4;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid #991020;
+            border-radius: 4px;
+            padding: 20px 24px;
+
+            h2,
+            h3 {
+                font-size: 16px;
+                font-weight: 700;
+                color: #111111;
+                text-transform: uppercase;
+                margin: 0 0 8px;
+            }
+
+            p {
+                font-size: 13.5px;
+                line-height: 1.6;
+                color: #333333;
+                margin: 0 0 12px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            a.zanders-cms-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px 24px;
+                background-color: #991020;
+                border: 1px solid #991020;
+                border-radius: 2px;
+                color: #ffffff;
+                font-size: 12.5px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.45px;
+                text-decoration: none;
+                transition: background-color 0.2s ease, border-color 0.2s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: #7b0a17;
+                    border-color: #7b0a17;
+                    color: #ffffff;
+                }
+            }
+        }
+    }
+
+    // 6. Media / Video + Text Block (Tutorials)
+    .cms-block.zanders-cms-media-row {
+        .cms-block-container-row {
+            align-items: center;
+            row-gap: 20px;
+        }
+
+        .cms-element-text {
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-top: 3px solid #991020;
+            border-radius: 4px;
+            padding: 22px 24px;
+
+            h2,
+            h3 {
+                font-size: 17px;
+                font-weight: 700;
+                color: #991020;
+                text-transform: uppercase;
+                margin: 0 0 10px;
+            }
+
+            p {
+                font-size: 13.5px;
+                line-height: 1.65;
+                color: #333333;
+            }
+        }
+    }
+
+    // 7. Native Shopware Contact Form CMS Block
+    .cms-block.zanders-cms-contact-form {
+        .cms-element-form .card {
+            background-color: #ffffff;
+            border: 1px solid #e5e5e5;
+            border-top: 3px solid #991020;
+            border-radius: 4px;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.05);
+
+            .card-body {
+                padding: 26px 28px;
+            }
+
+            .card-title {
+                font-family: 'Poppins', sans-serif;
+                font-size: 18px;
+                font-weight: 700;
+                color: #991020;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #eeeeee;
+            }
+
+            .form-label {
+                font-size: 12.5px;
+                font-weight: 600;
+                color: #222222;
+            }
+
+            .form-control,
+            .form-select {
+                background-color: #f8f8f8;
+                border: 1px solid #dcdcdc;
+                border-radius: 2px;
+                padding: 9px 12px;
+                font-size: 13.5px;
+                box-shadow: none;
+
+                &:focus {
+                    background-color: #ffffff;
+                    border-color: #991020;
+                    box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.12);
+                }
+            }
+
+            .btn-primary {
+                background-color: #991020;
+                border-color: #991020;
+                border-radius: 2px;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.45px;
+                padding: 11px 32px;
+
+                &:hover,
+                &:focus {
+                    background-color: #7b0a17;
+                    border-color: #7b0a17;
+                    color: #ffffff;
+                }
+            }
+        }
+    }
+}
+
+// =============================================================================
+// Responsive Adjustments (Standard Shopware Breakpoints — Single Block Each)
+// =============================================================================
+
+@include media-breakpoint-down(lg) {
+    .cms-page.zanders-cms-page {
+        padding-top: 18px;
+        padding-bottom: 40px;
+
+        .cms-block.zanders-cms-hero h1 {
+            font-size: 24px;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .cms-page.zanders-cms-page {
+        padding-top: 14px;
+        padding-bottom: 32px;
+
+        .cms-block {
+            margin-bottom: 16px;
+        }
+
+        .cms-block.zanders-cms-hero h1 {
+            font-size: clamp(20px, 6vw, 24px);
+        }
+
+        .cms-block.zanders-cms-highlights .cms-element-text,
+        .cms-block.zanders-cms-cards .cms-element-text,
+        .cms-block.zanders-cms-body .cms-element-text,
+        .cms-block.zanders-cms-cta-box .cms-element-text,
+        .cms-block.zanders-cms-contact-form .cms-element-form .card .card-body {
+            padding: 16px;
+        }
+
+        .cms-block.zanders-cms-body .cms-element-text table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+}
+

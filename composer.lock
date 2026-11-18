@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8d2b06d0c37b5678873d832d16cbda0",
+    "content-hash": "ad7d742b4393c46283ea31b02e065be3",
     "packages": [
         {
             "name": "async-aws/core",
@@ -1822,6 +1822,72 @@
                 }
             ],
             "time": "2025-10-28T10:28:17+00:00"
+        },
+        {
+            "name": "frosh/product-compare",
+            "version": "4.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfShopware/FroshProductCompare.git",
+                "reference": "c8b58f72ffcdac2ba38738abf0b9999e81e33d28"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfShopware/FroshProductCompare/zipball/c8b58f72ffcdac2ba38738abf0b9999e81e33d28",
+                "reference": "c8b58f72ffcdac2ba38738abf0b9999e81e33d28",
+                "shasum": ""
+            },
+            "require": {
+                "shopware/core": "~6.7.0",
+                "shopware/storefront": "~6.7.0"
+            },
+            "type": "shopware-platform-plugin",
+            "extra": {
+                "label": {
+                    "de-DE": "Ein einfaches Produktvergleichs-Plugin für Shopware 6",
+                    "en-GB": "A Simple Product Compare plugin for Shopware 6"
+                },
+                "copyright": "(c) by Justa Vin<levienthuong@gmail.com>",
+                "description": {
+                    "de-DE": "Kostenloses Open Source Plugin für Shopware 6. Ermöglicht es bis zu 4 Produkte miteinander zu vergleichen. Vergleichsliste auf der Produktvergleichsseite oder auf der Artikelseite.",
+                    "en-GB": "Free Shopware 6 open source extension which allows to compare up to 4 products with each other. Show compare list in products compare page or in product detail's cross-selling."
+                },
+                "plugin-icon": "src/Resources/config/plugin.png",
+                "supportLink": {
+                    "de-DE": "https://github.com/FriendsOfShopware/FroshProductCompare/issues",
+                    "en-GB": "https://github.com/FriendsOfShopware/FroshProductCompare/issues"
+                },
+                "manufacturerLink": {
+                    "de-DE": "https://github.com/FriendsOfShopware/FroshProductCompare",
+                    "en-GB": "https://github.com/FriendsOfShopware/FroshProductCompare"
+                },
+                "shopware-plugin-class": "Frosh\\FroshProductCompare\\FroshProductCompare"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Frosh\\FroshProductCompare\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "FriendsOfShopware",
+                    "email": "info@friendsofshopware.com"
+                },
+                {
+                    "name": "Thuong Le",
+                    "email": "levienthuong@gmail.com"
+                }
+            ],
+            "description": "A Simple Product Compare plugin for Shopware 6",
+            "support": {
+                "issues": "https://github.com/FriendsOfShopware/FroshProductCompare/issues",
+                "source": "https://github.com/FriendsOfShopware/FroshProductCompare/tree/4.0.2"
+            },
+            "time": "2026-08-13T10:31:46+00:00"
         },
         {
             "name": "goetas-webservices/xsd2php-runtime",
@@ -4407,8 +4473,7 @@
                 "issues": "https://github.com/php-http/discovery/issues",
                 "source": "https://github.com/php-http/discovery/tree/1.20.0"
             },
-            "time": "2024-10-02T11:20:13+00:00",
-            "published-time": "2024-10-02T11:21:00+00:00"
+            "time": "2024-10-02T11:20:13+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -4998,8 +5063,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-09-23T14:17:50+00:00",
-            "published-time": "2023-09-23T14:18:12+00:00"
+            "time": "2023-09-23T14:17:50+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -5054,8 +5118,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-factory"
             },
-            "time": "2024-04-15T12:06:14+00:00",
-            "published-time": "2024-05-10T07:32:19+00:00"
+            "time": "2024-04-15T12:06:14+00:00"
         },
         {
             "name": "psr/http-message",
@@ -5108,8 +5171,7 @@
             "support": {
                 "source": "https://github.com/php-fig/http-message/tree/2.0"
             },
-            "time": "2023-04-04T09:54:51+00:00",
-            "published-time": "2023-04-04T09:55:35+00:00"
+            "time": "2023-04-04T09:54:51+00:00"
         },
         {
             "name": "psr/http-server-handler",
@@ -5323,8 +5385,7 @@
             "support": {
                 "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
             },
-            "time": "2021-10-29T13:26:27+00:00",
-            "published-time": "2021-10-29T13:27:19+00:00"
+            "time": "2021-10-29T13:26:27+00:00"
         },
         {
             "name": "radebatz/type-info-extras",
@@ -6591,8 +6652,7 @@
                 "issues": "https://github.com/shopware/paypal-sdk/issues",
                 "source": "https://github.com/shopware/paypal-sdk/tree/v1.9.1"
             },
-            "time": "2026-10-19T05:21:52+00:00",
-            "published-time": "2026-10-21T07:33:40+00:00"
+            "time": "2026-10-19T05:21:52+00:00"
         },
         {
             "name": "shopware/storefront",
@@ -13294,5 +13354,5 @@
         "composer-runtime-api": "^2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.11.0"
+    "plugin-api-version": "2.6.0"
 }

@@ -1,0 +1,168 @@
+{#
+    Zanders Compare Table Header Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/section/header.html.twig`
+    to render clean, balanced product summary cards in the table header:
+    - Leading sticky corner cell displays item count summary (remains a `<td>`
+      so `CompareWidgetPlugin`'s column index / deletion math stays exact).
+    - Product cards display: subtle remove button, contained thumbnail,
+      uppercase title, clean Item # / UPC / Stock metadata, pill-formatted
+      variant characteristics (no dangling pipe separators), and bottom-aligned
+      crimson price.
+    - Add-to-Cart / Details button is intentionally omitted here because it
+      already appears in the bottom table footer row (`content.html.twig`).
+#}
+{% sw_extends '@Storefront/storefront/component/compare/section/header.html.twig' %}
+
+{% block frosh_product_compare_table_header %}
+    <thead>
+        <tr>
+            {# Leading corner cell must remain a <td> to match CompareWidgetPlugin column counting #}
+            <td class="align-middle zanders-compare-corner-cell">
+                <div class="zanders-compare-corner-inner">
+                    <span class="zanders-compare-corner-label">{{ 'froshProductCompare.general.headline'|trans|sw_sanitize }}</span>
+                    <span class="zanders-compare-corner-count">{{ productsCount }}</span>
+                </div>
+            </td>
+
+            {% for product in products %}
+                {% set name = product.translated.name %}
+                {% set id = product.id %}
+                {% set cover = product.cover.media %}
+                {% set upcVal = product.translated.customFields.upc ?: (product.customFields.upc ?: product.ean) %}
+                {% set availableStock = product.availableStock %}
+                {% set stock = product.stock %}
+
+                {# Resolve primary unit price matching Zanders product card logic #}
+                {% set displayPrice = product.calculatedPrice %}
+                {% if product.calculatedPrices.count > 0 %}
+                    {% set displayPrice = product.calculatedPrices.last %}
+                {% endif %}
+                {% if product.variantListingConfig.displayParent and product.parentId === null %}
+                    {% set displayPrice = product.calculatedCheapestPrice %}
+                {% endif %}
+
+                <td class="product-{{ product.id }}{% if not isAjaxContent and app.request.attributes.get('productId') == id %} is-feature-item{% endif %}">
+                    <div class="comparison-item zanders-compare-item">
+                        {% if isAjaxContent %}
+                            {% set addToCompareOptions = {
+                                productId: product.id
+                            } %}
+                            <button type="button"
+                                    title="{{ 'froshProductCompare.general.removeFromCompare'|trans|striptags }}"
+                                    aria-label="{{ 'froshProductCompare.general.removeFromCompare'|trans|striptags }}"
+                                    data-add-to-compare-button="true"
+                                    data-add-to-compare-button-options="{{ addToCompareOptions|json_encode }}"
+                                    class="btn btn-sm compare-item-remove-button is-added-to-compare hide-on-print d-print-none">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        {% endif %}
+
+                        {% block component_product_box_image %}
+                            <div class="product-image-wrapper zanders-compare-image-wrapper">
+                                {% set displayMode = 'contain' %}
+                                <a href="{{ seoUrl('frontend.detail.page', {'productId': id}) }}"
+                                   title="{{ name }}"
+                                   target="_blank"
+                                   class="product-image-link is-{{ displayMode }}">
+                                    {% if cover.url %}
+                                        {% set attributes = {
+                                            'class': 'product-image is-'~displayMode,
+                                            'alt': (cover.translated.alt ?: name),
+                                            'title': (cover.translated.title ?: name),
+                                            'loading': 'lazy'
+                                        } %}
+                                        {% sw_thumbnails 'product-image-thumbnails' with {
+                                            media: cover,
+                                            sizes: {
+                                                'xs': '240px',
+                                                'sm': '240px',
+                                                'md': '260px',
+                                                'lg': '260px',
+                                                'xl': '260px'
+                                            },
+                                            attributes: attributes
+                                        } %}
+                                    {% else %}
+                                        <div class="product-image-placeholder">
+                                            {% sw_icon 'placeholder' style { 'size': 'fluid' } %}
+                                        </div>
+                                    {% endif %}
+                                </a>
+                            </div>
+                        {% endblock %}
+
+                        <a class="comparison-item-title zanders-compare-item-title"
+                           href="{{ seoUrl('frontend.detail.page', {'productId': id}) }}"
+                           title="{{ name }}"
+                           target="_blank">
+                            {{ name|u.truncate(75, '...') }}
+                        </a>
+
+                        {# Clean inline SKU, UPC & stock badge #}
+                        <div class="zanders-compare-meta">
+                            {% if product.productNumber %}
+                                <div class="zanders-compare-sku">
+                                    <span class="zanders-compare-meta-label">{{ 'zanders.productCard.itemNumber'|trans }}:</span>
+                                    <span class="zanders-compare-meta-value">{{ product.productNumber }}</span>
+                                </div>
+                            {% endif %}
+
+                            {% if upcVal %}
+                                <div class="zanders-compare-sku">
+                                    <span class="zanders-compare-meta-label">{{ 'zanders.productCard.upc'|trans }}:</span>
+                                    <span class="zanders-compare-meta-value">{{ upcVal }}</span>
+                                </div>
+                            {% endif %}
+
+                            <div class="zanders-compare-stock-wrap">
+                                {% if availableStock is not null and availableStock > 0 %}
+                                    <span class="zanders-compare-stock zanders-compare-stock--in">
+                                        {{ 'zanders.productCard.available'|trans }}: {{ availableStock }}
+                                    </span>
+                                {% elseif stock is not null and stock > 0 %}
+                                    <span class="zanders-compare-stock zanders-compare-stock--in">
+                                        {{ 'zanders.productCard.available'|trans }}: {{ stock }}
+                                    </span>
+                                {% elseif product.available and not product.isCloseout %}
+                                    <span class="zanders-compare-stock zanders-compare-stock--in">
+                                        {{ 'zanders.productCard.inStock'|trans }}
+                                    </span>
+                                {% else %}
+                                    <span class="zanders-compare-stock zanders-compare-stock--out">
+                                        {{ 'zanders.productCard.outOfStock'|trans }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# Variant characteristics rendered as clean wrap-friendly pills #}
+                        {% if product.variation %}
+                            {% block component_product_box_variant_characteristics %}
+                                <div class="zanders-compare-variants">
+                                    {% for variation in product.variation %}
+                                        <span class="zanders-compare-variant-pill">
+                                            <span class="zanders-compare-variant-group">{{ variation.group }}:</span>
+                                            <span class="zanders-compare-variant-option">{{ variation.option }}</span>
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            {% endblock %}
+                        {% endif %}
+
+                        {# Bottom-aligned crimson unit price (Add to Cart is in table footer) #}
+                        {% if displayPrice %}
+                            <div class="zanders-compare-card-price">
+                                {{ displayPrice.unitPrice|currency }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </td>
+            {% endfor %}
+        </tr>
+    </thead>
+{% endblock %}

@@ -170,8 +170,203 @@ header .header-search-btn,
     color: #ffffff;
 }
 
-@include media-breakpoint-up(sm) {
+.header-cart-mobile-wrap {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-cart-mobile-label {
+    font-size: 10px;
+    line-height: 12px;
+    font-weight: 500;
+    color: #777777;
+    margin-top: 3px;
+}
+
+// Always keep search bar visible across Desktop, Tablet, and Mobile (down to 320px)
+.header-search-col {
+    .collapse,
+    .collapse:not(.show) {
+        display: block;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .header-cart-mobile-wrap {
+        flex-direction: row;
+    }
+
     .header-search {
         max-width: 936px;
+    }
+}
+
+// =============================================================================
+// Responsive Header & Search Bar (Starting from Tablet <= 991.98px down to 320px)
+// Matches mobile/tablet design:
+// - Row 1: [Hamburger]   [Centered Logo]   [Cart + Badge + "Cart" label]
+// - Row 2: Always-visible full-width search bar
+// =============================================================================
+
+@include media-breakpoint-down(lg) {
+    .header-row {
+        padding-block: 10px 8px;
+        row-gap: 10px;
+    }
+
+    .header-menu-col {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-logo-col {
+        margin: 0;
+        padding-block: 0;
+    }
+
+    .header-logo-picture {
+        max-width: 170px;
+        min-width: 0;
+    }
+
+    .header-actions-col {
+        .row {
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+    }
+
+    .header-cart-icon {
+        width: 34px;
+        height: 34px;
+        margin-right: 0;
+        border: 1.5px solid #888888;
+        padding: 6px;
+
+        svg {
+            width: 17px;
+            height: 17px;
+
+            path {
+                fill: #777777;
+            }
+        }
+    }
+
+    .header-cart .header-cart-badge {
+        top: -5px;
+        right: -5px;
+        left: auto;
+        background-color: #991020;
+    }
+
+    .nav-main-toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 2px;
+        color: #333333;
+        border: 0;
+        background: transparent;
+
+        &:focus {
+            box-shadow: none;
+        }
+    }
+
+    .header-search-col {
+        padding-top: 6px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .header-search {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+
+        .input-group {
+            background-color: #f5f5f5;
+            padding: 9px 14px;
+            border-radius: 3px;
+
+            .header-search-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 12px;
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+        }
+    }
+
+    .header-search-input {
+        font-size: 14px;
+        line-height: 18px;
+        color: #333333;
+
+        &::placeholder {
+            color: #888888;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .header-row {
+        padding-block: 8px 6px;
+        row-gap: 8px;
+    }
+
+    .header-logo-picture {
+        max-width: clamp(125px, 38vw, 155px);
+    }
+
+    .header-cart-icon {
+        width: clamp(30px, 8.5vw, 34px);
+        height: clamp(30px, 8.5vw, 34px);
+        padding: 5px;
+
+        svg {
+            width: clamp(15px, 4.2vw, 17px);
+            height: clamp(15px, 4.2vw, 17px);
+        }
+    }
+
+    .header-cart .header-cart-badge {
+        top: -4px;
+        right: -4px;
+        min-width: 16px;
+        height: 16px;
+        font-size: 9.5px;
+    }
+
+    .header-cart-mobile-label {
+        font-size: 9.5px;
+    }
+
+    .header-search {
+        .input-group {
+            padding: 8px 12px;
+
+            .header-search-icon {
+                width: 22px;
+                height: 22px;
+                margin-right: 10px;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+    }
+
+    .header-search-input {
+        font-size: clamp(12.5px, 3.4vw, 13.5px);
+        line-height: 17px;
     }
 }

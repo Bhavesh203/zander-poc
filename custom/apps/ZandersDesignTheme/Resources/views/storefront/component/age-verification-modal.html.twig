@@ -42,6 +42,12 @@
     </div>
 </div>
 
+{#
+    Age Verification Modal Controller
+    - Checks localStorage + cookie (`zanders_age_verified=true`) to skip if already confirmed
+    - Locks page scroll while open and supports Escape key, backdrop click, and keyboard Tab trapping
+    - "YES" persists verification for 365 days; "NO" redirects away from the storefront
+#}
 <script>
     (function() {
         var modal = document.getElementById('ageVerificationModal');
@@ -50,6 +56,11 @@
         var btnYes = document.getElementById('ageVerificationYes');
         var btnNo = document.getElementById('ageVerificationNo');
 
+        /**
+         * Checks whether the visitor has previously confirmed age verification
+         * via either localStorage or the `zanders_age_verified` cookie.
+         * @returns {boolean}
+         */
         function isAgeVerified() {
             try {
                 if (localStorage.getItem('zanders_age_verified') === 'true') {
@@ -67,12 +78,18 @@
             return false;
         }
 
+        /**
+         * Hides the modal overlay and restores body/html scrolling.
+         */
         function closeModal() {
             modal.style.display = 'none';
             document.body.classList.remove('age-verification-modal-open');
             document.documentElement.classList.remove('age-verification-modal-open');
         }
 
+        /**
+         * Displays the modal overlay, locks background scrolling, and moves keyboard focus to YES.
+         */
         function openModal() {
             document.documentElement.classList.remove('zanders-age-verified');
             document.body.classList.add('age-verification-modal-open');

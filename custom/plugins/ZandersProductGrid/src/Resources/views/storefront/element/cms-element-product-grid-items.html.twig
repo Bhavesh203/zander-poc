@@ -1,12 +1,12 @@
 {% block element_product_grid_items %}
     {% if grid.products and grid.products.count > 0 %}
-        {% set colClass = 'col-6 col-md-4 col-lg-3' %}
+        {% set colClass = 'col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3' %}
         {% if grid.columns == 2 %}
             {% set colClass = 'col-12 col-sm-6' %}
         {% elseif grid.columns == 3 %}
-            {% set colClass = 'col-6 col-md-4' %}
+            {% set colClass = 'col-12 col-sm-6 col-md-4' %}
         {% elseif grid.columns == 6 %}
-            {% set colClass = 'col-6 col-sm-4 col-md-3 col-lg-2' %}
+            {% set colClass = 'col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2' %}
         {% endif %}
 
         {% for product in grid.products %}

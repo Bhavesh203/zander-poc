@@ -159,45 +159,153 @@
         }
     }
 
-    // Responsive styles
-    @media (max-width: 991.98px) {
+    // Responsive styles (Standard Shopware breakpoints)
+    @include media-breakpoint-down(xl) {
+        font-size: 14px;
+        line-height: 18px;
+
+        .top-bar-phone {
+            min-width: auto;
+        }
+
+        .top-bar-icon-wrap {
+            width: 32px;
+            height: 32px;
+            padding: 6px;
+            margin-right: 10px;
+
+            svg,
+            .top-bar-icon {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        .top-bar-account .account-menu .account-menu-btn.top-bar-btn {
+            margin-right: 16px;
+        }
+    }
+
+    @include media-breakpoint-down(lg) {
+        padding: 7px 0;
+        font-size: 12px;
+        line-height: 15px;
+
+        .top-bar-inner {
+            gap: 10px;
+        }
+
         .top-bar-left {
-            gap: 1rem;
+            gap: 14px;
+            flex-wrap: nowrap;
+            min-width: 0;
         }
 
         .top-bar-right {
-            gap: 1rem;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .top-bar-icon-wrap {
+            width: auto;
+            height: auto;
+            border: 0;
+            border-radius: 0;
+            padding: 0;
+            margin-right: 6px;
+
+            svg,
+            .top-bar-icon {
+                width: 14px;
+                height: 14px;
+            }
         }
 
         .top-bar-hours {
-            display: none;
+            display: inline-flex;
+
+            .top-bar-hours-text {
+                flex-direction: row;
+                align-items: center;
+                gap: 4px;
+            }
         }
 
         .top-bar-welcome {
             display: none;
         }
+
+        .top-bar-account .account-menu .account-menu-btn.top-bar-btn {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        .account-menu-dropdown {
+            right: 0;
+            left: auto;
+            max-width: calc(100vw - 24px);
+        }
     }
 
-    @media (max-width: 575.98px) {
-        padding: 0.35rem 0;
+    @include media-breakpoint-down(sm) {
+        padding: 6px 0;
+        font-size: clamp(9px, 2.7vw, 11px);
+        line-height: 14px;
+
+        .top-bar-inner {
+            gap: clamp(4px, 1.5vw, 8px);
+        }
 
         .top-bar-left {
-            gap: 0.75rem;
+            gap: clamp(5px, 2.2vw, 10px);
+            overflow: hidden;
         }
 
         .top-bar-right {
-            gap: 0.75rem;
+            gap: 6px;
+        }
+
+        .top-bar-icon-wrap {
+            margin-right: clamp(3px, 1vw, 5px);
+
+            svg,
+            .top-bar-icon {
+                width: clamp(10px, 3.1vw, 13px);
+                height: clamp(10px, 3.1vw, 13px);
+            }
         }
 
         .top-bar-phone .top-bar-phone-text {
-            font-size: 0.75rem;
+            font-size: clamp(9px, 2.7vw, 11px);
         }
 
-    }
+        .top-bar-hours .top-bar-hours-text {
+            font-size: clamp(8.5px, 2.55vw, 10.5px);
+            gap: clamp(2px, 0.8vw, 4px);
+        }
 
-    @media (max-width: 420px) {
-        .top-bar-phone .top-bar-phone-text {
+        .top-bar-account .account-menu .account-menu-btn.top-bar-btn {
+            margin-right: 6px;
+
+            .top-bar-text {
+                display: none;
+            }
+        }
+
+        // Hide duplicate logout in top-bar on small screens (Logout is in sticky mobile bottom bar)
+        .top-bar-logout {
             display: none;
+        }
+
+        .top-bar-login .top-bar-text,
+        .top-bar-logout .top-bar-text {
+            display: none;
+        }
+
+        .top-bar-login .top-bar-icon-wrap,
+        .top-bar-logout .top-bar-icon-wrap,
+        .top-bar-account .top-bar-icon-wrap {
+            margin-right: 0;
         }
     }
 }

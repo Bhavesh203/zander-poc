@@ -294,3 +294,117 @@ ul.search-suggest-container {
         }
     }
 }
+
+// Responsive Search Suggest (Standard Shopware Breakpoints)
+@include media-breakpoint-down(lg) {
+    .search-suggest .search-suggest-container,
+    ul.search-suggest-container {
+        max-height: 65vh;
+    }
+
+    .search-suggest-header {
+        padding: 9px 14px;
+
+        .search-suggest-header-title {
+            font-size: 14px;
+        }
+    }
+
+    .search-suggest-matches-bar {
+        padding: 7px 14px;
+    }
+
+    .search-suggest-product {
+        .search-suggest-product-link {
+            padding: 12px 14px;
+        }
+
+        .search-suggest-product-row {
+            gap: 14px;
+        }
+
+        .search-suggest-product-image-container {
+            width: 72px;
+            min-width: 72px;
+            height: 56px;
+        }
+
+        .search-suggest-product-name {
+            font-size: 13px;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.35;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .search-suggest .search-suggest-container,
+    ul.search-suggest-container {
+        max-height: 68vh;
+    }
+
+    .search-suggest-header {
+        padding: 8px 12px;
+
+        .search-suggest-header-title {
+            font-size: 13px;
+        }
+    }
+
+    .search-suggest-matches-bar {
+        padding: 6px 12px;
+        gap: 4px;
+
+        .matches-bar-label {
+            font-size: 12px;
+        }
+
+        .matches-bar-pill {
+            font-size: 11px;
+            padding: 3px 10px;
+        }
+    }
+
+    .search-suggest-product {
+        .search-suggest-product-link {
+            padding: 10px 12px;
+        }
+
+        .search-suggest-product-row {
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .search-suggest-product-image-container {
+            width: 60px;
+            min-width: 60px;
+            height: 50px;
+        }
+
+        .search-suggest-product-name {
+            font-size: 12px;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.35;
+        }
+
+        .search-suggest-meta-item {
+            font-size: 11px;
+            word-break: break-word;
+        }
+    }
+
+    .search-suggest-total {
+        padding: 10px 12px;
+
+        .search-suggest-total-link,
+        .search-suggest-total-count {
+            font-size: 12px;
+        }
+    }
+}

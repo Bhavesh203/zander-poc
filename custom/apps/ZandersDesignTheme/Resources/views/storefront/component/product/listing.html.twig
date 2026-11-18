@@ -1,0 +1,645 @@
+{#
+    Zanders Shop / Category Listing Toolbar Override
+    ==========================================================================
+    Extends `@Storefront/storefront/component/product/listing.html.twig` to
+    replace the default listing header with the two-row Zanders shop toolbar:
+    - Row 1: "Items X-Y Of Z" counter (left) | "Page: < 1 2 3 4 5 >" inline
+      AJAX pagination (center) | "Show : [15 v] per page" selector (right)
+    - Row 2: "View as :" Grid / List / Compact switcher + crimson
+      "HIDE OUT OF STOCK ITEMS" toggle (left) | "Sort By : [Price v] ↑" with
+      direction toggle synced to Shopware's native ListingSortingPlugin (right)
+    - Preserves all Shopware `ListingPlugin`, `ListingPaginationPlugin`, and
+      `ListingSortingPlugin` DOM hooks so sidebar filters, pagination, sorting,
+      per-page limit, and stock filtering all work seamlessly via AJAX.
+#}
+{% sw_extends '@Storefront/storefront/component/product/listing.html.twig' %}
+
+{% block product_listing %}
+    {% set totalItems = searchResult.total %}
+    {% set currentPage = searchResult.page ?: 1 %}
+    {% set currentLimit = searchResult.limit ?: 24 %}
+    {% set totalPages = totalItems > 0 ? (totalItems / currentLimit)|round(0, 'ceil') : 1 %}
+    {% set rangeStart = totalItems > 0 ? ((currentPage - 1) * currentLimit) + 1 : 0 %}
+    {% set rangeEnd = totalItems > 0 ? min(currentPage * currentLimit, totalItems) : 0 %}
+    {% set hideOutOfStockActive = searchResult.currentFilters['hide-out-of-stock'] ?? false %}
+
+    {# Build per-page dropdown options ensuring currentLimit is always selectable #}
+    {% set limitOptions = [15, 24, 30, 60, 100] %}
+    {% if currentLimit not in limitOptions %}
+        {% set limitOptions = limitOptions|merge([currentLimit])|sort %}
+    {% endif %}
+
+    {# Group paired Shopware sortings (e.g. price-asc + price-desc -> "Price" + direction arrow) #}
+    {% set currentSorting = searchResult.sorting ?: '' %}
+    {% set currentSortDir = (currentSorting ends with '-desc') ? 'desc' : 'asc' %}
+    {% set currentSortBase = currentSorting %}
+    {% if currentSorting ends with '-asc' %}
+        {% set currentSortBase = currentSorting|slice(0, -4) %}
+    {% elseif currentSorting ends with '-desc' %}
+        {% set currentSortBase = currentSorting|slice(0, -5) %}
+    {% endif %}
+
+    {% set sortGroups = {} %}
+    {% for sorting in searchResult.availableSortings %}
+        {% set sKey = sorting.key %}
+        {% if sKey ends with '-asc' %}
+            {% set sBase = sKey|slice(0, -4) %}
+            {% set sLabel = sBase == 'price' ? 'Price' : (sBase == 'name' ? 'Name' : sorting.translated.label|sw_sanitize) %}
+            {% set existing = sortGroups[sBase] ?? { base: sBase, label: sLabel, ascKey: '', descKey: '' } %}
+            {% set sortGroups = sortGroups|merge({ (sBase): existing|merge({ ascKey: sKey, label: sLabel }) }) %}
+        {% elseif sKey ends with '-desc' %}
+            {% set sBase = sKey|slice(0, -5) %}
+            {% set sLabel = sBase == 'price' ? 'Price' : (sBase == 'name' ? 'Name' : sorting.translated.label|sw_sanitize) %}
+            {% set existing = sortGroups[sBase] ?? { base: sBase, label: sLabel, ascKey: '', descKey: '' } %}
+            {% set sortGroups = sortGroups|merge({ (sBase): existing|merge({ descKey: sKey, label: sLabel }) }) %}
+        {% else %}
+            {% set sLabel = sorting.translated.label|sw_sanitize %}
+            {% set sortGroups = sortGroups|merge({ (sKey): { base: sKey, label: sLabel, ascKey: sKey, descKey: '' } }) %}
+        {% endif %}
+    {% endfor %}
+
+    {% set currentGroup = sortGroups[currentSortBase] ?? null %}
+    {% set canToggleSortDir = currentGroup is not null and currentGroup.ascKey is not empty and currentGroup.descKey is not empty %}
+
+    {% set subcatData = (page is defined and page.extensions is defined and page.extensions.zandersSubcategories is defined)
+        ? page.extensions.zandersSubcategories
+        : null %}
+
+    <div class="cms-element-product-listing-wrapper"
+         data-listing-pagination="true"
+         data-listing-pagination-options="{{ paginationConfig|json_encode }}"
+         data-listing="true"
+         data-listing-options="{{ listingPagination|json_encode }}">
+        {% block element_product_listing_wrapper_content %}
+            <div class="cms-element-product-listing is-view-grid">
+                {# Subcategory Navigation Strip (shown on parent category & leaf subcategory pages) #}
+                {% if subcatData and subcatData.items is defined and subcatData.items|length > 0 %}
+                    <div class="zanders-subcat-strip" aria-label="Subcategories">
+                        <div class="zanders-subcat-strip-header">
+                            <span class="zanders-subcat-strip-label">
+                                {% if subcatData.mode == 'siblings' %}
+                                    {{ subcatData.parentName }} Subcategories
+                                {% else %}
+                                    Shop by Subcategory
+                                {% endif %}
+                            </span>
+                            <span class="zanders-subcat-strip-total">
+                                {{ subcatData.items|length }} categories
+                            </span>
+                        </div>
+                        <div class="zanders-subcat-strip-grid">
+                            {% if subcatData.mode == 'siblings' %}
+                                <a href="{{ seoUrl('frontend.navigation.page', { navigationId: subcatData.parentId }) }}"
+                                   class="zanders-subcat-card zanders-subcat-card--all">
+                                    <span class="zanders-subcat-card-name">All {{ subcatData.parentName }}</span>
+                                    <span class="zanders-subcat-card-arrow" aria-hidden="true">&rarr;</span>
+                                </a>
+                            {% endif %}
+                            {% for sub in subcatData.items %}
+                                <a href="{{ seoUrl('frontend.navigation.page', { navigationId: sub.id }) }}"
+                                   class="zanders-subcat-card{% if sub.isActive %} is-active{% endif %}"
+                                   {% if sub.isActive %}aria-current="page"{% endif %}>
+                                    <span class="zanders-subcat-card-name">{{ sub.name }}</span>
+                                    <span class="zanders-subcat-card-count">{{ sub.count }}</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if totalItems > 0 or hideOutOfStockActive %}
+                    {% block element_product_listing_pagination_nav_actions %}
+                        <div class="cms-element-product-listing-actions zanders-listing-toolbar"
+                             data-current-limit="{{ currentLimit }}"
+                             data-hide-out-of-stock="{{ hideOutOfStockActive ? '1' : '0' }}">
+
+                            {# Row 1: Item count (left) | Inline pagination (center) | Show per page (right) #}
+                            <div class="zanders-toolbar-row zanders-toolbar-row--top">
+                                <div class="zanders-toolbar-items-count">
+                                    Items {{ rangeStart }}-{{ rangeEnd }} Of {{ totalItems }}
+                                </div>
+
+                                <div class="zanders-toolbar-pagination">
+                                    <span class="zanders-toolbar-label">Page:</span>
+                                    {% block element_product_listing_pagination_nav_top %}
+                                        {% set searchQuery = '' %}
+                                        {% if searchResult.currentFilters.search is defined and searchResult.currentFilters.search %}
+                                            {% set searchQuery = '&search=' ~ searchResult.currentFilters.search %}
+                                        {% endif %}
+                                        {% set prevPage = currentPage <= 1 ? 1 : (currentPage - 1) %}
+                                        {% set nextPage = currentPage >= totalPages ? totalPages : (currentPage + 1) %}
+
+                                        {# Compute 5-page sliding window around currentPage #}
+                                        {% set pStart = currentPage - 2 %}
+                                        {% if pStart < 1 %}{% set pStart = 1 %}{% endif %}
+                                        {% set pEnd = pStart + 4 %}
+                                        {% if pEnd > totalPages %}
+                                            {% set pEnd = totalPages %}
+                                            {% set pStart = pEnd - 4 %}
+                                            {% if pStart < 1 %}{% set pStart = 1 %}{% endif %}
+                                        {% endif %}
+
+                                        <nav aria-label="{{ 'general.pagination.title'|trans|striptags }}"
+                                             class="pagination-nav listing-pagination-top"
+                                             data-pagination-location="top">
+                                            <ul class="pagination zanders-toolbar-pages">
+                                                <li class="page-item page-prev{% if currentPage <= 1 %} disabled{% endif %}">
+                                                    <a href="?p={{ prevPage }}{{ searchQuery }}"
+                                                       class="page-link"
+                                                       data-page="{{ prevPage }}"
+                                                       data-focus-id="prev"
+                                                       aria-label="{{ 'general.pagination.prev'|trans|striptags }}"
+                                                       {% if currentPage <= 1 %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <polyline points="15 18 9 12 15 6"></polyline>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+
+                                                {% for pageNum in pStart..pEnd %}
+                                                    {% set isActivePage = (currentPage == pageNum) %}
+                                                    <li class="page-item{% if isActivePage %} active{% endif %}"{% if isActivePage %} aria-current="page"{% endif %}>
+                                                        <a href="?p={{ pageNum }}{{ searchQuery }}"
+                                                           class="page-link"
+                                                           data-page="{{ pageNum }}"
+                                                           data-focus-id="{{ pageNum }}">
+                                                            <span class="visually-hidden">{{ 'general.pagination.page'|trans|sw_sanitize }}</span>{{ pageNum }}
+                                                        </a>
+                                                    </li>
+                                                {% endfor %}
+
+                                                <li class="page-item page-next{% if currentPage >= totalPages %} disabled{% endif %}">
+                                                    <a href="?p={{ nextPage }}{{ searchQuery }}"
+                                                       class="page-link"
+                                                       data-page="{{ nextPage }}"
+                                                       data-focus-id="next"
+                                                       aria-label="{{ 'general.pagination.next'|trans|striptags }}"
+                                                       {% if currentPage >= totalPages %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                                        </svg>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    {% endblock %}
+                                </div>
+
+                                <div class="zanders-toolbar-show">
+                                    <label for="zandersLimitSelect" class="zanders-toolbar-label">Show :</label>
+                                    <select id="zandersLimitSelect"
+                                            class="zanders-toolbar-select js-zanders-limit-select"
+                                            aria-label="Items per page">
+                                        {% for opt in limitOptions %}
+                                            <option value="{{ opt }}"{% if opt == currentLimit %} selected{% endif %}>{{ opt }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="zanders-toolbar-label">per page</span>
+                                </div>
+                            </div>
+
+                            {# Row 2: View Switcher + Hide Out of Stock (left) | Sort By + Direction Arrow (right) #}
+                            <div class="zanders-toolbar-row zanders-toolbar-row--bottom">
+                                <div class="zanders-toolbar-left-controls">
+                                    <div class="zanders-toolbar-view" role="group" aria-label="View mode">
+                                        <span class="zanders-toolbar-label">View as :</span>
+
+                                        <button type="button"
+                                                class="zanders-view-btn is-active js-zanders-view-btn"
+                                                data-zanders-view="grid"
+                                                title="Grid View"
+                                                aria-label="Grid View"
+                                                aria-pressed="true">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                                <rect x="0.5" y="0.5" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="6" y="0.5" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="11.5" y="0.5" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="0.5" y="6" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="6" y="6" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="11.5" y="6" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="0.5" y="11.5" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="6" y="11.5" width="4" height="4" rx="0.4"></rect>
+                                                <rect x="11.5" y="11.5" width="4" height="4" rx="0.4"></rect>
+                                            </svg>
+                                        </button>
+
+                                        <button type="button"
+                                                class="zanders-view-btn js-zanders-view-btn"
+                                                data-zanders-view="list"
+                                                title="List View"
+                                                aria-label="List View"
+                                                aria-pressed="false">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                                <rect x="0.5" y="1.5" width="3" height="2.6" rx="0.4"></rect>
+                                                <rect x="5" y="2" width="10.5" height="1.8" rx="0.4"></rect>
+                                                <rect x="0.5" y="6.7" width="3" height="2.6" rx="0.4"></rect>
+                                                <rect x="5" y="7.1" width="10.5" height="1.8" rx="0.4"></rect>
+                                                <rect x="0.5" y="11.9" width="3" height="2.6" rx="0.4"></rect>
+                                                <rect x="5" y="12.3" width="10.5" height="1.8" rx="0.4"></rect>
+                                            </svg>
+                                        </button>
+
+                                        <button type="button"
+                                                class="zanders-view-btn js-zanders-view-btn"
+                                                data-zanders-view="compact"
+                                                title="Compact List View"
+                                                aria-label="Compact List View"
+                                                aria-pressed="false">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                                <rect x="0.5" y="2" width="15" height="1.8" rx="0.4"></rect>
+                                                <rect x="0.5" y="7.1" width="15" height="1.8" rx="0.4"></rect>
+                                                <rect x="0.5" y="12.2" width="15" height="1.8" rx="0.4"></rect>
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <button type="button"
+                                            class="zanders-stock-toggle-btn js-zanders-stock-toggle{% if hideOutOfStockActive %} is-active{% endif %}"
+                                            aria-pressed="{{ hideOutOfStockActive ? 'true' : 'false' }}">
+                                        {% if hideOutOfStockActive %}
+                                            SHOW OUT OF STOCK ITEMS
+                                        {% else %}
+                                            HIDE OUT OF STOCK ITEMS
+                                        {% endif %}
+                                    </button>
+                                </div>
+
+                                <div class="zanders-toolbar-sort">
+                                    {% block element_product_listing_sorting %}
+                                        {% set showSorting = (slot.config.showSorting.value is defined) ? slot.config.showSorting.value : true %}
+                                        {% if showSorting and searchResult.availableSortings|length > 0 %}
+                                            <label for="zandersSortFieldSelect" class="zanders-toolbar-label">Sort By :</label>
+
+                                            {# Visible grouped Sort By dropdown (e.g. Name, Price, Topseller) #}
+                                            <select id="zandersSortFieldSelect"
+                                                    class="zanders-toolbar-select zanders-toolbar-select--sort js-zanders-sort-field"
+                                                    aria-label="{{ 'general.sortingLabel'|trans|striptags }}">
+                                                {% for baseKey, group in sortGroups %}
+                                                    <option value="{{ baseKey }}"
+                                                            data-asc-key="{{ group.ascKey }}"
+                                                            data-desc-key="{{ group.descKey }}"
+                                                            {% if baseKey == currentSortBase %}selected{% endif %}>
+                                                        {{ group.label }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+
+                                            {# Crimson Sort Direction Toggle Button (Ascending ↑ / Descending ↓) #}
+                                            <button type="button"
+                                                    class="zanders-sort-dir-btn js-zanders-sort-dir{% if not canToggleSortDir %} is-disabled{% endif %}"
+                                                    data-dir="{{ currentSortDir }}"
+                                                    title="{{ currentSortDir == 'desc' ? 'Set Ascending Direction' : 'Set Descending Direction' }}"
+                                                    aria-label="{{ currentSortDir == 'desc' ? 'Sorted descending. Switch to ascending' : 'Sorted ascending. Switch to descending' }}"
+                                                    {% if not canToggleSortDir %}disabled{% endif %}>
+                                                {% if currentSortDir == 'desc' %}
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                        <polyline points="19 12 12 19 5 12"></polyline>
+                                                    </svg>
+                                                {% else %}
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <line x1="12" y1="19" x2="12" y2="5"></line>
+                                                        <polyline points="5 12 12 5 19 12"></polyline>
+                                                    </svg>
+                                                {% endif %}
+                                            </button>
+
+                                            {# Hidden native Shopware sorting widget preserved for ListingSortingPlugin AJAX integration #}
+                                            <div class="zanders-native-sorting-wrap visually-hidden">
+                                                {% sw_include '@Storefront/storefront/component/sorting.html.twig' with {
+                                                    current: searchResult.sorting,
+                                                    sortings: searchResult.availableSortings
+                                                } %}
+                                            </div>
+                                        {% endif %}
+                                    {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                {% endif %}
+
+                {% block element_product_listing_row %}
+                    {% if searchResult.total > searchResult.limit %}
+                        {% set ariaLiveText = 'listing.filterPanelAriaLivePaginated'|trans({
+                            '%count%': searchResult.entities|length,
+                            '%total%': searchResult.total}
+                        )|sw_sanitize %}
+                    {% else %}
+                        {% set ariaLiveText = 'listing.filterPanelAriaLive'|trans({'%count%': searchResult.total})|sw_sanitize %}
+                    {% endif %}
+
+                    <div class="row cms-listing-row js-listing-wrapper" data-aria-live-text="{{- ariaLiveText -}}"{% if searchResult.total > 0 %} role="list"{% endif %}>
+                        {% if searchResult.total > 0 %}
+                            {% block element_product_listing_col %}
+                                {% for product in searchResult.entities %}
+                                    <div class="cms-listing-col {{ listingColumns }}" role="listitem">
+                                        {% block element_product_listing_box %}
+                                            {% if feature('BREADCRUMB_REWORK') %}
+                                                {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                                    layout: boxLayout,
+                                                    displayMode: displayMode,
+                                                    referrerCategoryId: config('core.listing.buildBreadcrumbByReferrerCategory') ? shopware.navigation.id : null,
+                                                } %}
+                                            {% else %}
+                                                {% sw_include '@Storefront/storefront/component/product/card/box.html.twig' with {
+                                                    layout: boxLayout,
+                                                    displayMode: displayMode
+                                                } %}
+                                            {% endif %}
+                                        {% endblock %}
+                                    </div>
+                                {% endfor %}
+                            {% endblock %}
+                        {% else %}
+                            {% block element_product_listing_col_empty %}
+                                <div class="cms-listing-col col-12">
+                                    {% block element_product_listing_col_empty_alert %}
+                                        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                                            type: 'info',
+                                            content: 'listing.emptyResultMessage'|trans|sw_sanitize,
+                                            announceOnLoad: true,
+                                        } %}
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% if searchResult.total > searchResult.limit %}
+                    {% block element_product_listing_pagination_nav_bottom %}
+                        {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
+                            entities: searchResult,
+                            paginationLocation: 'bottom',
+                        } %}
+                    {% endblock %}
+                {% endif %}
+            </div>
+        {% endblock %}
+    </div>
+
+    {#
+        Zanders Listing Toolbar Controller
+        Attaches delegated controls to `.cms-element-product-listing-wrapper` (persisting across AJAX swaps):
+        1. Registers a custom filter adapter on Shopware's ListingPlugin for `limit` and `hide-out-of-stock`.
+        2. Syncs the grouped Sort By dropdown + direction toggle arrow with the hidden native Shopware sorting select.
+        3. Manages Grid / List / Compact view modes with localStorage persistence and re-application after AJAX updates.
+    #}
+    <script>
+    (function() {
+        var VIEW_STORAGE_KEY = 'zanders_listing_view';
+        var VALID_VIEWS = ['grid', 'list', 'compact'];
+
+        /**
+         * Reads the saved product listing view mode from localStorage.
+         * @returns {string} One of 'grid', 'list', or 'compact'
+         */
+        function getSavedView() {
+            try {
+                var saved = localStorage.getItem(VIEW_STORAGE_KEY);
+                if (VALID_VIEWS.indexOf(saved) !== -1) {
+                    return saved;
+                }
+            } catch (e) {}
+            return 'grid';
+        }
+
+        /**
+         * Applies the active view mode class (`is-view-grid`, `is-view-list`, `is-view-compact`)
+         * to the listing container and updates pressed states on the toolbar view buttons.
+         * @param {HTMLElement} wrapper - The `.cms-element-product-listing-wrapper` element
+         * @param {string} viewMode - Target view mode ('grid' | 'list' | 'compact')
+         */
+        function applyViewMode(wrapper, viewMode) {
+            var listingEl = wrapper.querySelector('.cms-element-product-listing');
+            if (listingEl) {
+                listingEl.classList.remove('is-view-grid', 'is-view-list', 'is-view-compact');
+                listingEl.classList.add('is-view-' + viewMode);
+            }
+
+            var buttons = wrapper.querySelectorAll('.js-zanders-view-btn');
+            buttons.forEach(function(btn) {
+                var isActive = btn.getAttribute('data-zanders-view') === viewMode;
+                btn.classList.toggle('is-active', isActive);
+                btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            });
+        }
+
+        /**
+         * Triggers a Shopware native sorting change by updating the hidden `.sorting select`
+         * element and dispatching a `change` event handled by `ListingSortingPlugin`.
+         * @param {HTMLElement} wrapper - The `.cms-element-product-listing-wrapper` element
+         * @param {string} targetSortKey - Shopware sorting url_key (e.g. 'price-asc', 'price-desc')
+         */
+        function triggerNativeSort(wrapper, targetSortKey) {
+            var nativeSelect = wrapper.querySelector('.zanders-native-sorting-wrap select.sorting');
+            if (!nativeSelect || !targetSortKey) {
+                return;
+            }
+            nativeSelect.value = targetSortKey;
+            nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        /**
+         * Initializes toolbar interactions and registers the `limit` / `hide-out-of-stock`
+         * filter adapter with Shopware's ListingPlugin once per listing wrapper.
+         * @param {HTMLElement} wrapper - The `.cms-element-product-listing-wrapper` element
+         */
+        function initListingToolbar(wrapper) {
+            if (!wrapper || wrapper.dataset.zandersToolbarBound === '1') {
+                return;
+            }
+            wrapper.dataset.zandersToolbarBound = '1';
+
+            var urlParams = new URLSearchParams(window.location.search);
+            var toolbarEl = wrapper.querySelector('.zanders-listing-toolbar');
+
+            var state = {
+                limit: urlParams.get('limit') || '',
+                hideOutOfStock: urlParams.get('hide-out-of-stock') === '1'
+                    || (toolbarEl && toolbarEl.getAttribute('data-hide-out-of-stock') === '1'),
+                view: getSavedView(),
+            };
+
+            applyViewMode(wrapper, state.view);
+
+            /**
+             * Resolves the Shopware ListingPlugin instance bound to this wrapper.
+             * @returns {Object|null}
+             */
+            function getListingPlugin() {
+                if (window.PluginManager && typeof window.PluginManager.getPluginInstanceFromElement === 'function') {
+                    return window.PluginManager.getPluginInstanceFromElement(wrapper, 'Listing');
+                }
+                return null;
+            }
+
+            // Custom filter adapter registered on Shopware's ListingPlugin
+            var toolbarFilterAdapter = {
+                el: wrapper,
+                getValues: function() {
+                    var values = {};
+                    if (state.limit) {
+                        values.limit = state.limit;
+                    }
+                    if (state.hideOutOfStock) {
+                        values['hide-out-of-stock'] = '1';
+                    }
+                    return values;
+                },
+                getLabels: function() {
+                    return [];
+                },
+                setValuesFromUrl: function(params) {
+                    var changed = false;
+                    if (params && params.limit && params.limit !== state.limit) {
+                        state.limit = String(params.limit);
+                        changed = true;
+                    }
+                    if (params && params['hide-out-of-stock']) {
+                        var nextStock = params['hide-out-of-stock'] === '1' || params['hide-out-of-stock'] === 'true';
+                        if (nextStock !== state.hideOutOfStock) {
+                            state.hideOutOfStock = nextStock;
+                            changed = true;
+                        }
+                    }
+                    return changed;
+                },
+                reset: function() {},
+                resetAll: function() {
+                    state.hideOutOfStock = false;
+                },
+                afterContentChange: function() {
+                    applyViewMode(wrapper, state.view);
+                }
+            };
+
+            // Register filter adapter once Shopware's ListingPlugin finishes bootstrapping
+            var registerAttempts = 0;
+            function tryRegisterAdapter() {
+                var listingPlugin = getListingPlugin();
+                if (listingPlugin && typeof listingPlugin.registerFilter === 'function') {
+                    listingPlugin.registerFilter(toolbarFilterAdapter);
+                    return;
+                }
+                if (registerAttempts < 25) {
+                    registerAttempts += 1;
+                    window.setTimeout(tryRegisterAdapter, 120);
+                }
+            }
+            tryRegisterAdapter();
+
+            /**
+             * Requests a fresh listing via Shopware's AJAX ListingPlugin, falling back
+             * to standard URL navigation if the plugin is unavailable.
+             */
+            function requestListingUpdate() {
+                var listingPlugin = getListingPlugin();
+                if (listingPlugin && typeof listingPlugin.changeListing === 'function') {
+                    listingPlugin.changeListing();
+                    return;
+                }
+                var nextUrl = new URL(window.location.href);
+                if (state.limit) {
+                    nextUrl.searchParams.set('limit', state.limit);
+                }
+                if (state.hideOutOfStock) {
+                    nextUrl.searchParams.set('hide-out-of-stock', '1');
+                } else {
+                    nextUrl.searchParams.delete('hide-out-of-stock');
+                }
+                nextUrl.searchParams.set('p', '1');
+                window.location.href = nextUrl.toString();
+            }
+
+            // Delegated click handler: View Switcher, Hide Out of Stock, and Sort Direction Arrow
+            wrapper.addEventListener('click', function(event) {
+                var viewBtn = event.target.closest('.js-zanders-view-btn');
+                if (viewBtn) {
+                    event.preventDefault();
+                    var nextView = viewBtn.getAttribute('data-zanders-view');
+                    if (VALID_VIEWS.indexOf(nextView) !== -1) {
+                        state.view = nextView;
+                        try {
+                            localStorage.setItem(VIEW_STORAGE_KEY, nextView);
+                        } catch (e) {}
+                        applyViewMode(wrapper, nextView);
+                    }
+                    return;
+                }
+
+                var stockBtn = event.target.closest('.js-zanders-stock-toggle');
+                if (stockBtn) {
+                    event.preventDefault();
+                    state.hideOutOfStock = !state.hideOutOfStock;
+                    requestListingUpdate();
+                    return;
+                }
+
+                var dirBtn = event.target.closest('.js-zanders-sort-dir');
+                if (dirBtn && !dirBtn.disabled) {
+                    event.preventDefault();
+                    var sortSelect = wrapper.querySelector('.js-zanders-sort-field');
+                    if (!sortSelect) {
+                        return;
+                    }
+                    var selectedOpt = sortSelect.options[sortSelect.selectedIndex];
+                    if (!selectedOpt) {
+                        return;
+                    }
+                    var currentDir = dirBtn.getAttribute('data-dir') || 'asc';
+                    var targetKey = currentDir === 'asc'
+                        ? selectedOpt.getAttribute('data-desc-key')
+                        : selectedOpt.getAttribute('data-asc-key');
+                    if (targetKey) {
+                        triggerNativeSort(wrapper, targetKey);
+                    }
+                }
+            });
+
+            // Delegated change handler: Show Per Page select & Sort By field select
+            wrapper.addEventListener('change', function(event) {
+                if (event.target.classList.contains('js-zanders-limit-select')) {
+                    state.limit = event.target.value;
+                    requestListingUpdate();
+                    return;
+                }
+
+                if (event.target.classList.contains('js-zanders-sort-field')) {
+                    var selectedOpt = event.target.options[event.target.selectedIndex];
+                    if (!selectedOpt) {
+                        return;
+                    }
+                    var dirBtn = wrapper.querySelector('.js-zanders-sort-dir');
+                    var preferredDir = dirBtn ? (dirBtn.getAttribute('data-dir') || 'asc') : 'asc';
+                    var targetKey = preferredDir === 'desc'
+                        ? (selectedOpt.getAttribute('data-desc-key') || selectedOpt.getAttribute('data-asc-key'))
+                        : (selectedOpt.getAttribute('data-asc-key') || selectedOpt.getAttribute('data-desc-key'));
+                    if (targetKey) {
+                        triggerNativeSort(wrapper, targetKey);
+                    }
+                }
+            });
+        }
+
+        /**
+         * Bootstraps all product listing toolbars present on the page.
+         */
+        function initAllListingToolbars() {
+            document.querySelectorAll('.cms-element-product-listing-wrapper').forEach(initListingToolbar);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAllListingToolbars);
+        } else {
+            initAllListingToolbars();
+        }
+    })();
+    </script>
+{% endblock %}
+

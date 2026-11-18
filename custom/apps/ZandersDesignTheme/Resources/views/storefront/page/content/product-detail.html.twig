@@ -1,0 +1,826 @@
+{#
+    Zanders Product Detail Page (PDP) Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/content/product-detail.html.twig` to
+    render the complete Zanders Sporting Goods PDP layout:
+    1. Breadcrumb bar
+    2. Top 2-column Product Showcase:
+       - Left: Bordered main product gallery with floating Wishlist (logged-in
+         only) + Compare scale icon buttons, plus interactive thumbnail grid
+       - Right: Uppercase Title, Item Number, Available count, Price + MSRP,
+         optional Variant Configurator, Qty + crimson ADD TO CART / BACK ORDER
+         CTA, gray QUICK OVERVIEW & FEATURES boxes, dark CREATE CUSTOMER QUOTE
+         & EMAIL TO A FRIEND buttons, and California Prop 65 Warning banner
+    3. ALTERNATIVE PRODUCTS 4-column carousel with live HIDE OUT OF STOCK ITEMS
+       toggle and Prev / Next arrows
+    4. ADDITIONAL INFORMATION 2-column specification table
+    5. Supporting Customer Quote & California Prop 65 Bootstrap modals
+#}
+{% sw_extends '@Storefront/storefront/page/content/product-detail.html.twig' %}
+
+{% block cms_content %}
+    {% set product = page.product %}
+    {% set id = product.id %}
+    {% set name = product.translated.name %}
+    {% set sku = product.productNumber %}
+    {% set upcVal = product.translated.customFields.upc ?: (product.customFields.upc ?: product.ean) %}
+    {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+
+    {# Resolve primary price, list price, MSRP, and MAP safely #}
+    {% set price = product.calculatedPrice %}
+    {% if product.calculatedPrices is defined and product.calculatedPrices.count > 0 %}
+        {% set price = product.calculatedPrices.last %}
+    {% endif %}
+    {% set unitPrice = price ? price.unitPrice : 0 %}
+    {% set listPriceVal = (price and price.listPrice) ? price.listPrice.price : null %}
+
+    {% set msrpVal = product.translated.customFields.msrp ?: (product.customFields.msrp ?: null) %}
+    {% if (not msrpVal or msrpVal <= 0) and listPriceVal %}
+        {% set msrpVal = listPriceVal %}
+    {% endif %}
+    {% if not msrpVal or msrpVal <= 0 %}
+        {% set msrpVal = unitPrice %}
+    {% endif %}
+
+    {% set mapVal = product.translated.customFields.map ?: (product.customFields.map ?: null) %}
+
+    {# Stock & buyability states #}
+    {% set stockQty = product.availableStock is not null ? product.availableStock : (product.stock ?: 0) %}
+    {% set isInStock = stockQty > 0 %}
+    {% set isBackOrder = (not isInStock) and (not product.isCloseout) %}
+    {% set canBuy = isInStock or isBackOrder %}
+
+    {# Collect ordered unique gallery media items starting with cover #}
+    {% set galleryMedia = [] %}
+    {% set seenMediaIds = [] %}
+    {% if product.cover and product.cover.media and product.cover.media.url %}
+        {% set galleryMedia = galleryMedia|merge([product.cover.media]) %}
+        {% set seenMediaIds = seenMediaIds|merge([product.cover.media.id]) %}
+    {% endif %}
+    {% if product.media %}
+        {% for pm in product.media %}
+            {% if pm.media and pm.media.url and (pm.media.id not in seenMediaIds) %}
+                {% set galleryMedia = galleryMedia|merge([pm.media]) %}
+                {% set seenMediaIds = seenMediaIds|merge([pm.media.id]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% set mainMedia = galleryMedia|first %}
+
+    {% set altProducts = (page.extensions.zandersAlternativeProducts is defined and page.extensions.zandersAlternativeProducts.products is defined)
+        ? page.extensions.zandersAlternativeProducts.products
+        : [] %}
+
+    {% set detailUrl = seoUrl('frontend.detail.page', { productId: id }) %}
+    {% set mailSubject = ('Zanders Product: ' ~ name ~ ' (' ~ sku ~ ')')|url_encode %}
+    {% set mailBody = ('Check out this item at Zanders Sporting Goods:\n\n' ~ name ~ '\nItem Number: ' ~ sku ~ '\nPrice: ' ~ (unitPrice|currency) ~ '\n\n' ~ app.request.uri)|url_encode %}
+
+    <div class="zanders-pdp-page container" itemscope itemtype="https://schema.org/Product">
+        <meta itemprop="name" content="{{ name|e('html_attr') }}">
+        <meta itemprop="sku" content="{{ sku|e('html_attr') }}">
+
+        {# =================================================================
+           1. TOP 2-COLUMN PRODUCT SHOWCASE
+           ================================================================= #}
+        <section class="zanders-pdp-showcase">
+            <div class="row g-4 align-items-start">
+
+                {# Left Column: Gallery Main Frame + Thumbnail Grid #}
+                <div class="col-12 col-lg-7 zanders-pdp-gallery-col">
+                    <div class="zanders-pdp-gallery-main">
+                        {# Top-right floating Wishlist (logged-in only) & Compare buttons #}
+                        <div class="zanders-pdp-gallery-actions">
+                            {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                                {% set addToWishlistOptions = {
+                                    productId: id,
+                                    router: {
+                                        add: {
+                                            afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                                            path: path('frontend.wishlist.product.add', { productId: id }),
+                                        },
+                                        remove: {
+                                            path: path('frontend.wishlist.product.remove', { productId: id }),
+                                        }
+                                    },
+                                    texts: {
+                                        add: 'listing.addToWishlist'|trans|sw_sanitize,
+                                        remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                                    }
+                                } %}
+                                <button type="button"
+                                        class="zanders-pdp-float-icon product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                                        title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                        aria-label="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                        data-add-to-wishlist="true"
+                                        data-product-id="{{ id }}"
+                                        data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                                    <span class="icon-wishlist-not-added">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="icon-wishlist-added">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#991020" stroke="#991020"
+                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            {% endif %}
+
+                            {% if config('FroshProductCompare.config.active') %}
+                                {% set addToCompareOptions = {
+                                    productId: id,
+                                    showIconOnly: true,
+                                    defaultText: 'froshProductCompare.general.addToCompare'|trans|sw_sanitize,
+                                    addedText: 'froshProductCompare.general.removeFromCompare'|trans|sw_sanitize
+                                } %}
+                                <button type="button"
+                                        class="zanders-pdp-float-icon zanders-pdp-compare-btn"
+                                        data-add-to-compare-button="true"
+                                        data-add-to-compare-button-options="{{ addToCompareOptions|json_encode }}"
+                                        title="{{ 'zanders.productCard.compare'|trans|default('Compare') }}"
+                                        aria-label="{{ 'zanders.productCard.compare'|trans|default('Compare') }}">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                         stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                        <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                        <path d="M7 21h10" />
+                                        <path d="M12 3v18" />
+                                        <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                                    </svg>
+                                </button>
+                            {% endif %}
+                        </div>
+
+                        {% if mainMedia %}
+                            <img src="{{ mainMedia.url }}"
+                                 alt="{{ mainMedia.translated.alt ?: name }}"
+                                 title="{{ mainMedia.translated.title ?: name }}"
+                                 class="zanders-pdp-main-img js-zanders-pdp-main-img"
+                                 itemprop="image">
+                        {% else %}
+                            <div class="zanders-pdp-main-placeholder">
+                                {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Thumbnail Preview Row below main gallery image #}
+                    {% if galleryMedia|length > 0 %}
+                        <div class="zanders-pdp-gallery-thumbs">
+                            {% for mediaItem in galleryMedia %}
+                                <button type="button"
+                                        class="zanders-pdp-thumb-btn js-zanders-pdp-thumb{% if loop.first %} is-active{% endif %}"
+                                        data-img-src="{{ mediaItem.url }}"
+                                        data-img-alt="{{ (mediaItem.translated.alt ?: name)|e('html_attr') }}"
+                                        aria-label="View image {{ loop.index }}">
+                                    <img src="{{ mediaItem.url }}"
+                                         alt="{{ mediaItem.translated.alt ?: name }}"
+                                         loading="lazy"
+                                         class="zanders-pdp-thumb-img">
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Right Column: Title, Meta, Price, Qty/CTA, Overview, Features, Quote/Email & Prop 65 #}
+                <div class="col-12 col-lg-5 zanders-pdp-info-col">
+                    <h1 class="zanders-pdp-title">{{ name }}</h1>
+
+                    <div class="zanders-pdp-meta-lines">
+                        <div class="zanders-pdp-sku">
+                            ITEM NUMBER: <span>{{ sku }}</span>
+                        </div>
+                        <div class="zanders-pdp-availability{% if not isInStock %} is-out{% endif %}">
+                            AVAILABLE : <span>{{ stockQty }}</span>
+                        </div>
+                    </div>
+
+                    <div class="zanders-pdp-price-row" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                        <meta itemprop="priceCurrency" content="{{ context.currency.isoCode }}">
+                        <meta itemprop="price" content="{{ unitPrice }}">
+                        <div class="zanders-pdp-price-main">
+                            {% if listPriceVal and listPriceVal > unitPrice %}
+                                <span class="zanders-pdp-price-old">{{ listPriceVal|currency }}</span>
+                            {% endif %}
+                            <span class="zanders-pdp-price-current">{{ unitPrice|currency }}</span>
+                        </div>
+                        <div class="zanders-pdp-msrp">
+                            MSRP : <span>{{ msrpVal|currency }}</span>
+                        </div>
+                    </div>
+
+                    {# Variant Configurator (renders automatically for variant products) #}
+                    {% if page.configuratorSettings is defined and page.configuratorSettings|length > 0 %}
+                        <div class="zanders-pdp-configurator">
+                            {% sw_include '@Storefront/storefront/component/buy-widget/configurator.html.twig' with {
+                                product: product,
+                                configuratorSettings: page.configuratorSettings,
+                                pageType: 'product_detail'
+                            } %}
+                        </div>
+                    {% endif %}
+
+                    {# Add to Cart / Back Order Form #}
+                    <form action="{{ path('frontend.checkout.line-item.add') }}"
+                          method="post"
+                          class="buy-widget zanders-pdp-buy-form"
+                          data-add-to-cart="true">
+                        <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                        <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: id}|json_encode }}">
+                        <input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
+                        <input type="hidden" name="lineItems[{{ id }}][type]" value="product">
+                        <input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
+                        <input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
+                        <input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
+                        <input type="hidden" name="product-name" value="{{ name }}">
+
+                        <div class="zanders-pdp-buy-row">
+                            <div class="zanders-pdp-qty-group">
+                                <label for="zandersPdpQty" class="zanders-pdp-qty-label">Qty</label>
+                                <input type="number"
+                                       id="zandersPdpQty"
+                                       name="lineItems[{{ id }}][quantity]"
+                                       value="{{ product.minPurchase ?: 1 }}"
+                                       min="{{ product.minPurchase ?: 1 }}"
+                                       max="{{ product.maxPurchase ?: 999 }}"
+                                       step="{{ product.purchaseSteps ?: 1 }}"
+                                       class="form-control zanders-pdp-qty-input js-zanders-pdp-qty">
+                            </div>
+
+                            <div class="zanders-pdp-cta-wrap">
+                                {% if canBuy %}
+                                    <button type="submit" class="btn zanders-pdp-btn-buy">
+                                        {% if isBackOrder %}
+                                            BACK ORDER
+                                        {% else %}
+                                            ADD TO CART
+                                        {% endif %}
+                                    </button>
+                                {% else %}
+                                    <button type="button" class="btn zanders-pdp-btn-buy is-disabled" disabled>
+                                        OUT OF STOCK
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+
+                    {# Quick Overview Gray Box #}
+                    <div class="zanders-pdp-info-box">
+                        <h2 class="zanders-pdp-box-heading">QUICK OVERVIEW</h2>
+                        <div class="zanders-pdp-box-body" itemprop="description">
+                            {% if product.translated.description %}
+                                {{ product.translated.description|striptags|u.truncate(240, '...') }}
+                            {% else %}
+                                {{ name }} — Genuine dealer-supplied sporting goods product from Zanders Sporting Goods (Item #{{ sku }}).
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Features Gray Box #}
+                    <div class="zanders-pdp-info-box">
+                        <h2 class="zanders-pdp-box-heading">FEATURES</h2>
+                        <ul class="zanders-pdp-features-list">
+                            {% if product.manufacturer and product.manufacturer.translated.name %}
+                                <li>Manufacturer: {{ product.manufacturer.translated.name }}</li>
+                            {% endif %}
+                            {% if product.sortedProperties|length > 0 %}
+                                {% for propGroup in product.sortedProperties %}
+                                    <li>
+                                        {{ propGroup.translated.name }}:
+                                        {% for opt in propGroup.options %}
+                                            {{ opt.translated.name }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                            {% if upcVal %}
+                                <li>UPC: {{ upcVal }}</li>
+                            {% endif %}
+                            <li>Item Number: {{ sku }}</li>
+                        </ul>
+                    </div>
+
+                    {# Secondary Dealer Actions: Create Customer Quote & Email to a Friend #}
+                    <div class="zanders-pdp-secondary-btns">
+                        <button type="button"
+                                class="btn zanders-pdp-dark-btn js-zanders-open-quote"
+                                data-bs-toggle="modal"
+                                data-bs-target="#zandersCustomerQuoteModal">
+                            CREATE CUSTOMER QUOTE
+                        </button>
+                        <a href="mailto:?subject={{ mailSubject }}&body={{ mailBody }}"
+                           class="btn zanders-pdp-dark-btn">
+                            EMAIL TO A FRIEND
+                        </a>
+                    </div>
+
+                    {# California Prop 65 Warning Box #}
+                    <div class="zanders-pdp-prop65">
+                        <svg class="zanders-pdp-prop65-icon" width="18" height="18" viewBox="0 0 24 24" fill="#f0b429"
+                             stroke="#9c6b00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13" stroke="#111111" stroke-width="2"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17" stroke="#111111" stroke-width="2.2"></line>
+                        </svg>
+                        <span class="zanders-pdp-prop65-text">
+                            <strong>WARNING:</strong>
+                            <button type="button"
+                                    class="zanders-pdp-prop65-link"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#zandersProp65Modal">
+                                California Prop 65 Warning
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {# =================================================================
+           2. ALTERNATIVE PRODUCTS CAROUSEL SECTION
+           ================================================================= #}
+        {% if altProducts|length > 0 %}
+            <section class="zanders-pdp-section zanders-pdp-alternatives" id="zandersAltProductsSection">
+                <div class="zanders-pdp-section-header">
+                    <h2 class="zanders-pdp-section-title">ALTERNATIVE PRODUCTS</h2>
+                    <div class="zanders-pdp-section-controls">
+                        <button type="button"
+                                class="btn zanders-pdp-alt-stock-btn js-zanders-alt-stock-toggle"
+                                aria-pressed="false">
+                            HIDE OUT OF STOCK ITEMS
+                        </button>
+                        <div class="zanders-pdp-carousel-nav">
+                            <button type="button"
+                                    class="zanders-pdp-nav-arrow zanders-pdp-nav-arrow--prev js-zanders-alt-prev"
+                                    aria-label="Previous alternative products">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                            </button>
+                            <button type="button"
+                                    class="zanders-pdp-nav-arrow zanders-pdp-nav-arrow--next js-zanders-alt-next"
+                                    aria-label="Next alternative products">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="zanders-pdp-alt-track js-zanders-alt-track">
+                    {% for alt in altProducts %}
+                        {% set altId = alt.id %}
+                        {% set altName = alt.translated.name %}
+                        {% set altSku = alt.productNumber %}
+                        {% set altUpc = alt.translated.customFields.upc ?: (alt.customFields.upc ?: alt.ean) %}
+                        {% set altStock = alt.availableStock is not null ? alt.availableStock : (alt.stock ?: 0) %}
+                        {% set altInStock = altStock > 0 %}
+                        {% set altUrl = seoUrl('frontend.detail.page', { productId: altId }) %}
+                        {% set altCover = alt.cover ? alt.cover.media : null %}
+                        {% set altPriceObj = alt.calculatedPrice %}
+                        {% set altPrice = altPriceObj ? altPriceObj.unitPrice : 0 %}
+                        {% set altListPrice = (altPriceObj and altPriceObj.listPrice) ? altPriceObj.listPrice.price : null %}
+                        {% set altMsrp = alt.translated.customFields.msrp ?: (alt.customFields.msrp ?: (altListPrice ?: altPrice)) %}
+
+                        <article class="zanders-alt-card js-zanders-alt-card" data-in-stock="{{ altInStock ? '1' : '0' }}">
+                            <a href="{{ altUrl }}" class="zanders-alt-card-img-wrap" title="{{ altName }}">
+                                {% if altCover and altCover.url %}
+                                    <img src="{{ altCover.url }}"
+                                         alt="{{ altCover.translated.alt ?: altName }}"
+                                         loading="lazy"
+                                         class="zanders-alt-card-img">
+                                {% else %}
+                                    <span class="zanders-alt-card-placeholder">
+                                        {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                                    </span>
+                                {% endif %}
+                            </a>
+
+                            <a href="{{ altUrl }}" class="zanders-alt-card-title" title="{{ altName }}">
+                                {{ altName|u.truncate(65, '...') }}
+                            </a>
+
+                            <div class="zanders-alt-card-meta">
+                                <div>Item Number: <strong>{{ altSku }}</strong></div>
+                                {% if altUpc %}
+                                    <div>UPC: <strong>{{ altUpc }}</strong></div>
+                                {% endif %}
+                                <div>Available: <strong>{{ altStock }}</strong></div>
+                            </div>
+
+                            <div class="zanders-alt-card-prices">
+                                <div class="zanders-alt-price-left">
+                                    {% if altListPrice and altListPrice > altPrice %}
+                                        <span class="zanders-alt-price-old">{{ altListPrice|currency }}</span>
+                                    {% endif %}
+                                    <span class="zanders-alt-price-val">{{ altPrice|currency }}</span>
+                                </div>
+                                <div class="zanders-alt-price-msrp">
+                                    MSRP : <span>{{ altMsrp|currency }}</span>
+                                </div>
+                            </div>
+
+                            <div class="zanders-alt-card-footer">
+                                <form action="{{ path('frontend.checkout.line-item.add') }}"
+                                      method="post"
+                                      class="zanders-alt-buy-form"
+                                      data-add-to-cart="true">
+                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: altId}|json_encode }}">
+                                    <input type="hidden" name="lineItems[{{ altId }}][id]" value="{{ altId }}">
+                                    <input type="hidden" name="lineItems[{{ altId }}][type]" value="product">
+                                    <input type="hidden" name="lineItems[{{ altId }}][referencedId]" value="{{ altId }}">
+                                    <input type="hidden" name="lineItems[{{ altId }}][quantity]" value="1">
+                                    <input type="hidden" name="lineItems[{{ altId }}][stackable]" value="1">
+                                    <input type="hidden" name="lineItems[{{ altId }}][removable]" value="1">
+                                    <input type="hidden" name="product-name" value="{{ altName }}">
+                                    <button type="submit" class="btn zanders-alt-add-btn">
+                                        ADD TO CART
+                                    </button>
+                                </form>
+
+                                <div class="zanders-alt-card-icons">
+                                    {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                                        {% set altWishlistOpts = {
+                                            productId: altId,
+                                            router: {
+                                                add: {
+                                                    afterLoginPath: path('frontend.wishlist.add.after.login', { productId: altId }),
+                                                    path: path('frontend.wishlist.product.add', { productId: altId }),
+                                                },
+                                                remove: {
+                                                    path: path('frontend.wishlist.product.remove', { productId: altId }),
+                                                }
+                                            },
+                                            texts: {
+                                                add: 'listing.addToWishlist'|trans|sw_sanitize,
+                                                remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                                            }
+                                        } %}
+                                        <button type="button"
+                                                class="zanders-alt-icon-btn product-wishlist-btn product-wishlist-{{ altId }} product-wishlist-not-added"
+                                                title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}"
+                                                data-add-to-wishlist="true"
+                                                data-product-id="{{ altId }}"
+                                                data-add-to-wishlist-options="{{ altWishlistOpts|json_encode }}">
+                                            <span class="icon-wishlist-not-added">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#999999" aria-hidden="true">
+                                                    <path d="M16.44 3.1C14.63 3.1 13.01 3.98 12 5.33 10.99 3.98 9.37 3.1 7.56 3.1 4.49 3.1 2 5.6 2 8.69c0 1.19.19 2.29.52 3.31 1.58 5 6.45 7.99 8.86 8.81.34.12.9.12 1.24 0 2.41-.82 7.28-3.81 8.86-8.81.33-1.02.52-2.12.52-3.31 0-3.09-2.49-5.59-5.56-5.59Z"/>
+                                                </svg>
+                                            </span>
+                                            <span class="icon-wishlist-added">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#991020" aria-hidden="true">
+                                                    <path d="M16.44 3.1C14.63 3.1 13.01 3.98 12 5.33 10.99 3.98 9.37 3.1 7.56 3.1 4.49 3.1 2 5.6 2 8.69c0 1.19.19 2.29.52 3.31 1.58 5 6.45 7.99 8.86 8.81.34.12.9.12 1.24 0 2.41-.82 7.28-3.81 8.86-8.81.33-1.02.52-2.12.52-3.31 0-3.09-2.49-5.59-5.56-5.59Z"/>
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    {% endif %}
+
+                                    {% if config('FroshProductCompare.config.active') %}
+                                        {% set altCompareOpts = {
+                                            productId: altId,
+                                            showIconOnly: true,
+                                            defaultText: 'froshProductCompare.general.addToCompare'|trans|sw_sanitize,
+                                            addedText: 'froshProductCompare.general.removeFromCompare'|trans|sw_sanitize
+                                        } %}
+                                        <button type="button"
+                                                class="zanders-alt-icon-btn product-compare-btn"
+                                                data-add-to-compare-button="true"
+                                                data-add-to-compare-button-options="{{ altCompareOpts|json_encode }}"
+                                                title="{{ 'zanders.productCard.compare'|trans|default('Compare') }}">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                                <path d="M7 21h10" />
+                                                <path d="M12 3v18" />
+                                                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                                            </svg>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        {# =================================================================
+           3. ADDITIONAL INFORMATION SPECIFICATION TABLE
+           ================================================================= #}
+        <section class="zanders-pdp-section zanders-pdp-additional-info">
+            <div class="zanders-pdp-section-header">
+                <h2 class="zanders-pdp-section-title">ADDITIONAL INFORMATION</h2>
+            </div>
+
+            <div class="zanders-pdp-specs-wrap">
+                <table class="zanders-pdp-specs-table">
+                    <tbody>
+                        {% if product.manufacturer and product.manufacturer.translated.name %}
+                            <tr>
+                                <th>MANUFACTURER</th>
+                                <td>
+                                    <div class="zanders-pdp-mfg-name">{{ product.manufacturer.translated.name }}</div>
+                                    {% if product.manufacturer.translated.description %}
+                                        <div class="zanders-pdp-mfg-desc">{{ product.manufacturer.translated.description|striptags }}</div>
+                                    {% endif %}
+                                    {% if product.manufacturer.link %}
+                                        <div class="zanders-pdp-mfg-link">
+                                            <a href="{{ product.manufacturer.link }}" target="_blank" rel="noopener">{{ product.manufacturer.link }}</a>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+
+                        <tr>
+                            <th>MANUFACTURER PART NUMBER</th>
+                            <td>{{ product.manufacturerNumber ?: sku }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>ITEM NUMBER</th>
+                            <td>{{ sku }}</td>
+                        </tr>
+
+                        {% if upcVal %}
+                            <tr>
+                                <th>UPC</th>
+                                <td>{{ upcVal }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% if product.height and product.width and product.length %}
+                            <tr>
+                                <th>DIMENSION</th>
+                                <td>{{ product.height }} X {{ product.width }} X {{ product.length }}</td>
+                            </tr>
+                        {% endif %}
+
+                        {% for propGroup in product.sortedProperties %}
+                            <tr>
+                                <th>{{ propGroup.translated.name|upper }}</th>
+                                <td>
+                                    {% for opt in propGroup.options %}
+                                        {{ opt.translated.name|upper }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        {% if product.height %}
+                            <tr>
+                                <th>HEIGHT</th>
+                                <td>{{ product.height|number_format(4, '.', '') }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if product.width %}
+                            <tr>
+                                <th>WIDTH</th>
+                                <td>{{ product.width|number_format(4, '.', '') }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if product.length %}
+                            <tr>
+                                <th>LENGTH</th>
+                                <td>{{ product.length|number_format(4, '.', '') }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if product.weight %}
+                            <tr>
+                                <th>WEIGHT</th>
+                                <td>{{ product.weight|number_format(2, '.', '') }} lbs</td>
+                            </tr>
+                        {% endif %}
+
+                        <tr>
+                            <th>MSRP</th>
+                            <td>{{ msrpVal|currency }}</td>
+                        </tr>
+
+                        {% if mapVal and mapVal > 0 %}
+                            <tr>
+                                <th>MAP</th>
+                                <td>{{ mapVal|currency }}</td>
+                            </tr>
+                        {% endif %}
+
+                        <tr>
+                            <th>PROP65WARNINGCODE</th>
+                            <td>A6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    {# =====================================================================
+       4. CUSTOMER QUOTE MODAL
+       ===================================================================== #}
+    <div class="modal fade" id="zandersCustomerQuoteModal" tabindex="-1" aria-labelledby="zandersQuoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content zanders-pdp-modal">
+                <div class="modal-header zanders-pdp-modal-header">
+                    <h5 class="modal-title" id="zandersQuoteModalLabel">CREATE CUSTOMER QUOTE</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="zanders-quote-summary">
+                        <div class="zanders-quote-product-name">{{ name }}</div>
+                        <div class="zanders-quote-sku">Item Number: {{ sku }}{% if upcVal %} | UPC: {{ upcVal }}{% endif %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="zandersQuoteCustomer" class="form-label zanders-quote-label">Customer Name</label>
+                        <input type="text" id="zandersQuoteCustomer" class="form-control" placeholder="Enter customer name">
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <label for="zandersQuoteQty" class="form-label zanders-quote-label">Quantity</label>
+                            <input type="number" id="zandersQuoteQty" class="form-control" value="1" min="1">
+                        </div>
+                        <div class="col-6">
+                            <label for="zandersQuoteUnitPrice" class="form-label zanders-quote-label">Quoted Unit Price</label>
+                            <input type="number" id="zandersQuoteUnitPrice" class="form-control" step="0.01" value="{{ msrpVal|number_format(2, '.', '') }}">
+                        </div>
+                    </div>
+
+                    <div class="zanders-quote-total-box">
+                        <span>Estimated Quote Total:</span>
+                        <strong id="zandersQuoteTotal">{{ msrpVal|currency }}</strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn zanders-pdp-btn-buy js-zanders-print-quote">Print Quote</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# =====================================================================
+       5. CALIFORNIA PROP 65 WARNING MODAL
+       ===================================================================== #}
+    <div class="modal fade" id="zandersProp65Modal" tabindex="-1" aria-labelledby="zandersProp65ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content zanders-pdp-modal">
+                <div class="modal-header zanders-pdp-modal-header">
+                    <h5 class="modal-title" id="zandersProp65ModalLabel">CALIFORNIA PROPOSITION 65 WARNING</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-2">
+                        <strong>WARNING:</strong> This product can expose you to chemicals including lead, which is known to the State of California to cause cancer and birth defects or other reproductive harm.
+                    </p>
+                    <p class="mb-0">
+                        For more information go to <a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener">www.P65Warnings.ca.gov</a>.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn zanders-pdp-btn-buy" data-bs-dismiss="modal">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#
+        Zanders Product Detail Page Interactive Script
+        1. Gallery thumbnail switcher (updates main image src/alt on click)
+        2. Alternative Products horizontal carousel Prev/Next arrows & live HIDE OUT OF STOCK filter
+        3. Customer Quote modal live total calculator & print helper
+    #}
+    <script>
+    (function() {
+        var currencySymbol = {{ context.currency.symbol|json_encode|raw }};
+
+        /**
+         * Initializes thumbnail click switching for the main product gallery.
+         */
+        function initGalleryThumbs() {
+            var mainImg = document.querySelector('.js-zanders-pdp-main-img');
+            var thumbs = document.querySelectorAll('.js-zanders-pdp-thumb');
+            if (!mainImg || !thumbs.length) {
+                return;
+            }
+            thumbs.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var src = btn.getAttribute('data-img-src');
+                    var alt = btn.getAttribute('data-img-alt') || '';
+                    if (src) {
+                        mainImg.src = src;
+                        mainImg.alt = alt;
+                    }
+                    thumbs.forEach(function(t) {
+                        t.classList.remove('is-active');
+                    });
+                    btn.classList.add('is-active');
+                });
+            });
+        }
+
+        /**
+         * Initializes Alternative Products carousel Prev/Next scrolling and
+         * live "Hide Out of Stock Items" filtering.
+         */
+        function initAlternativeProducts() {
+            var track = document.querySelector('.js-zanders-alt-track');
+            var prevBtn = document.querySelector('.js-zanders-alt-prev');
+            var nextBtn = document.querySelector('.js-zanders-alt-next');
+            var stockToggle = document.querySelector('.js-zanders-alt-stock-toggle');
+
+            if (track && prevBtn && nextBtn) {
+                var scrollByCard = function(direction) {
+                    var firstVisible = track.querySelector('.js-zanders-alt-card:not(.is-hidden)');
+                    var step = firstVisible ? (firstVisible.getBoundingClientRect().width + 16) : 280;
+                    track.scrollBy({ left: direction * step, behavior: 'smooth' });
+                };
+
+                prevBtn.addEventListener('click', function() { scrollByCard(-1); });
+                nextBtn.addEventListener('click', function() { scrollByCard(1); });
+            }
+
+            if (track && stockToggle) {
+                var hideOutOfStock = false;
+                stockToggle.addEventListener('click', function() {
+                    hideOutOfStock = !hideOutOfStock;
+                    stockToggle.setAttribute('aria-pressed', hideOutOfStock ? 'true' : 'false');
+                    stockToggle.classList.toggle('is-active', hideOutOfStock);
+                    stockToggle.textContent = hideOutOfStock
+                        ? 'SHOW OUT OF STOCK ITEMS'
+                        : 'HIDE OUT OF STOCK ITEMS';
+
+                    track.querySelectorAll('.js-zanders-alt-card').forEach(function(card) {
+                        var inStock = card.getAttribute('data-in-stock') === '1';
+                        card.classList.toggle('is-hidden', hideOutOfStock && !inStock);
+                    });
+                });
+            }
+        }
+
+        /**
+         * Syncs PDP quantity into the Customer Quote modal and updates estimated total.
+         */
+        function initQuoteModal() {
+            var pdpQty = document.querySelector('.js-zanders-pdp-qty');
+            var openBtn = document.querySelector('.js-zanders-open-quote');
+            var quoteQty = document.getElementById('zandersQuoteQty');
+            var quoteUnit = document.getElementById('zandersQuoteUnitPrice');
+            var quoteTotal = document.getElementById('zandersQuoteTotal');
+            var printBtn = document.querySelector('.js-zanders-print-quote');
+
+            if (!quoteQty || !quoteUnit || !quoteTotal) {
+                return;
+            }
+
+            function recalcTotal() {
+                var q = Math.max(1, parseInt(quoteQty.value, 10) || 1);
+                var p = Math.max(0, parseFloat(quoteUnit.value) || 0);
+                quoteTotal.textContent = currencySymbol + (q * p).toFixed(2);
+            }
+
+            if (openBtn && pdpQty) {
+                openBtn.addEventListener('click', function() {
+                    quoteQty.value = pdpQty.value || '1';
+                    recalcTotal();
+                });
+            }
+
+            quoteQty.addEventListener('input', recalcTotal);
+            quoteUnit.addEventListener('input', recalcTotal);
+
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+        }
+
+        /**
+         * Bootstraps all PDP interactive modules.
+         */
+        function initZandersPdp() {
+            initGalleryThumbs();
+            initAlternativeProducts();
+            initQuoteModal();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initZandersPdp);
+        } else {
+            initZandersPdp();
+        }
+    })();
+    </script>
+{% endblock %}
+

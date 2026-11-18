@@ -83,14 +83,27 @@
     </div>
 
     {% block element_product_grid_script %}
+    {#
+        Product Grid Interactive Controller
+        Handles:
+        - AJAX pagination ("Load More" button & vertical infinite scroll via IntersectionObserver)
+        - Mobile horizontal slider controls (prev/next buttons & horizontal end-of-track auto-load)
+        - Re-initializing Shopware storefront JS plugins on newly appended product cards
+    #}
     <script>
         (function () {
+            /**
+             * Scans the DOM for uninitialized `[data-product-grid="true"]` elements
+             * and attaches pagination, infinite scroll, and mobile slider handlers to each.
+             */
             function initGridElement() {
                 var gridWrappers = document.querySelectorAll('[data-product-grid="true"]');
                 gridWrappers.forEach(function (gridEl) {
+                    // Guard against duplicate initialization (e.g. after AJAX DOM updates)
                     if (gridEl.dataset.gridInitialized) return;
                     gridEl.dataset.gridInitialized = 'true';
 
+                    // Parse CMS element configuration passed from Twig via data attribute
                     var rawOptions = gridEl.getAttribute('data-product-grid-options');
                     var options = {};
                     try {
@@ -111,14 +124,24 @@
                     var currentPage = parseInt(options.page, 10) || 1;
                     var hasMore = Boolean(options.hasMore);
 
+                    /**
+                     * Displays the loading spinner below the product grid during AJAX requests.
+                     */
                     function showLoader() {
                         if (loader) loader.classList.remove('d-none');
                     }
 
+                    /**
+                     * Hides the loading spinner once an AJAX request completes.
+                     */
                     function hideLoader() {
                         if (loader) loader.classList.add('d-none');
                     }
 
+                    /**
+                     * Marks pagination as finished: hides Load More button & infinite-scroll sentinel,
+                     * and reveals the optional end-of-list indicator.
+                     */
                     function onAllLoaded() {
                         hasMore = false;
                         if (button) button.style.display = 'none';
@@ -126,6 +149,10 @@
                         if (endMsg) endMsg.classList.remove('d-none');
                     }
 
+                    /**
+                     * Fetches the next page of product cards from the plugin's JSON endpoint,
+                     * appends the rendered HTML to the grid container, and re-initializes Shopware plugins.
+                     */
                     function loadNextPage() {
                         if (isLoading || !hasMore) return;
                         isLoading = true;
@@ -153,6 +180,7 @@
                                     currentPage = parseInt(data.page, 10);
                                     hasMore = Boolean(data.hasMore);
 
+                                    // Bind Shopware plugins (add-to-cart, wishlist, etc.) on newly injected cards
                                     if (window.PluginManager && typeof window.PluginManager.initializePlugins === 'function') {
                                         window.PluginManager.initializePlugins();
                                     }
@@ -174,7 +202,7 @@
                             });
                     }
 
-                    // Load More Button Click
+                    // Bind "Load More" button click handler
                     if (button) {
                         button.addEventListener('click', function (e) {
                             e.preventDefault();
@@ -182,7 +210,7 @@
                         });
                     }
 
-                    // Mobile Slider Arrow Buttons Click
+                    // Bind mobile slider Previous button: scrolls one card width to the left
                     if (prevBtn) {
                         prevBtn.addEventListener('click', function (e) {
                             e.preventDefault();
@@ -191,6 +219,7 @@
                         });
                     }
 
+                    // Bind mobile slider Next button: scrolls one card width to the right
                     if (nextBtn) {
                         nextBtn.addEventListener('click', function (e) {
                             e.preventDefault();
@@ -199,7 +228,7 @@
                         });
                     }
 
-                    // Horizontal Infinite Scroll on Mobile
+                    // Mobile horizontal slider infinite scroll: load next batch when nearing right edge
                     if (options.mobileLayout === 'slider' && container) {
                         container.addEventListener('scroll', function () {
                             if (window.innerWidth < 768 && options.loadMode === 'infinite_scroll' && !isLoading && hasMore) {
@@ -210,7 +239,7 @@
                         }, { passive: true });
                     }
 
-                    // Vertical Intersection Observer for Infinite Scroll
+                    // Desktop/vertical infinite scroll using IntersectionObserver on bottom sentinel
                     if (options.loadMode === 'infinite_scroll' && sentinel && 'IntersectionObserver' in window) {
                         var observer = new IntersectionObserver(function (entries) {
                             entries.forEach(function (entry) {
@@ -225,6 +254,7 @@
                 });
             }
 
+            // Initialize once DOM is ready
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', initGridElement);
             } else {

@@ -96,10 +96,10 @@
     }
 
     // ==============================================================================
-    // Mobile Slider Mode (Active on screens <= 767.98px)
+    // Mobile Slider Mode (Standard Shopware media-breakpoint-down(md))
     // ==============================================================================
     &.has-mobile-slider {
-        @media (max-width: 767.98px) {
+        @include media-breakpoint-down(md) {
             position: relative;
 
             .product-grid-slider-controls {
@@ -147,10 +147,10 @@
                 scroll-snap-type: x mandatory;
                 scroll-behavior: smooth;
                 -webkit-overflow-scrolling: touch;
-                padding: 4px 8px 16px 8px;
-                margin-left: -8px;
-                margin-right: -8px;
-                gap: 16px;
+                padding: 4px 2px 16px 2px;
+                margin-left: 0;
+                margin-right: 0;
+                gap: 12px;
                 scrollbar-width: thin;
                 scrollbar-color: #8c1d2f #f1f1f1;
 
@@ -170,15 +170,22 @@
 
                 div.col.product-grid-col,
                 .product-grid-col {
-                    flex: 0 0 76%;
-                    max-width: 76%;
-                    width: 76%;
+                    flex: 0 0 78%;
+                    max-width: 78%;
+                    width: 78%;
                     min-width: 240px;
                     scroll-snap-align: start;
                     scroll-snap-stop: normal;
                     margin-bottom: 0;
                     padding-left: 0;
                     padding-right: 0;
+
+                    @include media-breakpoint-down(sm) {
+                        flex: 0 0 86%;
+                        max-width: 86%;
+                        width: 86%;
+                        min-width: 240px;
+                    }
 
                     .card,
                     .product-box {

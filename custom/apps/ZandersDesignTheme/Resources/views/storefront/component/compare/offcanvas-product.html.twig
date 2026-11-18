@@ -1,0 +1,151 @@
+{#
+    Zanders Offcanvas Compare Item Card Override
+    ==========================================================================
+    Extends FroshProductCompare's `component/compare/offcanvas-product.html.twig`
+    to match Zanders' clean Cart Offcanvas card design:
+    - Softly framed product thumbnail on left
+    - Bold uppercase title + perfectly centered SVG remove (`×`) button on top right
+    - Compact variant chips (no awkward spacing or dangling pipes)
+    - Item # and crimson unit price on one crisp row
+    - Wishlist action shown ONLY when the customer is logged in (non-guest)
+    - Preserves `.offcanvas-comparison-item` and `[data-add-to-compare-button]`
+      required by `AddToCompareButtonPlugin` for instant item removal.
+#}
+{% sw_extends '@Storefront/storefront/component/compare/offcanvas-product.html.twig' %}
+
+{% block frosh_product_compare_offcanvas_container %}
+    {% set label = product.translated.name %}
+    {% set id = product.id %}
+    {% set cover = product.cover.media %}
+    {% set detailUrl = seoUrl('frontend.detail.page', { 'productId': id }) %}
+    {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+
+    {# Resolve primary unit price matching Zanders product card logic #}
+    {% set displayPrice = product.calculatedPrice %}
+    {% if product.calculatedPrices is defined and product.calculatedPrices.count > 0 %}
+        {% set displayPrice = product.calculatedPrices.last %}
+    {% endif %}
+    {% if product.variantListingConfig.displayParent and product.parentId === null and product.calculatedCheapestPrice is defined %}
+        {% set displayPrice = product.calculatedCheapestPrice %}
+    {% endif %}
+
+    {% set addToCompareOptions = {
+        productId: id
+    } %}
+
+    <div class="offcanvas-comparison-item zanders-compare-offcanvas-card">
+        <div class="zanders-compare-offcanvas-card-inner">
+            {# Left: Product Thumbnail #}
+            <a href="{{ detailUrl }}"
+               class="zanders-compare-offcanvas-thumb"
+               target="_blank"
+               title="{{ label }}">
+                {% if cover.url %}
+                    <img src="{{ cover.url }}"
+                         alt="{{ cover.translated.alt ?: label }}"
+                         loading="lazy"
+                         class="zanders-compare-offcanvas-img">
+                {% else %}
+                    <span class="zanders-compare-offcanvas-placeholder">
+                        {% sw_icon 'placeholder' style { 'size': 'fluid' } %}
+                    </span>
+                {% endif %}
+            </a>
+
+            {# Right: Title, Variants, SKU/Price, Optional Logged-In Wishlist & Remove #}
+            <div class="zanders-compare-offcanvas-body">
+                <div class="zanders-compare-offcanvas-top">
+                    <a href="{{ detailUrl }}"
+                       class="zanders-compare-offcanvas-name"
+                       target="_blank"
+                       title="{{ label }}">
+                        {{ label|u.truncate(65, '...', false) }}
+                    </a>
+
+                    <button type="button"
+                            title="{{ 'froshProductCompare.general.removeFromCompare'|trans|striptags }}"
+                            aria-label="{{ 'froshProductCompare.general.removeFromCompare'|trans|striptags }}"
+                            data-add-to-compare-button="true"
+                            data-add-to-compare-button-options="{{ addToCompareOptions|json_encode }}"
+                            class="btn btn-sm is-added-to-compare compare-item-remove-button zanders-compare-offcanvas-remove">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                {% if product.variation %}
+                    <div class="zanders-compare-offcanvas-variants">
+                        {% for variation in product.variation %}
+                            <span class="zanders-compare-offcanvas-pill">
+                                <span class="zanders-compare-offcanvas-pill-group">{{ variation.group }}:</span>
+                                <span class="zanders-compare-offcanvas-pill-val">{{ variation.option }}</span>
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="zanders-compare-offcanvas-meta">
+                    {% if product.productNumber %}
+                        <span class="zanders-compare-offcanvas-sku">
+                            {{ 'zanders.productCard.itemNumber'|trans }}: {{ product.productNumber }}
+                        </span>
+                    {% endif %}
+
+                    {% if displayPrice %}
+                        <span class="zanders-compare-offcanvas-price">
+                            {{ displayPrice.unitPrice|currency }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                {# Show Wishlist button ONLY for logged-in (non-guest) customers #}
+                {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                    {% set addToWishlistOptions = {
+                        productId: id,
+                        router: {
+                            add: {
+                                afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                                path: path('frontend.wishlist.product.add', { productId: id }),
+                            },
+                            remove: {
+                                path: path('frontend.wishlist.product.remove', { productId: id }),
+                            }
+                        },
+                        texts: {
+                            add: 'listing.addToWishlist'|trans|sw_sanitize,
+                            remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                        }
+                    } %}
+                    <div class="zanders-compare-offcanvas-wishlist-row">
+                        <button type="button"
+                                class="zanders-compare-offcanvas-wishlist-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                                data-add-to-wishlist="true"
+                                data-product-id="{{ id }}"
+                                data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}"
+                                title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}">
+                            <span class="icon-wishlist-not-added">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </span>
+                            <span class="icon-wishlist-added">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#991020" stroke="#991020"
+                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                </svg>
+                            </span>
+                            <span class="zanders-compare-offcanvas-wishlist-label">
+                                {{ 'listing.addToWishlist'|trans|sw_sanitize }}
+                            </span>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

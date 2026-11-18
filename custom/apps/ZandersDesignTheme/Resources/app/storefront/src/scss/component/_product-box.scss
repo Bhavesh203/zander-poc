@@ -305,10 +305,15 @@ Matches Zanders product card design:
 
             &.product-wishlist-added,
             &.is-wishlist,
-            &.is-active {
+            &.is-active,
+            &.is-added-to-compare {
                 background-color: #fff1f2;
                 border-color: #991020;
                 color: #991020;
+
+                svg {
+                    stroke: #991020;
+                }
 
                 .icon-wishlist-not-added,
                 .wishlist-not-added {
@@ -389,35 +394,73 @@ Matches Zanders product card design:
         display: none;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 575.98px) {
+    /* Tablet / Medium screens adjustments */
+    @include media-breakpoint-down(xl) {
+        .product-name {
+            font-size: 16px;
+            line-height: 21px;
+            min-height: 42px;
+        }
+
+        .product-card-meta .product-card-meta-item {
+            font-size: 14px;
+            line-height: 18px;
+        }
+
+        .product-card-secondary-prices {
+            font-size: 14px;
+            line-height: 18px;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+
+        .product-card-action-buttons {
+            gap: 8px;
+
+            .product-card-btn-add,
+            .product-card-btn-buy {
+                font-size: 13px;
+                line-height: 16px;
+                padding: 10px 6px;
+            }
+        }
+    }
+
+    /* Mobile adjustments (down to 320px) */
+    @include media-breakpoint-down(sm) {
         .card-body {
-            padding: 16px 12px 16px;
+            padding: clamp(12px, 3.5vw, 14px) clamp(10px, 3vw, 12px);
         }
 
         .product-image-wrapper {
-            height: 130px;
-            max-height: 130px;
+            height: clamp(125px, 36vw, 145px);
+            max-height: clamp(125px, 36vw, 145px);
             margin-bottom: 12px;
 
             .product-image {
-                max-height: 130px;
+                max-height: clamp(120px, 34vw, 135px);
             }
         }
 
         .product-name {
-            font-size: 13px;
+            font-size: clamp(13px, 3.5vw, 14px);
+            line-height: 19px;
             min-height: 36px;
             margin-bottom: 8px;
         }
 
         .product-card-meta {
-            font-size: 12px;
             margin-bottom: 8px;
+
+            .product-card-meta-item {
+                font-size: clamp(12px, 3.3vw, 13px);
+                line-height: 17px;
+            }
         }
 
         .product-card-price-primary .primary-price-value {
-            font-size: 18px;
+            font-size: 17px;
+            line-height: 20px;
         }
 
         .product-card-qty-row {
@@ -431,33 +474,37 @@ Matches Zanders product card design:
         }
 
         .product-card-secondary-prices {
-            font-size: 12px;
+            font-size: clamp(12px, 3.3vw, 13px);
+            line-height: 17px;
             margin-bottom: 12px;
+            justify-content: center;
+            gap: 4px clamp(10px, 3vw, 14px);
         }
 
         .product-card-action-icons {
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 14px;
 
             .product-card-icon-btn {
-                width: 34px;
-                height: 34px;
+                width: 36px;
+                height: 36px;
 
                 svg {
-                    width: 16px;
-                    height: 16px;
+                    width: 18px;
+                    height: 18px;
                 }
             }
         }
 
         .product-card-action-buttons {
-            gap: 6px;
+            gap: clamp(6px, 2vw, 8px);
 
             .product-card-btn-add,
             .product-card-btn-buy {
-                font-size: 11px;
-                padding: 8px 2px;
-                letter-spacing: 0;
+                font-size: clamp(11px, 3vw, 12px);
+                line-height: 15px;
+                padding: 8px clamp(4px, 1.5vw, 6px);
+                letter-spacing: 0.1px;
             }
         }
     }
