@@ -2,7 +2,7 @@
 // Zanders Account Portal (All Account Pages, Sidebar, Dropdown & Wishlist)
 // - Covers Overview, Profile, Addresses, Orders, Order Edit, Recover/Reset
 //   Password, Guest Auth, Header Account Menu & Wishlist Page
-// - Matches Zanders crimson (#991020) / charcoal (#222222) / Poppins palette
+// - Matches Zanders crimson ($sw-color-brand-primary) / charcoal (#222222) / Poppins palette
 // - Responsive down to 320px with horizontal mobile account navigation tabs
 // - Zero !important | Standard Shopware breakpoint mixins (single block each)
 // =============================================================================
@@ -45,13 +45,13 @@
 
         &:hover,
         &:focus {
-            border-color: #991020;
-            color: #991020;
+            border-color: $sw-color-brand-primary;
+            color: $sw-color-brand-primary;
         }
 
         &.is-active {
-            background-color: #991020;
-            border-color: #991020;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
             color: #ffffff;
         }
     }
@@ -75,7 +75,7 @@
         align-items: center;
         gap: 12px;
         padding: 16px;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         border-bottom: 0;
         color: #ffffff;
     }
@@ -140,22 +140,22 @@
             &:hover,
             &:focus {
                 background-color: #f8f4f5;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 border-left-color: rgba(153, 16, 32, 0.4);
 
                 .zanders-account-nav-icon {
-                    color: #991020;
+                    color: $sw-color-brand-primary;
                 }
             }
 
             &.is-active {
                 background-color: rgba(153, 16, 32, 0.07);
-                border-left-color: #991020;
-                color: #991020;
+                border-left-color: $sw-color-brand-primary;
+                color: $sw-color-brand-primary;
                 font-weight: 700;
 
                 .zanders-account-nav-icon {
-                    color: #991020;
+                    color: $sw-color-brand-primary;
                 }
             }
         }
@@ -187,8 +187,8 @@
 
             &:hover,
             &:focus {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -216,8 +216,8 @@
 
         .account-menu-login-button {
             width: 100%;
-            background-color: #991020;
-            border-color: #991020;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
@@ -229,8 +229,8 @@
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
             }
         }
@@ -242,7 +242,7 @@
             text-align: center;
 
             a {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 font-weight: 600;
                 text-decoration: underline;
             }
@@ -259,13 +259,13 @@
             font-family: 'Poppins', sans-serif;
             font-size: 26px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             line-height: 1.2;
             padding-bottom: 8px;
             margin: 0 0 10px;
-            border-bottom: 2px solid #991020;
+            border-bottom: 2px solid $sw-color-brand-primary;
         }
 
         p {
@@ -281,13 +281,13 @@
         font-family: 'Poppins', sans-serif;
         font-size: 26px;
         font-weight: 700;
-        color: #991020;
+        color: $sw-color-brand-primary;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
         padding-bottom: 8px;
         margin: 0 0 10px;
-        border-bottom: 2px solid #991020;
+        border-bottom: 2px solid $sw-color-brand-primary;
 
         + p {
             font-size: 14px;
@@ -302,7 +302,7 @@
         .card {
             background-color: #ffffff;
             border: 1px solid #e6e6e6;
-            border-top: 3px solid #991020;
+            border-top: 3px solid $sw-color-brand-primary;
             border-radius: 4px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 
@@ -344,7 +344,7 @@
 
             &:focus {
                 background-color: #ffffff;
-                border-color: #991020;
+                border-color: $sw-color-brand-primary;
                 box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.12);
             }
         }
@@ -353,12 +353,12 @@
             cursor: pointer;
 
             &:checked {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
             }
 
             &:focus {
-                border-color: #991020;
+                border-color: $sw-color-brand-primary;
                 box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.15);
             }
         }
@@ -369,10 +369,10 @@
             align-items: center;
             justify-content: center;
             padding: 7px 16px;
-            border: 1px solid #991020;
+            border: 1px solid $sw-color-brand-primary;
             border-radius: 2px;
             background-color: #ffffff;
-            color: #991020;
+            color: $sw-color-brand-primary;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
@@ -382,7 +382,7 @@
 
             &:hover,
             &:focus {
-                background-color: #991020;
+                background-color: $sw-color-brand-primary;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -391,8 +391,8 @@
         .profile-form-submit,
         .address-form-submit,
         .btn-primary {
-            background-color: #991020;
-            border: 1px solid #991020;
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
             border-radius: 2px;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
@@ -406,16 +406,16 @@
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
                 box-shadow: none;
             }
         }
 
         .btn-outline-primary {
-            border-color: #991020;
-            color: #991020;
+            border-color: $sw-color-brand-primary;
+            color: $sw-color-brand-primary;
             border-radius: 2px;
             font-size: 12.5px;
             font-weight: 700;
@@ -424,8 +424,8 @@
 
             &:hover,
             &:focus {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -453,7 +453,7 @@
 
             p {
                 font-size: 13.5px;
-                color: #333333;
+                color: $zanders-color-dark-bg;
                 margin-bottom: 8px;
                 line-height: 1.55;
             }
@@ -462,7 +462,7 @@
 
     .account-overview-newsletter {
         .card {
-            border-top-color: #333333;
+            border-top-color: $zanders-color-dark-bg;
         }
     }
 }
@@ -495,10 +495,10 @@
         justify-content: center;
         width: 100%;
         padding: 8px 14px;
-        border: 1px solid #991020;
+        border: 1px solid $sw-color-brand-primary;
         border-radius: 2px;
         background-color: #ffffff;
-        color: #991020;
+        color: $sw-color-brand-primary;
         font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
@@ -510,7 +510,7 @@
         &:hover,
         &:focus,
         &[aria-expanded="true"] {
-            background-color: #991020;
+            background-color: $sw-color-brand-primary;
             color: #ffffff;
         }
     }
@@ -526,7 +526,7 @@
         color: #666666;
 
         a {
-            color: #991020;
+            color: $sw-color-brand-primary;
             font-weight: 600;
         }
     }
@@ -539,8 +539,8 @@
         align-items: center;
         gap: 6px;
         padding: 9px 18px;
-        background-color: #991020;
-        border: 1px solid #991020;
+        background-color: $sw-color-brand-primary;
+        border: 1px solid $sw-color-brand-primary;
         border-radius: 2px;
         color: #ffffff;
         font-size: 12.5px;
@@ -556,8 +556,8 @@
 
         &:hover,
         &:focus {
-            background-color: #7b0a17;
-            border-color: #7b0a17;
+            background-color: $zanders-color-primary-dark;
+            border-color: $zanders-color-primary-dark;
             color: #ffffff;
         }
     }
@@ -565,7 +565,7 @@
     .address-card {
         .card-body {
             font-size: 13.5px;
-            color: #333333;
+            color: $zanders-color-dark-bg;
             line-height: 1.55;
         }
 
@@ -583,7 +583,7 @@
     .order-wrapper {
         background-color: #ffffff;
         border: 1px solid #e4e4e4;
-        border-left: 4px solid #991020;
+        border-left: 4px solid $sw-color-brand-primary;
         border-radius: 4px;
         padding: 18px 20px;
         margin-bottom: 18px;
@@ -623,7 +623,7 @@
 
             &.order-item-status-badge-open {
                 background-color: rgba(153, 16, 32, 0.12);
-                color: #991020;
+                color: $sw-color-brand-primary;
             }
 
             &.order-item-status-badge-in_progress {
@@ -665,9 +665,9 @@
 
         .order-hide-btn {
             background-color: #ffffff;
-            border: 1px solid #991020;
+            border: 1px solid $sw-color-brand-primary;
             border-radius: 2px;
-            color: #991020;
+            color: $sw-color-brand-primary;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
@@ -678,8 +678,8 @@
             &:hover,
             &:focus,
             &:not(.collapsed) {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -710,7 +710,7 @@
     .card {
         background-color: #ffffff;
         border: 1px solid #e6e6e6;
-        border-top: 3px solid #991020;
+        border-top: 3px solid $sw-color-brand-primary;
         border-radius: 4px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
         padding: 28px 26px;
@@ -719,12 +719,12 @@
             font-family: 'Poppins', sans-serif;
             font-size: 22px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-transform: uppercase;
             letter-spacing: 0.4px;
             padding-bottom: 10px;
             margin: 0 0 18px;
-            border-bottom: 2px solid #991020;
+            border-bottom: 2px solid $sw-color-brand-primary;
         }
 
         .card-body {
@@ -747,7 +747,7 @@
 
             &:focus {
                 background-color: #ffffff;
-                border-color: #991020;
+                border-color: $sw-color-brand-primary;
                 box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.12);
             }
         }
@@ -764,8 +764,8 @@
         margin-top: 20px;
 
         .btn-primary {
-            background-color: #991020;
-            border-color: #991020;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
             border-radius: 2px;
             color: #ffffff;
             font-size: 13px;
@@ -776,8 +776,8 @@
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
             }
         }
@@ -804,7 +804,7 @@
         .zanders-account-section-title {
             font-size: 28px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0;
@@ -813,7 +813,7 @@
 
         .zanders-account-section-rule {
             height: 2px;
-            background-color: #991020;
+            background-color: $sw-color-brand-primary;
             width: 100%;
             margin-top: 8px;
         }
@@ -822,7 +822,7 @@
     .zanders-wishlist-guest-card {
         background-color: #ffffff;
         border: 1px solid #e6e6e6;
-        border-top: 3px solid #991020;
+        border-top: 3px solid $sw-color-brand-primary;
         border-radius: 4px;
         padding: 44px 28px;
         text-align: center;
@@ -842,7 +842,7 @@
         .zanders-wishlist-guest-title {
             font-size: 20px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-transform: uppercase;
             letter-spacing: 0.4px;
             margin: 0 0 10px;
@@ -860,8 +860,8 @@
             align-items: center;
             justify-content: center;
             padding: 11px 34px;
-            background-color: #991020;
-            border: 1px solid #991020;
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
             border-radius: 2px;
             color: #ffffff;
             font-size: 13px;
@@ -873,8 +873,8 @@
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
             }
         }

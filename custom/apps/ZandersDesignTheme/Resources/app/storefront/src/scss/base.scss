@@ -16,15 +16,31 @@
 @import 'component/listing-toolbar';
 @import 'component/product-finder';
 @import 'component/compare';
+@import 'component/sidebar-right';
 @import 'component/cms-pages';
 @import 'layout/footer';
 @import 'layout/age-verification';
 
-// Global overflow safety (does not break position: sticky)
-html,
+// Global scrollbar stability & overflow safety (prevents layout jumping on modal/offcanvas)
+html {
+    scrollbar-gutter: stable;
+}
+
 body {
     max-width: 100%;
     overflow-x: clip;
+}
+
+// Neutralize Bootstrap ScrollBarHelper padding-right jump on desktop
+// When offcanvas or modal opens, scrollbar-gutter: stable already preserves the space,
+// so Bootstrap's added padding-right causes an unwanted layout shift to the left.
+body:has(.offcanvas.show),
+body:has(.offcanvas.showing),
+body:has(.modal.show),
+html.offcanvas-open body,
+body.offcanvas-open {
+    padding-right: 0 !important;
+    overflow-x: hidden !important;
 }
 
 .cms-section,
@@ -60,83 +76,158 @@ body {
 }
 
 .home-hero-section {
-    min-height: 855px;
-
-    .main-grid {
-        .col-md-6 {
-            &:nth-of-type(2) {
-                width: 70%;
-                position: relative;
-                padding-top: 46.033%;
-                position: relative;
-
-            }
-        }
-    }
-
-    .col-md-6 {
-        &:nth-of-type(2) {
-            width: 70%;
-        }
-
-        &:nth-of-type(1) {
-            width: 30%;
-            display: flex;
-            flex-direction: column;
-
-            .left-top,
-            .left-bottom {
-                flex: 1;
-
-                div {
-                    height: 100%;
-
-                    img {
-                        height: 100%;
-                    }
-                }
-            }
-        }
-    }
+    min-height: auto;
 
     .cms-section-default {
         padding-left: 320px;
     }
 
-    .cms-block.pos-0 .cms-block-container .cms-block-container-row {
-        flex-direction: row-reverse;
-        margin-left: 0;
-    }
+    @include media-breakpoint-up(lg) {
+        // Unified 2x2 parallel grid on desktop
+        .cms-block.pos-0,
+        .cms-block.pos-1 {
+            .cms-block-container {
+                padding: 0;
+            }
 
-    .cms-block.pos-1 .cms-block-container .cms-block-container-row .col-md-6 {
-        &:nth-of-type(1) {
-            width: 70%;
+            .cms-block-container-row {
+                display: flex;
+                align-items: stretch;
+                margin-left: -7px;
+                margin-right: -7px;
+                row-gap: 0;
+            }
+
+            .col-md-6 {
+                padding-left: 7px;
+                padding-right: 7px;
+                display: flex;
+                min-height: 0;
+            }
         }
 
-        &:nth-of-type(2) {
-            width: 30%;
-        }
+        // Row 1 (.pos-0): YouTube Video (70%, left) + Burris Banner (30%, right)
+        .cms-block.pos-0 {
+            margin-bottom: 14px;
 
-        .cms-element-image.is-stretch .cms-element-alignment {
-            height: 100%;
+            .cms-block-container-row {
+                flex-direction: row-reverse; // Puts nth-of-type(2) on left, nth-of-type(1) on right
+            }
 
-            .cms-image-container {
-                height: 100%;
+            // Left Column (70%): YouTube Video
+            .col-md-6:nth-of-type(2) {
+                width: 70%;
+                flex: 0 0 70%;
+                max-width: 70%;
+                position: relative;
+                aspect-ratio: 16 / 9;
+                min-height: 320px;
 
-                img {
+                .right,
+                .cms-element-youtube-video,
+                .cms-element-youtube-video__video {
+                    width: 100%;
                     height: 100%;
-                    object-fit: fill;
-                    max-height: 270px;
+                    display: flex;
+                    position: absolute;
+                    inset: 0;
+                }
+
+                iframe {
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                    border: 0;
+                }
+            }
+
+            // Right Column (30%): Burris Banner (stretches to exact video height)
+            .col-md-6:nth-of-type(1) {
+                width: 30%;
+                flex: 0 0 30%;
+                max-width: 30%;
+                flex-direction: column;
+
+                .left-top {
+                    flex: 1 1 100%;
+                    height: 100%;
+                    width: 100%;
+                    min-height: 0;
+                    overflow: hidden;
+                    display: flex;
+
+                    .cms-element-image,
+                    .cms-element-alignment,
+                    .cms-image-container,
+                    div,
+                    a {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                    }
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                    }
+                }
+
+                .left-bottom:empty,
+                .left-bottom:not(:has(*)) {
+                    display: none;
                 }
             }
         }
-    }
 
-    .cms-block-image-simple-grid .right {
-        display: flex;
-        display: flex;
-        position: absolute;
-        inset: 0;
+        // Row 2 (.pos-1): Rimfire Dealer Program (70%, left) + Zanders Rebates (30%, right)
+        .cms-block.pos-1 {
+            margin-top: 0;
+            margin-bottom: 24px;
+
+            .cms-block-container-row {
+                flex-direction: row; // Normal order: nth-of-type(1) on left, nth-of-type(2) on right
+            }
+
+            // Left Column (70%): Rimfire Banner
+            .col-md-6:nth-of-type(1) {
+                width: 70%;
+                flex: 0 0 70%;
+                max-width: 70%;
+                aspect-ratio: 16 / 5.5;
+                min-height: 220px;
+                max-height: 280px;
+            }
+
+            // Right Column (30%): Zanders Rebates Banner (stretches to exact same height)
+            .col-md-6:nth-of-type(2) {
+                width: 30%;
+                flex: 0 0 30%;
+                max-width: 30%;
+            }
+
+            // Both banners fill their box with object-fit: cover, perfectly flush
+            .col-md-6 {
+                .cms-element-image,
+                .cms-element-alignment,
+                .cms-image-container,
+                div,
+                a {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                }
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                    max-height: none;
+                }
+            }
+        }
     }
 }
 

@@ -42,11 +42,11 @@ body.zanders-finder-open {
         }
 
         &--firearms {
-            background-color: #991020;
+            background-color: $sw-color-brand-primary;
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
             }
         }
 
@@ -153,7 +153,7 @@ body.zanders-finder-open {
         height: 40px;
         border: 0;
         border-radius: 0;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         color: #ffffff;
         display: flex;
         align-items: center;
@@ -163,7 +163,7 @@ body.zanders-finder-open {
 
         &:hover,
         &:focus {
-            background-color: #7b0a17;
+            background-color: $zanders-color-primary-dark;
             outline: none;
         }
     }
@@ -183,7 +183,7 @@ body.zanders-finder-open {
         margin-bottom: 10px;
 
         .spinner-border {
-            color: #991020;
+            color: $sw-color-brand-primary;
         }
     }
 
@@ -224,7 +224,7 @@ body.zanders-finder-open {
         transition: border-color 0.15s ease;
 
         &:focus {
-            border-color: #991020;
+            border-color: $sw-color-brand-primary;
             box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15);
             outline: none;
         }
@@ -247,7 +247,7 @@ body.zanders-finder-open {
         padding: 0;
         border: 0;
         background: transparent;
-        color: #991020;
+        color: $sw-color-brand-primary;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -256,7 +256,7 @@ body.zanders-finder-open {
 
         &:hover,
         &:focus {
-            color: #6e1322;
+            color: $zanders-color-primary-dark;
             transform: scale(1.15);
             outline: none;
         }
@@ -276,8 +276,8 @@ body.zanders-finder-open {
         gap: 14px;
 
         .zanders-finder-btn {
-            background-color: #991020;
-            border: 1px solid #991020;
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
             color: #ffffff;
             font-size: 13.5px;
             font-weight: 600;
@@ -290,8 +290,8 @@ body.zanders-finder-open {
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
                 box-shadow: none;
             }

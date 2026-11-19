@@ -1,0 +1,242 @@
+{#
+    Zanders Shop & Search Page Right Sidebar
+    ==========================================================================
+    Matches live site 3-column layout (shop2.gzanders.com):
+    - When Guest:
+      1. LOGIN box (Email*, Password*, crimson LOGIN button)
+      2. RECENTLY VIEWED box
+    - When Logged In:
+      1. COMPARE PRODUCTS box (with items, [x] remove, CLEAR ALL, COMPARE button)
+      2. VIEW MY OPEN ORDER full-width dark button
+      3. VIEW WISHLIST ITEMS full-width dark button
+      4. RECENTLY VIEWED box
+#}
+
+{% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+
+<div class="zanders-sidebar-right" data-zanders-sidebar-right="true">
+
+    {# 1. GUEST VIEW (Visible when guest, hidden when customer is logged in) #}
+    <div class="zanders-sidebar-guest-view js-sidebar-guest-view{% if isCustomerLoggedIn %} d-none{% endif %}"{% if isCustomerLoggedIn %} style="display: none;"{% endif %}>
+        {# GUEST VIEW: Login Box #}
+        <div class="zanders-sidebar-box zanders-sidebar-login-box">
+            <div class="zanders-sidebar-box-header">
+                <span class="zanders-sidebar-box-title">LOGIN</span>
+            </div>
+            <div class="zanders-sidebar-box-body">
+                <form action="{{ path('frontend.account.login') }}" method="post" class="login-form zanders-sidebar-login-form" data-form-handler="true">
+                    <input type="hidden" name="redirectTo" value="{{ app.request.uri }}">
+
+                    <div class="mb-2">
+                        <input type="email"
+                               name="username"
+                               class="form-control zanders-sidebar-input"
+                               placeholder="Email*"
+                               autocomplete="email"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="password"
+                               name="password"
+                               class="form-control zanders-sidebar-input"
+                               placeholder="Password*"
+                               autocomplete="current-password"
+                               required />
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn zanders-sidebar-login-btn">
+                            LOGIN
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {# GUEST VIEW: Recently Viewed #}
+        <div class="zanders-sidebar-box zanders-sidebar-recent-box">
+            <div class="zanders-sidebar-box-header">
+                <span class="zanders-sidebar-box-title">RECENTLY VIEWED</span>
+            </div>
+            <div class="zanders-sidebar-box-body zanders-sidebar-recent-body js-zanders-recent-items">
+                <div class="zanders-sidebar-recent-item">
+                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
+                        WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                    </a>
+                </div>
+                <div class="zanders-sidebar-recent-item">
+                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
+                        USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD BLUE-SYNTHETIC
+                    </a>
+                </div>
+                <div class="zanders-sidebar-recent-item">
+                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
+                        USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD STAINLESS WOOD
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# 2. LOGGED IN VIEW (Visible when logged in, matches media_1795080305599_cb82b9dc.png) #}
+    <div class="zanders-sidebar-logged-in-view js-sidebar-logged-in-view{% if not isCustomerLoggedIn %} d-none{% endif %}"{% if not isCustomerLoggedIn %} style="display: none;"{% endif %}>
+        {# COMPARE PRODUCTS Box #}
+        <div class="zanders-sidebar-box zanders-sidebar-compare-box js-zanders-compare-box">
+            <div class="zanders-sidebar-box-header">
+                <span class="zanders-sidebar-box-title">COMPARE PRODUCTS</span>
+            </div>
+            <div class="zanders-sidebar-box-body">
+                <div class="zanders-compare-items-list js-zanders-compare-list">
+                    <div class="zanders-compare-item">
+                        <span class="zanders-compare-item-name">WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS</span>
+                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
+                    </div>
+                    <div class="zanders-compare-item">
+                        <span class="zanders-compare-item-name">USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD BLUE SYNTHETIC</span>
+                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
+                    </div>
+                    <div class="zanders-compare-item">
+                        <span class="zanders-compare-item-name">USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD STAINLESS WOOD</span>
+                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
+                    </div>
+                </div>
+
+                <div class="zanders-compare-actions">
+                    <button type="button" class="zanders-compare-clear-btn js-zanders-clear-compare">
+                        CLEAR ALL
+                    </button>
+                    <a href="{{ path('frontend.compare.page') }}" class="btn zanders-compare-submit-btn">
+                        COMPARE
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# VIEW MY OPEN ORDER Button #}
+        <div class="zanders-sidebar-btn-wrap">
+            <a href="{{ path('frontend.account.order.page') }}" class="btn zanders-sidebar-dark-btn">
+                VIEW MY OPEN ORDER
+            </a>
+        </div>
+
+        {# VIEW WISHLIST ITEMS Button #}
+        <div class="zanders-sidebar-btn-wrap">
+            <a href="{{ path('frontend.wishlist.page') }}" class="btn zanders-sidebar-dark-btn">
+                VIEW WISHLIST ITEMS
+            </a>
+        </div>
+
+        {# RECENTLY VIEWED Box #}
+        <div class="zanders-sidebar-box zanders-sidebar-recent-box">
+            <div class="zanders-sidebar-box-header">
+                <span class="zanders-sidebar-box-title">RECENTLY VIEWED</span>
+            </div>
+            <div class="zanders-sidebar-box-body zanders-sidebar-recent-body js-zanders-recent-items">
+                <div class="zanders-sidebar-recent-item">
+                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
+                        WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // 1. Dynamic Login State Detection (Overrides HTTP cache on category/shop pages)
+    function checkCustomerLoggedIn() {
+        if (typeof window.customerLoggedInState !== 'undefined' && (window.customerLoggedInState === 1 || window.customerLoggedInState === true || window.customerLoggedInState === '1')) {
+            return true;
+        }
+        if (document.querySelector('.top-bar-logout, a.top-bar-logout-link, a[href*="account/logout"], a[href*="/account/logout"]')) {
+            return true;
+        }
+        if (document.querySelector('.header-wishlist, .account-menu .account-title')) {
+            return true;
+        }
+        return false;
+    }
+
+    function applySidebarVisibility() {
+        var isLoggedIn = checkCustomerLoggedIn();
+        var guestViews = document.querySelectorAll('.js-sidebar-guest-view');
+        var loggedInViews = document.querySelectorAll('.js-sidebar-logged-in-view');
+
+        guestViews.forEach(function(el) {
+            if (isLoggedIn) {
+                el.classList.add('d-none');
+                el.style.setProperty('display', 'none', 'important');
+            } else {
+                el.classList.remove('d-none');
+                el.style.removeProperty('display');
+            }
+        });
+
+        loggedInViews.forEach(function(el) {
+            if (isLoggedIn) {
+                el.classList.remove('d-none');
+                el.style.removeProperty('display');
+            } else {
+                el.classList.add('d-none');
+                el.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
+
+    // Run immediately and after DOM events
+    applySidebarVisibility();
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applySidebarVisibility);
+    }
+    window.addEventListener('load', applySidebarVisibility);
+
+    if (window.MutationObserver) {
+        var observer = new MutationObserver(function() {
+            applySidebarVisibility();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        setTimeout(function() {
+            observer.disconnect();
+        }, 5000);
+    }
+
+    // 2. Compare Products Integration
+    try {
+        var compareKey = 'compare-widget-added-products';
+        var compareList = document.querySelector('.js-zanders-compare-list');
+        var clearBtn = document.querySelector('.js-zanders-clear-compare');
+
+        if (clearBtn && compareList) {
+            clearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                try {
+                    localStorage.removeItem(compareKey);
+                } catch(err) {}
+                compareList.innerHTML = '<div class="zanders-compare-empty-msg">You have no items to compare.</div>';
+                if (document.$emitter) {
+                    document.$emitter.publish('afterRemoveProductCompare');
+                    document.$emitter.publish('changedProductCompare', { products: [] });
+                }
+            });
+
+            compareList.addEventListener('click', function(e) {
+                if (e.target && e.target.classList.contains('js-zanders-remove-compare')) {
+                    e.preventDefault();
+                    var row = e.target.closest('.zanders-compare-item');
+                    if (row) {
+                        row.remove();
+                    }
+                    if (!compareList.querySelector('.zanders-compare-item')) {
+                        compareList.innerHTML = '<div class="zanders-compare-empty-msg">You have no items to compare.</div>';
+                    }
+                    if (document.$emitter) {
+                        document.$emitter.publish('afterRemoveProductCompare');
+                    }
+                }
+            });
+        }
+    } catch(e) {}
+})();
+</script>

@@ -1,0 +1,23 @@
+{#
+    Zanders Search Pagelet Override
+    ==========================================================================
+    Renders search results in 3 columns using the standard Zanders product card
+    and two-row toolbar.
+#}
+{% sw_extends '@Storefront/storefront/page/search/search-pagelet.html.twig' %}
+
+{% set listingColumns = 'col-12 col-sm-6 col-md-4' %}
+
+{% block element_product_listing_wrapper %}
+    {% sw_include '@Storefront/storefront/component/product/listing.html.twig' with {
+        searchResult: page.listing,
+        dataUrl: path('widgets.search.pagelet.v2'),
+        filterUrl: path('widgets.search.filter'),
+        params: { search: page.searchTerm },
+        sidebar: 1,
+        boxLayout: 'standard',
+        displayMode: '',
+        ariaLiveUpdates: true
+    } %}
+{% endblock %}
+

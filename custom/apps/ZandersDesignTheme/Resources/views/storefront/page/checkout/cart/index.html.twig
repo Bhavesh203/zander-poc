@@ -152,6 +152,10 @@
                                                     <span class="zanders-cart-item-name">{{ itemLabel }}</span>
                                                 {% endif %}
 
+                                                {% if isProduct and lineItem.deliveryInformation is defined and lineItem.deliveryInformation.stock is defined and lineItem.deliveryInformation.stock <= 0 %}
+                                                    <span class="badge bg-warning text-dark zanders-cart-backorder-badge">BACKORDER</span>
+                                                {% endif %}
+
                                                 {% if isProduct %}
                                                     <button type="button"
                                                             class="zanders-cart-prop65-badge"

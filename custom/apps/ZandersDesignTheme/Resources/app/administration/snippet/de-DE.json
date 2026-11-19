@@ -1,0 +1,53 @@
+{
+    "sw-theme": {
+        "ZandersDesignTheme": {
+            "default": {
+                "themeColors": {
+                    "label": "Theme Farben",
+                    "default": {
+                        "sw-color-brand-primary": {
+                            "label": "Primäre Markenfarbe"
+                        },
+                        "sw-color-brand-secondary": {
+                            "label": "Sekundäre Markenfarbe"
+                        }
+                    }
+                },
+                "zandersThemeColors": {
+                    "label": "Zanders Erweiterte Farben",
+                    "default": {
+                        "zanders-color-primary": {
+                            "label": "Zanders Primärrot"
+                        },
+                        "zanders-color-primary-dark": {
+                            "label": "Primär Dunkel / Hover Rot"
+                        },
+                        "zanders-color-primary-accent": {
+                            "label": "Primär Akzentrot"
+                        },
+                        "zanders-color-dark-bg": {
+                            "label": "Dunkler Hintergrund"
+                        },
+                        "zanders-color-dark-text": {
+                            "label": "Dunkler Text"
+                        },
+                        "zanders-color-light-bg": {
+                            "label": "Heller Hintergrund"
+                        },
+                        "zanders-color-border": {
+                            "label": "Rahmenfarbe"
+                        }
+                    }
+                },
+                "zandersContact": {
+                    "label": "Kontakt- & Shop-Informationen",
+                    "default": {
+                        "zanders-header-phone": {
+                            "label": "Telefonnummer"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

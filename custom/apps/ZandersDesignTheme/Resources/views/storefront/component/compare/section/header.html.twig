@@ -119,18 +119,18 @@
                                 </div>
                             {% endif %}
 
+                            {% set cmpRawStock = availableStock is not null ? availableStock : (stock ?: 0) %}
+                            {% set cmpInStock = cmpRawStock > 0 %}
+                            {% set cmpIsBackOrder = (not cmpInStock) and (not product.isCloseout) %}
+
                             <div class="zanders-compare-stock-wrap">
-                                {% if availableStock is not null and availableStock > 0 %}
+                                {% if cmpInStock %}
                                     <span class="zanders-compare-stock zanders-compare-stock--in">
-                                        {{ 'zanders.productCard.available'|trans }}: {{ availableStock }}
+                                        {{ 'zanders.productCard.available'|trans }}: {{ cmpRawStock }}
                                     </span>
-                                {% elseif stock is not null and stock > 0 %}
-                                    <span class="zanders-compare-stock zanders-compare-stock--in">
-                                        {{ 'zanders.productCard.available'|trans }}: {{ stock }}
-                                    </span>
-                                {% elseif product.available and not product.isCloseout %}
-                                    <span class="zanders-compare-stock zanders-compare-stock--in">
-                                        {{ 'zanders.productCard.inStock'|trans }}
+                                {% elseif cmpIsBackOrder %}
+                                    <span class="zanders-compare-stock zanders-compare-stock--out">
+                                        {{ 'zanders.productCard.outOfStock'|trans }} ({{ 'zanders.productCard.backorderBadge'|trans|default('Backorder') }})
                                     </span>
                                 {% else %}
                                     <span class="zanders-compare-stock zanders-compare-stock--out">

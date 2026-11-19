@@ -1,0 +1,53 @@
+{
+    "sw-theme": {
+        "ZandersDesignTheme": {
+            "default": {
+                "themeColors": {
+                    "label": "Theme Colors",
+                    "default": {
+                        "sw-color-brand-primary": {
+                            "label": "Primary brand color (Crimson Red)"
+                        },
+                        "sw-color-brand-secondary": {
+                            "label": "Secondary brand color (Charcoal)"
+                        }
+                    }
+                },
+                "zandersThemeColors": {
+                    "label": "Zanders Extended Colors",
+                    "default": {
+                        "zanders-color-primary": {
+                            "label": "Zanders Primary Red"
+                        },
+                        "zanders-color-primary-dark": {
+                            "label": "Primary Dark / Hover Red"
+                        },
+                        "zanders-color-primary-accent": {
+                            "label": "Primary Accent Red"
+                        },
+                        "zanders-color-dark-bg": {
+                            "label": "Dark Background (Headers, Sidebar)"
+                        },
+                        "zanders-color-dark-text": {
+                            "label": "Dark Text & Headings"
+                        },
+                        "zanders-color-light-bg": {
+                            "label": "Light Background (Panels, Inputs)"
+                        },
+                        "zanders-color-border": {
+                            "label": "Border & Divider Color"
+                        }
+                    }
+                },
+                "zandersContact": {
+                    "label": "Contact & Store Info",
+                    "default": {
+                        "zanders-header-phone": {
+                            "label": "Phone Number"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

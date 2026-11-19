@@ -431,6 +431,34 @@
         if (target) {
             observer.observe(target, { childList: true, subtree: true });
         }
+
+        /* =========================================================
+           Offcanvas Cart Smooth Transition & Layout Jump Prevention
+           ========================================================= */
+        var myCartTitle = {{ 'zanders.cart.myCart'|trans|default('My Cart')|json_encode|raw }};
+
+        document.addEventListener('show.bs.offcanvas', function(e) {
+            document.documentElement.classList.add('offcanvas-open');
+            var offcanvasEl = e.target;
+            if (offcanvasEl && offcanvasEl.classList.contains('cart-offcanvas')) {
+                // Pre-inject header so the drawer layout is fully established
+                // before the slide-in animation starts and before the AJAX payload arrives.
+                if (!offcanvasEl.querySelector('.offcanvas-header')) {
+                    var headerHtml = 
+                        '<div class="offcanvas-header d-flex align-items-center justify-content-between border-bottom bg-white">' +
+                            '<h4 class="offcanvas-cart-title m-0 fw-bold fs-5 text-dark">' + myCartTitle + '</h4>' +
+                            '<button type="button" class="btn-close js-offcanvas-close text-reset m-0" data-bs-dismiss="offcanvas" aria-label="Close"></button>' +
+                        '</div>';
+                    offcanvasEl.insertAdjacentHTML('afterbegin', headerHtml);
+                }
+            }
+        });
+
+        document.addEventListener('hidden.bs.offcanvas', function() {
+            if (!document.querySelector('.offcanvas.show, .offcanvas.showing')) {
+                document.documentElement.classList.remove('offcanvas-open');
+            }
+        });
     })();
     </script>
 {% endblock %}

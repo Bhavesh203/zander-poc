@@ -1,0 +1,69 @@
+{#
+    Zanders Shop Page 3-Column CMS Section Sidebar Override
+    ==========================================================================
+    Renders the exact 3-column layout matching https://shop2.gzanders.com:
+    - Left Column (col-lg-3 col-xl-2): SHOPPING OPTIONS filter panel
+    - Center Column (col-lg-6 col-xl-7): Inline Breadcrumbs + Category Title + Listing
+    - Right Column (col-lg-3 col-xl-3): Right Sidebar (Login / Compare / Orders / Wishlist / Recently Viewed)
+#}
+{% sw_extends '@Storefront/storefront/section/cms-section-sidebar.html.twig' %}
+
+{% block page_content_section_sidebar_row %}
+    {% set sidebarBlocks = section.blocks.filterBySectionPosition('sidebar') %}
+    {% set mainContentBlocks = section.blocks.filterBySectionPosition('main') %}
+
+    <div class="row zanders-shop-layout-row">
+        {# 1. Left Sidebar: SHOPPING OPTIONS Filters #}
+        {% block section_sidebar_content %}
+            <div class="cms-section-sidebar-sidebar-content zanders-sidebar-col zanders-sidebar-col--left col-12 col-lg-3 col-xl-2">
+                {% for block in sidebarBlocks %}
+                    {% block section_sidebar_content_block %}
+                        {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+                    {% endblock %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+
+        {# 2. Center Column: Breadcrumb + Category Title + Product Listing #}
+        {% block section_main_content %}
+            <div class="cms-section-sidebar-main-content zanders-main-col col-12 col-lg-6 col-xl-7">
+                {% set activeCat = page.category ?? (page.header.navigation.active ?? null) %}
+                {% set rootId = context.salesChannel.navigationCategoryId %}
+                {% set isNotRoot = activeCat and activeCat.id != rootId %}
+
+                <div class="zanders-center-header">
+                    <nav aria-label="breadcrumb" class="zanders-inline-breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link">{{ 'general.home'|trans }}</a>
+                            </li>
+                            {% if isNotRoot and activeCat %}
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    {{ activeCat.translated.name|default(activeCat.name) }}
+                                </li>
+                            {% endif %}
+                        </ol>
+                    </nav>
+
+                    {% if isNotRoot and activeCat %}
+                        <h1 class="zanders-page-title">
+                            {{ activeCat.translated.name|default(activeCat.name) }}
+                        </h1>
+                    {% endif %}
+                </div>
+
+                {% for block in mainContentBlocks %}
+                    {% block section_main_content_block %}
+                        {% sw_include '@Storefront/storefront/section/cms-section-block-container.html.twig' %}
+                    {% endblock %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+
+        {# 3. Right Sidebar: Login / Compare / Quick Links / Recently Viewed #}
+        <div class="zanders-sidebar-col zanders-sidebar-col--right col-12 col-lg-3 col-xl-3">
+            {% sw_include '@Storefront/storefront/component/listing/sidebar-right.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+

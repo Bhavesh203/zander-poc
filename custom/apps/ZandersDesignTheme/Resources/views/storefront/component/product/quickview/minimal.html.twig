@@ -30,7 +30,13 @@
 {% set mapVal = msrpVal %}
 {% endif %}
 
-{% set isAvailable = not product.isCloseout or (product.stock >= product.minPurchase) %}
+{% set availableStock = product.availableStock %}
+{% set stock = product.stock %}
+{% set rawStock = availableStock is not null ? availableStock : (stock ?: 0) %}
+{% set isInStock = rawStock > 0 %}
+{% set isBackOrder = (not isInStock) and (not product.isCloseout) %}
+{% set canBuy = isInStock or isBackOrder %}
+{% set isAvailable = canBuy %}
 {% set displayBuyButton = isAvailable and product.childCount <= 0 %} {% if isStandalone %} <!DOCTYPE html>
     <html lang="en">
 
@@ -160,14 +166,10 @@
 
                                 <div class="quickview-meta-row">
                                     <span class="meta-label">{{ 'zanders.productCard.available'|trans }}:</span>
-                                    {% set availableStock = product.availableStock %}
-                                    {% set stock = product.stock %}
-                                    {% if availableStock is not null and availableStock > 0 %}
-                                    <span class="meta-val stock-in">{{ availableStock }}</span>
-                                    {% elseif stock is not null and stock > 0 %}
-                                    <span class="meta-val stock-in">{{ stock }}</span>
-                                    {% elseif product.available and not product.isCloseout %}
-                                    <span class="meta-val stock-in">{{ 'zanders.productCard.inStock'|trans }}</span>
+                                    {% if isInStock %}
+                                    <span class="meta-val stock-in">{{ rawStock }}</span>
+                                    {% elseif isBackOrder %}
+                                    <span class="meta-val stock-out">{{ 'zanders.productCard.outOfStock'|trans }} ({{ 'zanders.productCard.backorderBadge'|trans|default('Backorder') }})</span>
                                     {% else %}
                                     <span class="meta-val stock-out">{{ 'zanders.productCard.outOfStock'|trans }}</span>
                                     {% endif %}
@@ -221,7 +223,7 @@
                                             onclick="var i=document.getElementById('qv-qty-{{ id }}'); var v=parseInt(i.value,10)||1; if(v>1){ i.value=v-1; }">-</button>
                                         <input type="number" id="qv-qty-{{ id }}" name="lineItems[{{ id }}][quantity]"
                                             value="{{ product.minPurchase ?: 1 }}" min="{{ product.minPurchase ?: 1 }}"
-                                            max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
+                                            max="{{ product.maxPurchase ?: (isInStock ? rawStock : 999) }}"
                                             step="{{ product.purchaseSteps ?: 1 }}"
                                             class="form-control quickview-qty-input" />
                                         <button type="button" class="qv-qty-btn qv-qty-plus"
@@ -230,22 +232,38 @@
                                 </div>
 
                                 <div class="quickview-action-buttons">
-                                    {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                                    <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
-                                        class="btn btn-primary qv-btn-add">
-                                        {{ 'zanders.productCard.addToCart'|trans }}
-                                    </button>
-                                    <button type="button" class="btn btn-primary qv-btn-buy"
-                                        onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
-                                        {{ 'zanders.productCard.buyNow'|trans }}
-                                    </button>
+                                    {% set buyBtnText = isInStock ? ('zanders.productCard.addToCart'|trans|default('ADD TO CART')) : ('zanders.productCard.backOrder'|trans|default('BACK ORDER')) %}
+                                    {% set buyNowBtnText = isInStock ? ('zanders.productCard.buyNow'|trans|default('BUY NOW')) : ('zanders.productCard.backOrder'|trans|default('BACK ORDER')) %}
+
+                                    {% if canBuy %}
+                                        {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                                        <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
+                                            class="btn btn-primary qv-btn-add{% if isBackOrder %} is-backorder{% endif %}"
+                                            title="{{ buyBtnText }}">
+                                            {{ buyBtnText }}
+                                        </button>
+                                        <button type="button" class="btn btn-primary qv-btn-buy{% if isBackOrder %} is-backorder{% endif %}"
+                                            title="{{ buyNowBtnText }}"
+                                            onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                                            {{ buyNowBtnText }}
+                                        </button>
+                                        {% else %}
+                                        <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-add{% if isBackOrder %} is-backorder{% endif %}"
+                                           title="{{ buyBtnText }}">
+                                            {{ buyBtnText }}
+                                        </a>
+                                        <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-buy{% if isBackOrder %} is-backorder{% endif %}"
+                                           title="{{ buyNowBtnText }}">
+                                            {{ buyNowBtnText }}
+                                        </a>
+                                        {% endif %}
                                     {% else %}
-                                    <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-add">
-                                        {{ 'zanders.productCard.addToCart'|trans }}
-                                    </a>
-                                    <a href="{{ detailUrl }}" class="btn btn-primary qv-btn-buy">
-                                        {{ 'zanders.productCard.buyNow'|trans }}
-                                    </a>
+                                        <button type="button" class="btn btn-secondary qv-btn-add is-disabled" disabled>
+                                            {{ 'zanders.productCard.outOfStock'|trans|default('OUT OF STOCK')|upper }}
+                                        </button>
+                                        <a href="{{ detailUrl }}" class="btn btn-outline-secondary qv-btn-buy">
+                                            {{ 'zanders.productCard.selectOptions'|trans|default('VIEW DETAILS') }}
+                                        </a>
                                     {% endif %}
                                 </div>
                             </form>

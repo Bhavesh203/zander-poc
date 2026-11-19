@@ -36,13 +36,13 @@
             font-family: 'Poppins', sans-serif;
             font-size: 28px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             line-height: 1.2;
             padding-bottom: 10px;
             margin: 0 0 14px;
-            border-bottom: 2px solid #991020;
+            border-bottom: 2px solid $sw-color-brand-primary;
         }
 
         p {
@@ -64,7 +64,7 @@
             height: 100%;
             background-color: #f7f7f7;
             border: 1px solid #e4e4e4;
-            border-top: 3px solid #991020;
+            border-top: 3px solid $sw-color-brand-primary;
             border-radius: 4px;
             padding: 20px 22px;
 
@@ -73,7 +73,7 @@
                 font-family: 'Poppins', sans-serif;
                 font-size: 15px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
                 margin: 0 0 8px;
@@ -82,12 +82,12 @@
             p {
                 font-size: 13.5px;
                 line-height: 1.6;
-                color: #333333;
+                color: $zanders-color-dark-bg;
                 margin: 0;
             }
 
             a {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 font-weight: 600;
                 text-decoration: underline;
             }
@@ -104,7 +104,7 @@
             height: 100%;
             background-color: #ffffff;
             border: 1px solid #e5e5e5;
-            border-top: 3px solid #991020;
+            border-top: 3px solid $sw-color-brand-primary;
             border-radius: 4px;
             padding: 22px 24px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
@@ -125,7 +125,7 @@
             h4 {
                 font-size: 14px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 margin: 14px 0 4px;
 
                 &:first-of-type {
@@ -136,7 +136,7 @@
             p {
                 font-size: 13.5px;
                 line-height: 1.65;
-                color: #333333;
+                color: $zanders-color-dark-bg;
                 margin-bottom: 10px;
 
                 &:last-child {
@@ -149,7 +149,7 @@
                 padding-left: 18px;
                 font-size: 13.5px;
                 line-height: 1.7;
-                color: #333333;
+                color: $zanders-color-dark-bg;
 
                 li {
                     margin-bottom: 6px;
@@ -157,13 +157,13 @@
             }
 
             a {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 font-weight: 600;
                 text-decoration: none;
 
                 &:hover,
                 &:focus {
-                    color: #6e1322;
+                    color: $zanders-color-primary-dark;
                     text-decoration: underline;
                 }
             }
@@ -183,7 +183,7 @@
                 font-family: 'Poppins', sans-serif;
                 font-size: 18px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
                 margin: 22px 0 10px;
@@ -206,7 +206,7 @@
             li {
                 font-size: 13.5px;
                 line-height: 1.7;
-                color: #333333;
+                color: $zanders-color-dark-bg;
             }
 
             ul,
@@ -230,7 +230,7 @@
                 }
 
                 thead th {
-                    background-color: #991020;
+                    background-color: $sw-color-brand-primary;
                     color: #ffffff;
                     font-weight: 700;
                     text-transform: uppercase;
@@ -244,7 +244,7 @@
             }
 
             a {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 font-weight: 600;
                 text-decoration: underline;
             }
@@ -256,7 +256,7 @@
         .cms-element-text {
             background-color: #f4f4f4;
             border: 1px solid #e0e0e0;
-            border-left: 4px solid #991020;
+            border-left: 4px solid $sw-color-brand-primary;
             border-radius: 4px;
             padding: 20px 24px;
 
@@ -272,7 +272,7 @@
             p {
                 font-size: 13.5px;
                 line-height: 1.6;
-                color: #333333;
+                color: $zanders-color-dark-bg;
                 margin: 0 0 12px;
 
                 &:last-child {
@@ -285,8 +285,8 @@
                 align-items: center;
                 justify-content: center;
                 padding: 10px 24px;
-                background-color: #991020;
-                border: 1px solid #991020;
+                background-color: $sw-color-brand-primary;
+                border: 1px solid $sw-color-brand-primary;
                 border-radius: 2px;
                 color: #ffffff;
                 font-size: 12.5px;
@@ -298,8 +298,8 @@
 
                 &:hover,
                 &:focus {
-                    background-color: #7b0a17;
-                    border-color: #7b0a17;
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
                     color: #ffffff;
                 }
             }
@@ -316,7 +316,7 @@
         .cms-element-text {
             background-color: #ffffff;
             border: 1px solid #e5e5e5;
-            border-top: 3px solid #991020;
+            border-top: 3px solid $sw-color-brand-primary;
             border-radius: 4px;
             padding: 22px 24px;
 
@@ -324,7 +324,7 @@
             h3 {
                 font-size: 17px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 text-transform: uppercase;
                 margin: 0 0 10px;
             }
@@ -332,7 +332,7 @@
             p {
                 font-size: 13.5px;
                 line-height: 1.65;
-                color: #333333;
+                color: $zanders-color-dark-bg;
             }
         }
     }
@@ -342,7 +342,7 @@
         .cms-element-form .card {
             background-color: #ffffff;
             border: 1px solid #e5e5e5;
-            border-top: 3px solid #991020;
+            border-top: 3px solid $sw-color-brand-primary;
             border-radius: 4px;
             box-shadow: 0 3px 14px rgba(0, 0, 0, 0.05);
 
@@ -354,7 +354,7 @@
                 font-family: 'Poppins', sans-serif;
                 font-size: 18px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 text-transform: uppercase;
                 letter-spacing: 0.4px;
                 padding-bottom: 10px;
@@ -379,14 +379,14 @@
 
                 &:focus {
                     background-color: #ffffff;
-                    border-color: #991020;
+                    border-color: $sw-color-brand-primary;
                     box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.12);
                 }
             }
 
             .btn-primary {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 border-radius: 2px;
                 color: #ffffff;
                 font-size: 13px;
@@ -397,8 +397,8 @@
 
                 &:hover,
                 &:focus {
-                    background-color: #7b0a17;
-                    border-color: #7b0a17;
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
                     color: #ffffff;
                 }
             }
