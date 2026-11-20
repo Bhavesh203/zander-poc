@@ -1,0 +1,33 @@
+{
+    "name": "zanders/related-product-slider",
+    "description": "Zanders Related Product Slider for Product Detail Pages and CMS elements",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Zanders Sporting Goods"
+        }
+    ],
+    "require": {
+        "shopware/core": "~6.6.0 || ~6.7.0",
+        "shopware/storefront": "~6.6.0 || ~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "ZandersRelatedProductSlider\\ZandersRelatedProductSlider",
+        "label": {
+            "en-GB": "Zanders Related Product Slider",
+            "de-DE": "Zanders Ähnliche Produkte Slider"
+        },
+        "description": {
+            "en-GB": "Responsive Related / Alternative Products Slider for Product Detail Pages with smooth navigation, stock filters, and quick dealer actions.",
+            "de-DE": "Responsiver Ähnliche/Alternative Produkte Slider für Produktdetailseiten mit Navigation, Lagerfilter und schnellen Aktionen."
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "ZandersRelatedProductSlider\\": "src/"
+        }
+    }
+}
+

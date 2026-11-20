@@ -30,9 +30,11 @@
 
     {{ parent() }}
 
-    {# Global overlays: product finder tabs/drawer, sticky mobile bottom bar & age verification gate #}
-    {% sw_include '@Storefront/storefront/component/product-finder.html.twig' %}
-    {% sw_include '@Storefront/storefront/layout/footer/mobile-bottom-bar.html.twig' %}
+    {# Global overlays: product finder tabs/drawer, sticky mobile bottom bar & age verification gate (omitted on checkout pages) #}
+    {% if not ('checkout' in app.request.attributes.get('_route')|default('')) %}
+        {% sw_include '@Storefront/storefront/component/product-finder.html.twig' %}
+        {% sw_include '@Storefront/storefront/layout/footer/mobile-bottom-bar.html.twig' %}
+    {% endif %}
     {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
 {% endblock %}
 

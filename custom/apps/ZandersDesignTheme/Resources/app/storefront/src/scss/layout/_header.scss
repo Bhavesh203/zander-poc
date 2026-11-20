@@ -87,8 +87,8 @@ The header contains the shop logo, the search form and various actions like the 
     top: -5px;
     left: 22px;
     right: auto;
-    background-color: #8c1d2f;
-    color: #ffffff;
+    background-color: $zanders-color-primary-dark;
+    color: $white;
     font-family: 'Poppins', sans-serif;
     font-size: 11px;
     font-weight: 700;
@@ -100,7 +100,7 @@ The header contains the shop logo, the search form and various actions like the 
     align-items: center;
     justify-content: center;
     line-height: 1;
-    border: 1.5px solid #ffffff;
+    border: 1.5px solid $white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 
     &:empty {
@@ -259,7 +259,7 @@ header .header-search-btn,
         top: -5px;
         right: -5px;
         left: auto;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
     }
 
     .nav-main-toggle-btn {
@@ -267,7 +267,7 @@ header .header-search-btn,
         align-items: center;
         justify-content: center;
         padding: 6px 2px;
-        color: #333333;
+        color: $zanders-color-dark-bg;
         border: 0;
         background: transparent;
 

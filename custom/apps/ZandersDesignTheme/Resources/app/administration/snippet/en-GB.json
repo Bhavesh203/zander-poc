@@ -12,13 +12,29 @@
                             "label": "Secondary brand color (Charcoal)"
                         }
                     }
+                }
+            },
+            "zandersSettings": {
+                "label": "Zanders Settings",
+                "zandersLayout": {
+                    "label": "Layout & Container",
+                    "default": {
+                        "zanders-container-full-width": {
+                            "label": "Enable Full Width Container",
+                            "helpText": "Expands container to 100% full width instead of fixed max-width."
+                        },
+                        "zanders-container-max-width": {
+                            "label": "Container Max Width (e.g. 1440px or 1600px)"
+                        },
+                        "zanders-sidebar-right-show": {
+                            "label": "Show Right Sidebar",
+                            "helpText": "Enable or disable the right sidebar (Login, Compare, Recently Viewed) on shop and search pages."
+                        }
+                    }
                 },
                 "zandersThemeColors": {
                     "label": "Zanders Extended Colors",
                     "default": {
-                        "zanders-color-primary": {
-                            "label": "Zanders Primary Red"
-                        },
                         "zanders-color-primary-dark": {
                             "label": "Primary Dark / Hover Red"
                         },

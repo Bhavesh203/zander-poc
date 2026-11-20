@@ -306,7 +306,7 @@
         font-size: 14px;
         font-weight: 600;
         color: #111111;
-        border: 1px solid #d4d4d4;
+        border: 1px solid #000000;
         border-radius: 2px;
         box-shadow: none;
 
@@ -554,7 +554,7 @@
 
         &--prev {
             background-color: #ffffff;
-            border: 1px solid #d4d4d4;
+            border: 1px solid #000000;
             color: $zanders-color-dark-bg;
 
             &:hover,
@@ -1049,4 +1049,3 @@
         }
     }
 }
-

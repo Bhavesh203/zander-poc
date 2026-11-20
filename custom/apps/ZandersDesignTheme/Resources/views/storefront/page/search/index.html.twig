@@ -9,9 +9,11 @@
 {% sw_extends '@Storefront/storefront/page/search/index.html.twig' %}
 
 {% block page_search %}
+    {% set showRightSidebar = theme_config('zanders-sidebar-right-show') is same as(false) ? false : true %}
+
     <div class="cms-page search-page zanders-search-page">
         <div class="container">
-            <div class="row zanders-shop-layout-row">
+            <div class="row zanders-shop-layout-row{% if not showRightSidebar %} zanders-shop-layout-row--no-right-sidebar{% endif %}">
                 {# 1. Left Sidebar: SHOPPING OPTIONS Filter Panel #}
                 <div class="cms-section-sidebar-sidebar-content zanders-sidebar-col zanders-sidebar-col--left col-12 col-lg-3 col-xl-2">
                     {% sw_include '@Storefront/storefront/element/cms-element-sidebar-filter.html.twig' with {
@@ -21,7 +23,7 @@
                 </div>
 
                 {# 2. Center Column: Breadcrumb + Search Title + Product Listing #}
-                <div class="cms-section-sidebar-main-content zanders-main-col col-12 col-lg-6 col-xl-7">
+                <div class="cms-section-sidebar-main-content zanders-main-col col-12 {% if showRightSidebar %}col-lg-6 col-xl-7{% else %}col-lg-9 col-xl-10{% endif %}">
                     <div class="zanders-center-header">
                         <nav aria-label="breadcrumb" class="zanders-inline-breadcrumb">
                             <ol class="breadcrumb">
@@ -47,9 +49,11 @@
                 </div>
 
                 {# 3. Right Sidebar: Login / Compare / Action Buttons / Recently Viewed #}
-                <div class="zanders-sidebar-col zanders-sidebar-col--right col-12 col-lg-3 col-xl-3">
-                    {% sw_include '@Storefront/storefront/component/listing/sidebar-right.html.twig' %}
-                </div>
+                {% if showRightSidebar %}
+                    <div class="zanders-sidebar-col zanders-sidebar-col--right col-12 col-lg-3 col-xl-3">
+                        {% sw_include '@Storefront/storefront/component/listing/sidebar-right.html.twig' %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

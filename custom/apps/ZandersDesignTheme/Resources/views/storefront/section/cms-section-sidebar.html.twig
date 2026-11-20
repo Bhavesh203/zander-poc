@@ -11,8 +11,9 @@
 {% block page_content_section_sidebar_row %}
     {% set sidebarBlocks = section.blocks.filterBySectionPosition('sidebar') %}
     {% set mainContentBlocks = section.blocks.filterBySectionPosition('main') %}
+    {% set showRightSidebar = theme_config('zanders-sidebar-right-show') is same as(false) ? false : true %}
 
-    <div class="row zanders-shop-layout-row">
+    <div class="row zanders-shop-layout-row{% if not showRightSidebar %} zanders-shop-layout-row--no-right-sidebar{% endif %}">
         {# 1. Left Sidebar: SHOPPING OPTIONS Filters #}
         {% block section_sidebar_content %}
             <div class="cms-section-sidebar-sidebar-content zanders-sidebar-col zanders-sidebar-col--left col-12 col-lg-3 col-xl-2">
@@ -26,7 +27,7 @@
 
         {# 2. Center Column: Breadcrumb + Category Title + Product Listing #}
         {% block section_main_content %}
-            <div class="cms-section-sidebar-main-content zanders-main-col col-12 col-lg-6 col-xl-7">
+            <div class="cms-section-sidebar-main-content zanders-main-col col-12 {% if showRightSidebar %}col-lg-6 col-xl-7{% else %}col-lg-9 col-xl-10{% endif %}">
                 {% set activeCat = page.category ?? (page.header.navigation.active ?? null) %}
                 {% set rootId = context.salesChannel.navigationCategoryId %}
                 {% set isNotRoot = activeCat and activeCat.id != rootId %}
@@ -61,9 +62,11 @@
         {% endblock %}
 
         {# 3. Right Sidebar: Login / Compare / Quick Links / Recently Viewed #}
-        <div class="zanders-sidebar-col zanders-sidebar-col--right col-12 col-lg-3 col-xl-3">
-            {% sw_include '@Storefront/storefront/component/listing/sidebar-right.html.twig' %}
-        </div>
+        {% if showRightSidebar %}
+            <div class="zanders-sidebar-col zanders-sidebar-col--right col-12 col-lg-3 col-xl-3">
+                {% sw_include '@Storefront/storefront/component/listing/sidebar-right.html.twig' %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

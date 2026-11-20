@@ -268,15 +268,15 @@ footer.footer-main,
         height: 18px;
         padding: 0 4px;
         border-radius: 50px;
-        background-color: #991020;
-        color: #ffffff;
+        background-color: $sw-color-brand-primary;
+        color: $white;
         font-size: 10.5px;
         font-weight: 700;
         line-height: 1;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1.5px solid #ffffff;
+        border: 1.5px solid $white;
 
         &.is-empty,
         &:empty {

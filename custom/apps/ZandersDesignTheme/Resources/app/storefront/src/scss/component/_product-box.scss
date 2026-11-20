@@ -15,7 +15,7 @@ Matches Zanders product card design:
 
 .card.product-box,
 .product-box {
-    background-color: #ffffff;
+    background-color: $white;
     border-radius: 0;
     border: 0;
     box-shadow: 4px 4px 12px 0px #00000024;
@@ -100,7 +100,7 @@ Matches Zanders product card design:
         font-size: 20px;
         line-height: 23px;
         font-weight: 400;
-        color: #000000;
+        color: $zanders-color-dark-text;
         text-transform: uppercase;
         text-align: center;
         margin-bottom: 8px;
@@ -116,7 +116,7 @@ Matches Zanders product card design:
 
         &:hover,
         &:focus {
-            color: #991020;
+            color: $sw-color-brand-primary;
             text-decoration: none;
         }
     }
@@ -132,16 +132,16 @@ Matches Zanders product card design:
         .product-card-meta-item {
             font-size: 16px;
             line-height: 19px;
-            color: #222222;
+            color: $zanders-color-dark-text;
             font-weight: 400;
 
             .meta-label {
-                color: #787878;
+                color: lighten($zanders-color-dark-text, 35%);
                 margin-right: 4px;
             }
 
             .meta-value {
-                color: #000000;
+                color: $zanders-color-dark-text;
             }
         }
     }
@@ -156,7 +156,7 @@ Matches Zanders product card design:
             font-size: 16px;
             line-height: 19px;
             font-weight: 400;
-            color: #991020;
+            color: $sw-color-brand-primary;
             display: inline-block;
         }
     }
@@ -199,10 +199,10 @@ Matches Zanders product card design:
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
             font-weight: 600;
-            color: #212529;
-            background-color: #f4f6f8;
+            color: $zanders-color-dark-text;
+            background-color: $zanders-color-light-bg;
             border: none;
-            border-bottom: 2px solid #212529;
+            border-bottom: 2px solid $zanders-color-dark-text;
             border-radius: 2px 2px 0 0;
             box-shadow: none;
             -moz-appearance: textfield;
@@ -214,15 +214,15 @@ Matches Zanders product card design:
             }
 
             &:focus {
-                background-color: #ffffff;
-                border-bottom-color: #991020;
+                background-color: $white;
+                border-bottom-color: $sw-color-brand-primary;
                 outline: none;
                 box-shadow: none;
             }
         }
     }
 
-    /* Secondary Prices: MSRP & MAP */
+    /* Secondary Prices: MSRP & MAP (Grid View) */
     .product-card-secondary-prices {
         display: flex;
         justify-content: space-between;
@@ -233,14 +233,27 @@ Matches Zanders product card design:
         font-size: 16px;
         line-height: 19px;
         font-weight: 400;
-        color: #991020;
+        color: $sw-color-brand-primary;
 
         .price-col {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            color: #991020;
+            color: $sw-color-brand-primary;
         }
+
+        .primary-price-col {
+            display: none; // Hidden in default grid view (primary price is shown above Qty)
+        }
+    }
+
+    /* Bottom row wrapper for icons and buttons */
+    .product-card-bottom-row {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
     }
 
     /* Circular action icons row: Wishlist, Compare, Quick View */
@@ -259,8 +272,8 @@ Matches Zanders product card design:
             height: 44px;
             border-radius: 50%;
             border: 0;
-            background-color: #FAFAFA;
-            color: #A1A1A1;
+            background-color: $zanders-color-light-bg;
+            color: lighten($zanders-color-dark-text, 40%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -273,7 +286,7 @@ Matches Zanders product card design:
             svg {
                 width: 24px;
                 height: 24px;
-                stroke: #A1A1A1;
+                stroke: lighten($zanders-color-dark-text, 40%);
                 stroke-width: 2;
                 // fill: none;
                 pointer-events: none;
@@ -293,12 +306,12 @@ Matches Zanders product card design:
             }
 
             &:hover {
-                background-color: #991020;
-                border-color: #991020;
-                color: #ffffff;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
+                color: $white;
 
                 svg {
-                    stroke: #ffffff;
+                    stroke: $white;
                     transform: scale(1.08);
                 }
             }
@@ -307,12 +320,12 @@ Matches Zanders product card design:
             &.is-wishlist,
             &.is-active,
             &.is-added-to-compare {
-                background-color: #fff1f2;
-                border-color: #991020;
-                color: #991020;
+                background-color: lighten($sw-color-brand-primary, 48%);
+                border-color: $sw-color-brand-primary;
+                color: $sw-color-brand-primary;
 
                 svg {
-                    stroke: #991020;
+                    stroke: $sw-color-brand-primary;
                 }
 
                 .icon-wishlist-not-added,
@@ -327,20 +340,20 @@ Matches Zanders product card design:
                     justify-content: center;
 
                     svg {
-                        stroke: #991020;
-                        fill: #991020;
+                        stroke: $sw-color-brand-primary;
+                        fill: $sw-color-brand-primary;
                     }
                 }
 
                 &:hover {
-                    background-color: #991020;
-                    border-color: #991020;
-                    color: #ffffff;
+                    background-color: $sw-color-brand-primary;
+                    border-color: $sw-color-brand-primary;
+                    color: $white;
 
                     .icon-wishlist-added svg,
                     .wishlist-added svg {
-                        stroke: #ffffff;
-                        fill: #ffffff;
+                        stroke: $white;
+                        fill: $white;
                     }
                 }
             }
@@ -356,9 +369,9 @@ Matches Zanders product card design:
         .product-card-btn-add,
         .product-card-btn-buy {
             flex: 1 1 0;
-            background-color: #991020;
-            border: 1px solid #991020;
-            color: #ffffff;
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
+            color: $white;
             font-size: 16px;
             line-height: 19px;
             font-weight: 500;
@@ -377,9 +390,9 @@ Matches Zanders product card design:
 
             &:hover,
             &:focus {
-                background-color: #6e1322;
-                border-color: #6e1322;
-                color: #ffffff;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
+                color: $white;
                 text-decoration: none;
                 box-shadow: none;
             }

@@ -143,8 +143,11 @@
                     step="{{ product.purchaseSteps ?: 1 }}" class="form-control product-card-qty-input" />
             </div>
 
-            {# Secondary Prices: MSRP : $899.00 and MAP : $899.00 #}
+            {# Secondary Prices: MSRP : $899.00 and MAP : $899.00 (plus Primary in list view) #}
             <div class="product-card-secondary-prices">
+                <div class="price-col primary-price-col">
+                    <span class="price-val primary-price-val">{{ price.unitPrice|currency }}</span>
+                </div>
                 <div class="price-col msrp-col">
                     <span class="price-label">{{ 'zanders.productCard.msrp'|trans }} :</span>
                     <span class="price-val">{{ msrpVal|currency }}</span>
@@ -155,108 +158,111 @@
                 </div>
             </div>
 
-            {# Circular Action Icons Row (Wishlist [logged-in only], Compare, Quick View) #}
-            <div class="product-card-action-icons">
-                {# Wishlist (shown only when customer is logged in) #}
-                {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
-                {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
-                    {% set addToWishlistOptions = {
-                    productId: id,
-                    router: {
-                    add: {
-                    afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
-                    path: path('frontend.wishlist.product.add', { productId: id }),
-                    },
-                    remove: {
-                    path: path('frontend.wishlist.product.remove', { productId: id }),
-                    }
-                    },
-                    texts: {
-                    add: 'listing.addToWishlist'|trans|sw_sanitize,
-                    remove: 'listing.removeFromWishlist'|trans|sw_sanitize
-                    },
-                    } %}
-                    <button type="button"
-                        class="product-card-icon-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
-                        title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}" data-add-to-wishlist="true"
-                        data-product-id="{{ id }}" data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
-                        <span class="icon-wishlist-not-added">
-
-                            <svg class="icon icon-heart" width="24" height="24" viewBox="0 0 24 24" fill="#A1A1A1"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                    fill="#A1A1A1" />
-                            </svg>
-
-                        </span>
-                        <span class="icon-wishlist-added">
-                            <svg class="icon icon-heart-fill" width="24" height="24" viewBox="0 0 24 24" fill="#8c1d2f"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                    fill="#8c1d2f" />
-                            </svg>
-                        </span>
-                    </button>
-                {% endif %}
-
-                {# Compare (wired to FroshProductCompare plugin) #}
-                {% if config('FroshProductCompare.config.active') %}
-                    {% set addToCompareOptions = {
+            {# Bottom Row: Action Icons on Left, Buttons on Right (in List View) #}
+            <div class="product-card-bottom-row">
+                {# Circular Action Icons Row (Wishlist [logged-in only], Compare, Quick View) #}
+                <div class="product-card-action-icons">
+                    {# Wishlist (shown only when customer is logged in) #}
+                    {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
+                    {% if config('core.cart.wishlistEnabled') and isCustomerLoggedIn %}
+                        {% set addToWishlistOptions = {
                         productId: id,
-                        showIconOnly: true,
-                        defaultText: 'froshProductCompare.general.addToCompare'|trans|sw_sanitize,
-                        addedText: 'froshProductCompare.general.removeFromCompare'|trans|sw_sanitize
-                    } %}
-                    <button type="button"
-                        class="product-card-icon-btn product-compare-btn"
-                        data-add-to-compare-button="true"
-                        data-add-to-compare-button-options="{{ addToCompareOptions|json_encode }}"
-                        title="{{ 'zanders.productCard.compare'|trans }}">
-                        <svg class="icon icon-scale" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        router: {
+                        add: {
+                        afterLoginPath: path('frontend.wishlist.add.after.login', { productId: id }),
+                        path: path('frontend.wishlist.product.add', { productId: id }),
+                        },
+                        remove: {
+                        path: path('frontend.wishlist.product.remove', { productId: id }),
+                        }
+                        },
+                        texts: {
+                        add: 'listing.addToWishlist'|trans|sw_sanitize,
+                        remove: 'listing.removeFromWishlist'|trans|sw_sanitize
+                        },
+                        } %}
+                        <button type="button"
+                            class="product-card-icon-btn product-wishlist-btn product-wishlist-{{ id }} product-wishlist-not-added"
+                            title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}" data-add-to-wishlist="true"
+                            data-product-id="{{ id }}" data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
+                            <span class="icon-wishlist-not-added">
+
+                                <svg class="icon icon-heart" width="24" height="24" viewBox="0 0 24 24" fill="#A1A1A1"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
+                                        fill="#A1A1A1" />
+                                </svg>
+
+                            </span>
+                            <span class="icon-wishlist-added">
+                                <svg class="icon icon-heart-fill" width="24" height="24" viewBox="0 0 24 24" fill="#8c1d2f"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
+                                        fill="#8c1d2f" />
+                                </svg>
+                            </span>
+                        </button>
+                    {% endif %}
+
+                    {# Compare (wired to FroshProductCompare plugin) #}
+                    {% if config('FroshProductCompare.config.active') %}
+                        {% set addToCompareOptions = {
+                            productId: id,
+                            showIconOnly: true,
+                            defaultText: 'froshProductCompare.general.addToCompare'|trans|sw_sanitize,
+                            addedText: 'froshProductCompare.general.removeFromCompare'|trans|sw_sanitize
+                        } %}
+                        <button type="button"
+                            class="product-card-icon-btn product-compare-btn"
+                            data-add-to-compare-button="true"
+                            data-add-to-compare-button-options="{{ addToCompareOptions|json_encode }}"
+                            title="{{ 'zanders.productCard.compare'|trans }}">
+                            <svg class="icon icon-scale" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+                                <path d="M7 21h10" />
+                                <path d="M12 3v18" />
+                                <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                            </svg>
+                        </button>
+                    {% endif %}
+
+                    {# Quick View #}
+                    <button type="button" data-url="{{ path('widgets.quickview.minimal', { productId: id }) }}"
+                        data-product-id="{{ id }}" data-ajax-modal="true" data-modal-class="quickview-modal"
+                        class="product-card-icon-btn product-quickview-btn"
+                        title="{{ 'zanders.productCard.quickView'|trans }}">
+                        <svg class="icon icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
-                            <path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
-                            <path d="M7 21h10" />
-                            <path d="M12 3v18" />
-                            <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                            <circle cx="12" cy="12" r="3" />
                         </svg>
                     </button>
-                {% endif %}
+                </div>
 
-                {# Quick View #}
-                <button type="button" data-url="{{ path('widgets.quickview.minimal', { productId: id }) }}"
-                    data-product-id="{{ id }}" data-ajax-modal="true" data-modal-class="quickview-modal"
-                    class="product-card-icon-btn product-quickview-btn"
-                    title="{{ 'zanders.productCard.quickView'|trans }}">
-                    <svg class="icon icon-eye" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                </button>
-            </div>
-
-            {# Action Buttons: ADD TO CART & BUY NOW #}
-            <div class="product-card-action-buttons">
-                {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
-                    class="btn btn-primary product-card-btn-add">
-                    {{ 'zanders.productCard.addToCart'|trans }}
-                </button>
-                <button type="button" class="btn btn-primary product-card-btn-buy"
-                    onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
-                    {{ 'zanders.productCard.buyNow'|trans }}
-                </button>
-                {% else %}
-                <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-add">
-                    {{ 'zanders.productCard.addToCart'|trans }}
-                </a>
-                <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-buy">
-                    {{ 'zanders.productCard.buyNow'|trans }}
-                </a>
-                {% endif %}
+                {# Action Buttons: ADD TO CART & BUY NOW #}
+                <div class="product-card-action-buttons">
+                    {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+                    <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
+                        class="btn btn-primary product-card-btn-add">
+                        {{ 'zanders.productCard.addToCart'|trans }}
+                    </button>
+                    <button type="button" class="btn btn-primary product-card-btn-buy"
+                        onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                        {{ 'zanders.productCard.buyNow'|trans }}
+                    </button>
+                    {% else %}
+                    <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-add">
+                        {{ 'zanders.productCard.addToCart'|trans }}
+                    </a>
+                    <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-buy">
+                        {{ 'zanders.productCard.buyNow'|trans }}
+                    </a>
+                    {% endif %}
+                </div>
             </div>
         </form>
     </div>

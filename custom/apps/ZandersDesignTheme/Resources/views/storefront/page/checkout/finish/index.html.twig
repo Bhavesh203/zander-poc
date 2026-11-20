@@ -1,0 +1,426 @@
+{#
+    Zanders Checkout Order Finish / Thank You Page Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/checkout/finish/index.html.twig` to
+    deliver a clean, reassuring dealer order confirmation experience:
+    1. Multi-Step Checkout Progress Tracker (Step 4: Order Confirmation)
+    2. Full-Width Thank You Hero Card with Order Number, Date, Amount, and Print button
+    3. Order Overview 2x2 Grid: Shipping & Billing Addresses, Payment & Shipping methods
+    4. Order Items Summary Table with 60x60 constrained thumbnails
+    5. Order Notes / Dealer Instructions (if present)
+    6. Sticky Order Summary Card & Dealer Support Card
+#}
+{% sw_extends '@Storefront/storefront/page/checkout/finish/index.html.twig' %}
+
+{% block page_checkout_progress %}
+    {% sw_include '@Storefront/storefront/component/checkout/checkout-steps.html.twig' with {
+        activeStep: 'finish'
+    } %}
+{% endblock %}
+
+{% block page_checkout_container %}
+    {% set order = page.order %}
+    {% set billingAddress = order.billingAddress %}
+    {% set deliveries = order.deliveries %}
+    {% set firstDelivery = (deliveries and deliveries.count > 0) ? deliveries.first : null %}
+    {% set shippingAddress = (firstDelivery and firstDelivery.shippingOrderAddress) ? firstDelivery.shippingOrderAddress : billingAddress %}
+    {% set shippingMethod = firstDelivery ? firstDelivery.shippingMethod : null %}
+    {% set transactions = order.transactions %}
+    {% set lastTransaction = (transactions and transactions.count > 0) ? transactions.last : null %}
+    {% set paymentMethod = lastTransaction ? lastTransaction.paymentMethod : null %}
+
+    {# Reset client customer storage #}
+    <div data-checkout-customer-storage-reset="true"></div>
+
+    {# Analytics Enhanced Conversions Support #}
+    {% if storefrontAnalytics and storefrontAnalytics.isActive() and storefrontAnalytics.isTrackOrders() and storefrontAnalytics.isEnhancedConversions() %}
+        {% set email = order.orderCustomer.email|lower|trim %}
+        {% set emailParts = email|split('@') %}
+        {% if emailParts[1] == 'gmail.com' or emailParts[1] == 'googlemail.com' %}
+            {% set email = emailParts[0]|replace({'.': ''}) ~ '@' ~ emailParts[1] %}
+        {% endif %}
+        <script>
+            if (typeof gtag === 'function') {
+                gtag('set', 'user_data', {
+                    'sha256_email_address': '{{ email|sha256 }}'
+                });
+            }
+        </script>
+    {% endif %}
+
+    {# 1. Full-Width Thank You Hero Banner across entire container #}
+    <div class="zanders-finish-hero-wrap">
+        <div class="zanders-finish-hero-card">
+            <div class="zanders-finish-hero-top">
+                <div class="zanders-finish-check-circle" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="zanders-finish-hero-text">
+                    <div class="zanders-finish-hero-badge">ORDER CONFIRMED</div>
+                    <h1 class="zanders-finish-hero-title">THANK YOU FOR YOUR ORDER!</h1>
+                    <p class="zanders-finish-hero-desc">
+                        Your order has been received and is now being processed by the Zanders Sporting Goods fulfillment center.
+                        A confirmation email has been sent to <strong>{{ order.orderCustomer.email }}</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="zanders-finish-hero-meta">
+                <div class="zanders-meta-item">
+                    <span class="zanders-meta-label">ORDER NUMBER</span>
+                    <span class="zanders-meta-val zanders-order-num">#{{ order.orderNumber }}</span>
+                </div>
+                <div class="zanders-meta-divider"></div>
+                <div class="zanders-meta-item">
+                    <span class="zanders-meta-label">ORDER DATE</span>
+                    <span class="zanders-meta-val">{{ order.orderDateTime|date('F j, Y') }}</span>
+                </div>
+                <div class="zanders-meta-divider"></div>
+                <div class="zanders-meta-item">
+                    <span class="zanders-meta-label">TOTAL AMOUNT</span>
+                    <span class="zanders-meta-val zanders-total-val">{{ order.amountTotal|currency }}</span>
+                </div>
+                <div class="zanders-meta-divider"></div>
+                <div class="zanders-meta-item">
+                    <span class="zanders-meta-label">STATUS</span>
+                    <span class="zanders-meta-badge">
+                        <span class="zanders-status-dot"></span>
+                        Received &amp; Processing
+                    </span>
+                </div>
+            </div>
+
+            <div class="zanders-finish-hero-actions">
+                <a href="{{ path('frontend.home.page') }}" class="btn zanders-btn-continue">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span>CONTINUE SHOPPING</span>
+                </a>
+
+                <button type="button" class="btn zanders-btn-print" onclick="window.print()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    <span>PRINT CONFIRMATION</span>
+                </button>
+
+                {% if context.customer and not context.customer.guest %}
+                    <a href="{{ path('frontend.account.order.page') }}" class="btn zanders-btn-account">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>VIEW IN MY ORDERS</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# 2. Two-Column Layout (Main Details & Summary Aside) #}
+    <div class="checkout-container zanders-finish-columns">
+        {# Left Column: Details & Order Items #}
+        <div class="checkout-main zanders-finish-main">
+            {# Flashbags #}
+            <div class="flashbags">
+                {% for type, messages in app.flashes %}
+                    {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                        type: type,
+                        list: messages,
+                        announceOnLoad: true,
+                    } %}
+                {% endfor %}
+            </div>
+
+            {# Section 1: 4 Cards Overview in 2x2 Grid #}
+            <div class="zanders-confirm-block zanders-finish-overview-block">
+                <div class="zanders-confirm-block-header">
+                    <span class="zanders-confirm-step-badge">1</span>
+                    <h2 class="zanders-confirm-block-title">ORDER &amp; DELIVERY OVERVIEW</h2>
+                </div>
+                <div class="zanders-confirm-block-body">
+                    <div class="row g-3">
+                        {# Shipping Address #}
+                        <div class="col-12 col-md-6">
+                            <div class="zanders-finish-card">
+                                <div class="zanders-finish-card-head">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <h3 class="zanders-finish-card-title">SHIPPING ADDRESS</h3>
+                                </div>
+                                <div class="zanders-finish-card-content">
+                                    <strong class="zanders-card-person">{{ shippingAddress.firstName }} {{ shippingAddress.lastName }}</strong>
+                                    {% if shippingAddress.company %}
+                                        <div class="zanders-card-company">{{ shippingAddress.company }}</div>
+                                    {% endif %}
+                                    <div class="zanders-card-street">{{ shippingAddress.street }}</div>
+                                    <div class="zanders-card-city">{{ shippingAddress.zipcode }} {{ shippingAddress.city }}</div>
+                                    <div class="zanders-card-country">{{ shippingAddress.country.translated.name }}</div>
+                                    {% if shippingAddress.phoneNumber %}
+                                        <div class="zanders-card-phone">Phone: {{ shippingAddress.phoneNumber }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Billing Address #}
+                        <div class="col-12 col-md-6">
+                            <div class="zanders-finish-card">
+                                <div class="zanders-finish-card-head">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                                    </svg>
+                                    <h3 class="zanders-finish-card-title">BILLING ADDRESS</h3>
+                                </div>
+                                <div class="zanders-finish-card-content">
+                                    <strong class="zanders-card-person">{{ billingAddress.firstName }} {{ billingAddress.lastName }}</strong>
+                                    {% if billingAddress.company %}
+                                        <div class="zanders-card-company">{{ billingAddress.company }}</div>
+                                    {% endif %}
+                                    <div class="zanders-card-street">{{ billingAddress.street }}</div>
+                                    <div class="zanders-card-city">{{ billingAddress.zipcode }} {{ billingAddress.city }}</div>
+                                    <div class="zanders-card-country">{{ billingAddress.country.translated.name }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Payment Method #}
+                        <div class="col-12 col-md-6">
+                            <div class="zanders-finish-card">
+                                <div class="zanders-finish-card-head">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                                    </svg>
+                                    <h3 class="zanders-finish-card-title">PAYMENT METHOD</h3>
+                                </div>
+                                <div class="zanders-finish-card-content">
+                                    <strong class="zanders-card-highlight">{{ paymentMethod ? paymentMethod.translated.name : 'Standard' }}</strong>
+                                    {% if paymentMethod and paymentMethod.translated.description %}
+                                        <p class="zanders-card-subtext">{{ paymentMethod.translated.description }}</p>
+                                    {% endif %}
+                                    <div class="zanders-card-status-pill zanders-status-pill-paid">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                        <span>Payment Authorized</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Shipping Method #}
+                        <div class="col-12 col-md-6">
+                            <div class="zanders-finish-card">
+                                <div class="zanders-finish-card-head">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="1" y="3" width="15" height="13"></rect>
+                                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                    </svg>
+                                    <h3 class="zanders-finish-card-title">SHIPPING METHOD</h3>
+                                </div>
+                                <div class="zanders-finish-card-content">
+                                    <strong class="zanders-card-highlight">{{ shippingMethod ? shippingMethod.translated.name : 'Standard Delivery' }}</strong>
+                                    {% if shippingMethod and shippingMethod.translated.description %}
+                                        <p class="zanders-card-subtext">{{ shippingMethod.translated.description }}</p>
+                                    {% endif %}
+                                    <div class="zanders-card-status-pill zanders-status-pill-ship">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 14 14"></polyline>
+                                        </svg>
+                                        <span>Estimated Dispatch: 1-2 Business Days</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Section 2: Order Items Summary Table #}
+            <div class="zanders-confirm-block zanders-finish-products-block mt-4">
+                <div class="zanders-confirm-block-header d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="zanders-confirm-step-badge">2</span>
+                        <h2 class="zanders-confirm-block-title">
+                            ORDER ITEMS SUMMARY ({{ order.nestedLineItems|length }})
+                        </h2>
+                    </div>
+                    <div class="zanders-finish-items-count-tag">
+                        {{ order.nestedLineItems|length }} {{ order.nestedLineItems|length == 1 ? 'Product' : 'Products' }}
+                    </div>
+                </div>
+
+                <div class="zanders-confirm-block-body p-0">
+                    <div class="table-responsive zanders-confirm-table-wrap">
+                        <table class="table zanders-confirm-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="zanders-col-thumb"><span class="visually-hidden">Image</span></th>
+                                    <th class="zanders-col-info">Product Details</th>
+                                    <th class="zanders-col-price text-end">Price</th>
+                                    <th class="zanders-col-qty text-center">Qty</th>
+                                    <th class="zanders-col-total text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lineItem in order.nestedLineItems %}
+                                    {% set itemLabel = lineItem.label %}
+                                    {% set itemSku = lineItem.payload.productNumber ?? '' %}
+                                    {% set refId = lineItem.referencedId %}
+                                    {% set isProduct = (lineItem.type == 'product') %}
+                                    {% set detailUrl = (isProduct and refId) ? seoUrl('frontend.detail.page', { productId: refId }) : null %}
+
+                                    <tr class="zanders-confirm-item-row">
+                                        {# Thumbnail #}
+                                        <td class="zanders-col-thumb">
+                                            <div class="zanders-confirm-thumb-box">
+                                                {% if lineItem.cover and lineItem.cover.url %}
+                                                    {% if detailUrl %}
+                                                        <a href="{{ detailUrl }}" title="{{ itemLabel }}">
+                                                            <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-confirm-thumb-img" style="width: 60px; height: 60px; max-width: 60px; max-height: 60px; object-fit: contain;">
+                                                        </a>
+                                                    {% else %}
+                                                        <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-confirm-thumb-img" style="width: 60px; height: 60px; max-width: 60px; max-height: 60px; object-fit: contain;">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="zanders-confirm-thumb-placeholder">
+                                                        {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+
+                                        {# Product Details #}
+                                        <td class="zanders-col-info">
+                                            <div class="zanders-confirm-info-wrap">
+                                                {% if itemSku %}
+                                                    <div class="zanders-confirm-item-sku">Item Number: <strong>{{ itemSku }}</strong></div>
+                                                {% endif %}
+                                                {% if detailUrl %}
+                                                    <a href="{{ detailUrl }}" class="zanders-confirm-item-title-link" title="{{ itemLabel }}">
+                                                        <span class="zanders-confirm-item-title">{{ itemLabel }}</span>
+                                                    </a>
+                                                {% else %}
+                                                    <span class="zanders-confirm-item-title">{{ itemLabel }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+
+                                        {# Unit Price #}
+                                        <td class="zanders-col-price text-end">
+                                            <span class="zanders-confirm-price">
+                                                {{ lineItem.unitPrice|currency }}
+                                            </span>
+                                        </td>
+
+                                        {# Quantity #}
+                                        <td class="zanders-col-qty text-center">
+                                            <span class="zanders-confirm-qty-badge">
+                                                {{ lineItem.quantity }}
+                                            </span>
+                                        </td>
+
+                                        {# Total Price #}
+                                        <td class="zanders-col-total text-end">
+                                            <strong class="zanders-confirm-total">
+                                                {{ lineItem.totalPrice|currency }}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {# Section 3: Customer Comment if any #}
+            {% if order.customerComment %}
+                <div class="zanders-confirm-block zanders-finish-notes-block mt-4">
+                    <div class="zanders-confirm-block-header">
+                        <span class="zanders-confirm-step-badge">3</span>
+                        <h2 class="zanders-confirm-block-title">ORDER NOTES &amp; DEALER INSTRUCTIONS</h2>
+                    </div>
+                    <div class="zanders-confirm-block-body">
+                        <div class="zanders-finish-comment-box">
+                            {{ order.customerComment|sw_sanitize|nl2br }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {# Right Column: Sticky Summary & Dealer Support #}
+        <div class="checkout-aside zanders-finish-aside">
+            {# Summary Card #}
+            <div class="checkout-aside-container">
+                <div class="checkout-aside-summary">
+                    <h2 class="checkout-aside-summary-header">ORDER SUMMARY</h2>
+                    <div class="checkout-aside-summary-list-container">
+                        {% sw_include '@Storefront/storefront/page/checkout/summary.html.twig' %}
+                    </div>
+                    <div class="zanders-finish-status-banner">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Order Received &amp; Confirmed</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Dealer Support & Logistics Card #}
+            <div class="zanders-finish-support-card mt-3">
+                <div class="zanders-finish-support-head">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    <span>NEED ASSISTANCE?</span>
+                </div>
+                <div class="zanders-finish-support-body">
+                    <p class="zanders-support-p">Have questions regarding order <strong>#{{ order.orderNumber }}</strong>? Our dealer support team is ready to assist you.</p>
+                    <div class="zanders-support-row">
+                        <span class="zanders-support-label">Dealer Support:</span>
+                        <a href="tel:8008514373" class="zanders-support-phone">800.851.4373</a>
+                    </div>
+                    <div class="zanders-support-row">
+                        <span class="zanders-support-label">Email:</span>
+                        <a href="mailto:dealers@gzanders.com" class="zanders-support-email">dealers@gzanders.com</a>
+                    </div>
+                    <div class="zanders-support-row">
+                        <span class="zanders-support-label">Hours:</span>
+                        <span class="zanders-support-hours">Mon – Fri: 8:00 AM – 5:00 PM CST</span>
+                    </div>
+                </div>
+                <div class="zanders-finish-support-badges">
+                    <div class="zanders-trust-item">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>256-Bit SSL Encrypted</span>
+                    </div>
+                    <div class="zanders-trust-item">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>Authorized Zanders Dealer Portal</span>
+                    </div>
+                    <div class="zanders-trust-item">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        <span>Fast Warehouse Dispatch</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

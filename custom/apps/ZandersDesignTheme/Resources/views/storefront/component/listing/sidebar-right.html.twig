@@ -4,12 +4,12 @@
     Matches live site 3-column layout (shop2.gzanders.com):
     - When Guest:
       1. LOGIN box (Email*, Password*, crimson LOGIN button)
-      2. RECENTLY VIEWED box
+      2. RECENTLY VIEWED box (Dynamic from localStorage: 'zanders-recently-viewed-products')
     - When Logged In:
-      1. COMPARE PRODUCTS box (with items, [x] remove, CLEAR ALL, COMPARE button)
+      1. COMPARE PRODUCTS box (Dynamic from Frosh compare & localStorage: 'compare-widget-added-products')
       2. VIEW MY OPEN ORDER full-width dark button
       3. VIEW WISHLIST ITEMS full-width dark button
-      4. RECENTLY VIEWED box
+      4. RECENTLY VIEWED box (Dynamic from localStorage: 'zanders-recently-viewed-products')
 #}
 
 {% set isCustomerLoggedIn = context.customer is not null and not context.customer.guest %}
@@ -54,59 +54,34 @@
             </div>
         </div>
 
-        {# GUEST VIEW: Recently Viewed #}
+        {# GUEST VIEW: Recently Viewed (Dynamic) #}
         <div class="zanders-sidebar-box zanders-sidebar-recent-box">
             <div class="zanders-sidebar-box-header">
                 <span class="zanders-sidebar-box-title">RECENTLY VIEWED</span>
             </div>
             <div class="zanders-sidebar-box-body zanders-sidebar-recent-body js-zanders-recent-items">
-                <div class="zanders-sidebar-recent-item">
-                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
-                        WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
-                    </a>
-                </div>
-                <div class="zanders-sidebar-recent-item">
-                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
-                        USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD BLUE-SYNTHETIC
-                    </a>
-                </div>
-                <div class="zanders-sidebar-recent-item">
-                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
-                        USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD STAINLESS WOOD
-                    </a>
-                </div>
+                <div class="zanders-recent-empty-msg">You have no recently viewed items.</div>
             </div>
         </div>
     </div>
 
-    {# 2. LOGGED IN VIEW (Visible when logged in, matches media_1795080305599_cb82b9dc.png) #}
+    {# 2. LOGGED IN VIEW (Visible when logged in) #}
     <div class="zanders-sidebar-logged-in-view js-sidebar-logged-in-view{% if not isCustomerLoggedIn %} d-none{% endif %}"{% if not isCustomerLoggedIn %} style="display: none;"{% endif %}>
-        {# COMPARE PRODUCTS Box #}
+        {# COMPARE PRODUCTS Box (Dynamic) #}
         <div class="zanders-sidebar-box zanders-sidebar-compare-box js-zanders-compare-box">
             <div class="zanders-sidebar-box-header">
                 <span class="zanders-sidebar-box-title">COMPARE PRODUCTS</span>
             </div>
             <div class="zanders-sidebar-box-body">
                 <div class="zanders-compare-items-list js-zanders-compare-list">
-                    <div class="zanders-compare-item">
-                        <span class="zanders-compare-item-name">WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS</span>
-                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
-                    </div>
-                    <div class="zanders-compare-item">
-                        <span class="zanders-compare-item-name">USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD BLUE SYNTHETIC</span>
-                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
-                    </div>
-                    <div class="zanders-compare-item">
-                        <span class="zanders-compare-item-name">USED MOSSBERG 702 PLINKSTER 22LR 18" 10RD STAINLESS WOOD</span>
-                        <button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" title="Remove item" aria-label="Remove item">&times;</button>
-                    </div>
+                    <div class="zanders-compare-empty-msg">You have no items to compare.</div>
                 </div>
 
                 <div class="zanders-compare-actions">
-                    <button type="button" class="zanders-compare-clear-btn js-zanders-clear-compare">
+                    <button type="button" class="zanders-compare-clear-btn js-zanders-clear-compare" style="display: none;">
                         CLEAR ALL
                     </button>
-                    <a href="{{ path('frontend.compare.page') }}" class="btn zanders-compare-submit-btn">
+                    <a href="{{ path('frontend.compare.page') }}" class="btn zanders-compare-submit-btn js-zanders-compare-btn" style="pointer-events: none; opacity: 0.5;">
                         COMPARE
                     </a>
                 </div>
@@ -127,17 +102,13 @@
             </a>
         </div>
 
-        {# RECENTLY VIEWED Box #}
+        {# RECENTLY VIEWED Box (Dynamic) #}
         <div class="zanders-sidebar-box zanders-sidebar-recent-box">
             <div class="zanders-sidebar-box-header">
                 <span class="zanders-sidebar-box-title">RECENTLY VIEWED</span>
             </div>
             <div class="zanders-sidebar-box-body zanders-sidebar-recent-body js-zanders-recent-items">
-                <div class="zanders-sidebar-recent-item">
-                    <a href="{{ path('frontend.home.page') }}" class="zanders-sidebar-recent-link">
-                        WINCHESTER WILDCAT 22LR 40GR LEAD-RN 1255FPS 50RD 100BX/CS
-                    </a>
-                </div>
+                <div class="zanders-recent-empty-msg">You have no recently viewed items.</div>
             </div>
         </div>
     </div>
@@ -145,9 +116,29 @@
 
 <script>
 (function() {
+    'use strict';
+
+    var COMPARE_STORAGE_KEY = 'compare-widget-added-products';
+    var COMPARE_CACHE_KEY   = 'zanders-compare-meta-cache';
+    var RECENT_STORAGE_KEY  = 'zanders-recently-viewed-products';
+    var OFFCANVAS_URL       = '{{ path('frontend.compare.offcanvas') }}';
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // =========================================================================
     // 1. Dynamic Login State Detection (Overrides HTTP cache on category/shop pages)
+    // =========================================================================
     function checkCustomerLoggedIn() {
-        if (typeof window.customerLoggedInState !== 'undefined' && (window.customerLoggedInState === 1 || window.customerLoggedInState === true || window.customerLoggedInState === '1')) {
+        if (typeof window.customerLoggedInState !== 'undefined' &&
+            (window.customerLoggedInState === 1 || window.customerLoggedInState === true || window.customerLoggedInState === '1')) {
             return true;
         }
         if (document.querySelector('.top-bar-logout, a.top-bar-logout-link, a[href*="account/logout"], a[href*="/account/logout"]')) {
@@ -185,12 +176,287 @@
         });
     }
 
-    // Run immediately and after DOM events
-    applySidebarVisibility();
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applySidebarVisibility);
+    // =========================================================================
+    // 2. Dynamic Compare Products Rendering & Synchronization
+    // =========================================================================
+    function getCompareMetaCache() {
+        try {
+            var raw = localStorage.getItem(COMPARE_CACHE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch(e) {
+            return {};
+        }
     }
-    window.addEventListener('load', applySidebarVisibility);
+
+    function saveCompareMetaCache(cache) {
+        try {
+            localStorage.setItem(COMPARE_CACHE_KEY, JSON.stringify(cache));
+        } catch(e) {}
+    }
+
+    function renderCompareProducts() {
+        var compareList = document.querySelector('.js-zanders-compare-list');
+        var clearBtn = document.querySelector('.js-zanders-clear-compare');
+        var compareBtn = document.querySelector('.js-zanders-compare-btn');
+        if (!compareList) return;
+
+        var productIds = [];
+        try {
+            var raw = localStorage.getItem(COMPARE_STORAGE_KEY);
+            if (raw) {
+                productIds = JSON.parse(raw);
+                if (!Array.isArray(productIds)) productIds = [];
+            }
+        } catch(e) {
+            productIds = [];
+        }
+
+        if (productIds.length === 0) {
+            compareList.innerHTML = '<div class="zanders-compare-empty-msg">You have no items to compare.</div>';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (compareBtn) {
+                compareBtn.style.pointerEvents = 'none';
+                compareBtn.style.opacity = '0.5';
+            }
+            return;
+        }
+
+        if (clearBtn) clearBtn.style.removeProperty('display');
+        if (compareBtn) {
+            compareBtn.style.removeProperty('pointer-events');
+            compareBtn.style.removeProperty('opacity');
+        }
+
+        var metaCache = getCompareMetaCache();
+        var missingIds = productIds.filter(function(id) { return !metaCache[id]; });
+
+        function buildListHtml() {
+            var html = '';
+            productIds.forEach(function(id) {
+                var meta = metaCache[id] || { name: 'Product ' + id.substring(0, 8), url: '#' };
+                html += '<div class="zanders-compare-item" data-product-id="' + escapeHtml(id) + '">' +
+                            '<a href="' + escapeHtml(meta.url) + '" class="zanders-compare-item-name" title="' + escapeHtml(meta.name) + '">' +
+                                escapeHtml(meta.name) +
+                            '</a>' +
+                            '<button type="button" class="zanders-compare-item-remove js-zanders-remove-compare" data-product-id="' + escapeHtml(id) + '" title="Remove item" aria-label="Remove item">&times;</button>' +
+                        '</div>';
+            });
+            compareList.innerHTML = html;
+        }
+
+        // Render immediately using cache if possible
+        buildListHtml();
+
+        // If some items need fresh details from backend, fetch /compare/offcanvas
+        if (missingIds.length > 0) {
+            var formData = new FormData();
+            productIds.forEach(function(id) {
+                formData.append('productIds[]', id);
+            });
+
+            fetch(OFFCANVAS_URL, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            })
+            .then(function(res) {
+                if (res.ok) return res.text();
+                throw new Error('Compare fetch failed');
+            })
+            .then(function(html) {
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var items = doc.querySelectorAll('.line-item-product, .offcanvas-comparison-item');
+                items.forEach(function(itemEl) {
+                    var labelEl = itemEl.querySelector('.line-item-label');
+                    var removeBtn = itemEl.querySelector('.line-item-remove button, [data-add-to-compare-button="true"]');
+                    var pId = null;
+                    if (removeBtn) {
+                        try {
+                            var opts = JSON.parse(removeBtn.getAttribute('data-add-to-compare-button-options') || '{}');
+                            pId = opts.productId || removeBtn.getAttribute('data-product-id');
+                        } catch(err) {
+                            pId = removeBtn.getAttribute('data-product-id');
+                        }
+                    }
+                    if (pId && labelEl) {
+                        metaCache[pId] = {
+                            name: labelEl.textContent.trim(),
+                            url: labelEl.getAttribute('href') || '#'
+                        };
+                    }
+                });
+                saveCompareMetaCache(metaCache);
+                buildListHtml();
+            })
+            .catch(function(e) {
+                // Keep cached display if offline or network error
+            });
+        }
+    }
+
+    function initCompareActions() {
+        var compareList = document.querySelector('.js-zanders-compare-list');
+        var clearBtn = document.querySelector('.js-zanders-clear-compare');
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                try {
+                    localStorage.removeItem(COMPARE_STORAGE_KEY);
+                } catch(err) {}
+                renderCompareProducts();
+                if (document.$emitter) {
+                    document.$emitter.publish('afterRemoveProductCompare');
+                    document.$emitter.publish('changedProductCompare', { products: [] });
+                }
+            });
+        }
+
+        if (compareList) {
+            compareList.addEventListener('click', function(e) {
+                var removeBtn = e.target.closest('.js-zanders-remove-compare');
+                if (removeBtn) {
+                    e.preventDefault();
+                    var productId = removeBtn.getAttribute('data-product-id');
+                    if (!productId) return;
+
+                    try {
+                        var raw = localStorage.getItem(COMPARE_STORAGE_KEY);
+                        var products = raw ? JSON.parse(raw) : [];
+                        if (Array.isArray(products)) {
+                            products = products.filter(function(id) { return id !== productId; });
+                            localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(products));
+                        }
+                    } catch(err) {}
+
+                    renderCompareProducts();
+
+                    if (document.$emitter) {
+                        document.$emitter.publish('afterRemoveProductCompare', { productId: productId });
+                        document.$emitter.publish('changedProductCompare', { products: products });
+                    }
+                }
+            });
+        }
+    }
+
+    // =========================================================================
+    // 3. Dynamic Recently Viewed Rendering & Tracking
+    // =========================================================================
+    function renderRecentlyViewed() {
+        var containers = document.querySelectorAll('.js-zanders-recent-items');
+        if (!containers.length) return;
+
+        var items = [];
+        try {
+            var raw = localStorage.getItem(RECENT_STORAGE_KEY);
+            if (raw) {
+                items = JSON.parse(raw);
+                if (!Array.isArray(items)) items = [];
+            }
+        } catch(e) {
+            items = [];
+        }
+
+        var contentHtml = '';
+        if (items.length === 0) {
+            contentHtml = '<div class="zanders-recent-empty-msg">You have no recently viewed items.</div>';
+        } else {
+            // Render up to 5 recently viewed products
+            var slice = items.slice(0, 5);
+            slice.forEach(function(item) {
+                if (item && item.name && item.url) {
+                    contentHtml += '<div class="zanders-sidebar-recent-item">' +
+                                       '<a href="' + escapeHtml(item.url) + '" class="zanders-sidebar-recent-link" title="' + escapeHtml(item.name) + '">' +
+                                           escapeHtml(item.name) +
+                                       '</a>' +
+                                   '</div>';
+                }
+            });
+        }
+
+        containers.forEach(function(c) {
+            c.innerHTML = contentHtml;
+        });
+    }
+
+    function initRecentlyViewedLinkTracking() {
+        // Track product clicks from listings/search cards automatically into Recently Viewed
+        document.addEventListener('click', function(e) {
+            var link = e.target.closest('a.product-image-link, a.product-title, .zanders-product-card a[href*="/"]');
+            if (!link) return;
+
+            var card = link.closest('.card, .product-box, .zanders-product-card');
+            if (!card) return;
+
+            var titleEl = card.querySelector('.product-title, .zanders-product-card-title, .product-name');
+            var name = titleEl ? titleEl.textContent.trim() : link.getAttribute('title');
+            var url = link.getAttribute('href');
+            var id = card.getAttribute('data-product-id') ||
+                     (card.querySelector('[data-product-id]') ? card.querySelector('[data-product-id]').getAttribute('data-product-id') : null) ||
+                     url;
+
+            if (name && url && url !== '#' && !url.startsWith('javascript:')) {
+                try {
+                    var items = JSON.parse(localStorage.getItem(RECENT_STORAGE_KEY) || '[]');
+                    if (!Array.isArray(items)) items = [];
+                    items = items.filter(function(i) {
+                        return i && (id ? i.id !== id : i.url !== url);
+                    });
+                    items.unshift({ id: id, name: name, url: url });
+                    if (items.length > 8) items = items.slice(0, 8);
+                    localStorage.setItem(RECENT_STORAGE_KEY, JSON.stringify(items));
+                    renderRecentlyViewed();
+                } catch(err) {}
+            }
+        });
+    }
+
+    // =========================================================================
+    // 4. Initialization & Event Subscriptions
+    // =========================================================================
+    function initSidebar() {
+        applySidebarVisibility();
+        renderCompareProducts();
+        renderRecentlyViewed();
+        initCompareActions();
+        initRecentlyViewedLinkTracking();
+
+        // Subscribe to FroshProductCompare emitter events
+        if (document.$emitter && typeof document.$emitter.subscribe === 'function') {
+            document.$emitter.subscribe('changedProductCompare', function() {
+                renderCompareProducts();
+            });
+            document.$emitter.subscribe('afterAddProductCompare', function() {
+                renderCompareProducts();
+            });
+            document.$emitter.subscribe('afterRemoveProductCompare', function() {
+                renderCompareProducts();
+            });
+        }
+
+        // Cross-tab synchronization
+        window.addEventListener('storage', function(e) {
+            if (e.key === COMPARE_STORAGE_KEY) {
+                renderCompareProducts();
+            } else if (e.key === RECENT_STORAGE_KEY) {
+                renderRecentlyViewed();
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSidebar);
+    } else {
+        initSidebar();
+    }
+
+    window.addEventListener('load', function() {
+        applySidebarVisibility();
+        renderCompareProducts();
+        renderRecentlyViewed();
+    });
 
     if (window.MutationObserver) {
         var observer = new MutationObserver(function() {
@@ -201,42 +467,5 @@
             observer.disconnect();
         }, 5000);
     }
-
-    // 2. Compare Products Integration
-    try {
-        var compareKey = 'compare-widget-added-products';
-        var compareList = document.querySelector('.js-zanders-compare-list');
-        var clearBtn = document.querySelector('.js-zanders-clear-compare');
-
-        if (clearBtn && compareList) {
-            clearBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                try {
-                    localStorage.removeItem(compareKey);
-                } catch(err) {}
-                compareList.innerHTML = '<div class="zanders-compare-empty-msg">You have no items to compare.</div>';
-                if (document.$emitter) {
-                    document.$emitter.publish('afterRemoveProductCompare');
-                    document.$emitter.publish('changedProductCompare', { products: [] });
-                }
-            });
-
-            compareList.addEventListener('click', function(e) {
-                if (e.target && e.target.classList.contains('js-zanders-remove-compare')) {
-                    e.preventDefault();
-                    var row = e.target.closest('.zanders-compare-item');
-                    if (row) {
-                        row.remove();
-                    }
-                    if (!compareList.querySelector('.zanders-compare-item')) {
-                        compareList.innerHTML = '<div class="zanders-compare-empty-msg">You have no items to compare.</div>';
-                    }
-                    if (document.$emitter) {
-                        document.$emitter.publish('afterRemoveProductCompare');
-                    }
-                }
-            });
-        }
-    } catch(e) {}
 })();
 </script>

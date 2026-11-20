@@ -9,6 +9,7 @@
 @import 'component/quickview-modal';
 @import 'component/cart-drawer';
 @import 'component/cart-page';
+@import 'component/checkout-page';
 @import 'component/account-login';
 @import 'component/account';
 @import 'component/filter-panel';
@@ -51,7 +52,14 @@ body.offcanvas-open {
 
 // Container width & padding inline
 .container {
-    max-width: 1440px;
+    @if $zanders-container-full-width == 1 or $zanders-container-full-width == true or $zanders-container-full-width == '1' or $zanders-container-full-width == 'true' {
+        max-width: 100% !important;
+        width: 100%;
+    } @else if type-of($zanders-container-max-width) == 'number' and unitless($zanders-container-max-width) {
+        max-width: #{$zanders-container-max-width}px;
+    } @else {
+        max-width: $zanders-container-max-width;
+    }
 }
 
 .container,
@@ -243,7 +251,7 @@ body.offcanvas-open {
 
 .product-grid-header {
     padding-bottom: 16px;
-    border-bottom: 3px solid #991020;
+    border-bottom: 3px solid $sw-color-brand-primary;
     text-align: left;
     margin-bottom: 44px;
 }
@@ -251,7 +259,7 @@ body.offcanvas-open {
 .cms-element-product-grid .product-grid-header .product-grid-title {
     font-size: 49px;
     line-height: 57px;
-    color: #991020;
+    color: $sw-color-brand-primary;
     font-weight: 500;
     margin: 0;
     padding: 0;

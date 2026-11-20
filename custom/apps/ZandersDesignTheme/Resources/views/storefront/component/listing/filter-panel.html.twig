@@ -1,236 +1,104 @@
 {#
-    Zanders Sidebar Filter Panel Override ("SHOPPING OPTIONS")
-    ==========================================================================
-    Matches live site (shop2.gzanders.com) filter bar shown in media_1795080748290_736fd176.png:
-    - Top Banner: Crimson red "SHOPPING OPTIONS"
-    - Active Filters Box:
-      * Positioned directly below the red banner and above the accordions
-      * Light grey background (#efefef)
-      * Full-width rows with dark divider lines
-      * Group name (e.g. MANUFACTURER:, CATEGORY :) in bold uppercase
-      * Value text (e.g. ATI 67items, Rifles (660)) with clean '✕' remove button
-      * "Clear all" link aligned to the right in crimson red, underlined
-      * Solid dark line separating active filters from the accordion list
-    - Filter Accordions:
-      * Category dropdown
-      * MANUFACTURER, COLOR, AR 15 ACCESSORIES, etc.
-      * Bold uppercase titles with solid black downward caret ▼
-      * White/light background, clean divider lines between rows
-      * Red checkbox with white checkmark when selected
+Zanders Sidebar Filter Panel Override ("SHOPPING OPTIONS")
+==========================================================================
+Matches live site (shop2.gzanders.com) filter bar shown in media_1795080748290_736fd176.png:
+- Top Banner: Crimson red "SHOPPING OPTIONS"
+- Active Filters Box:
+* Positioned directly below the red banner and above the accordions
+* Light grey background (#efefef)
+* Full-width rows with dark divider lines
+* Group name (e.g. MANUFACTURER:, CATEGORY :) in bold uppercase
+* Value text (e.g. ATI 67items, Rifles (660)) with clean '✕' remove button
+* "Clear all" link aligned to the right in crimson red, underlined
+* Solid dark line separating active filters from the accordion list
+- Filter Accordions:
+* Category dropdown
+* MANUFACTURER, COLOR, AR 15 ACCESSORIES, etc.
+* Bold uppercase titles with solid black downward caret ▼
+* White/light background, clean divider lines between rows
+* Red checkbox with white checkmark when selected
 #}
 {% sw_extends '@Storefront/storefront/component/listing/filter-panel.html.twig' %}
 
 {% block component_filter_panel_header %}
-    {# Mobile/tablet offcanvas header shown when filter drawer opens #}
-    <div class="filter-panel-offcanvas-header">
-        <span data-id="off-canvas-headline" class="filter-panel-offcanvas-only filter-panel-offcanvas-title">
-            {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
-        </span>
+{# Mobile/tablet offcanvas header shown when filter drawer opens #}
+<div class="filter-panel-offcanvas-header">
+    <span data-id="off-canvas-headline" class="filter-panel-offcanvas-only filter-panel-offcanvas-title">
+        {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
+    </span>
 
-        <button type="button" class="btn-close filter-panel-offcanvas-only filter-panel-offcanvas-close js-offcanvas-close" aria-label="{{ 'listing.filterClose'|trans|striptags }}">
-        </button>
-    </div>
+    <button type="button" class="btn-close filter-panel-offcanvas-only filter-panel-offcanvas-close js-offcanvas-close"
+        aria-label="{{ 'listing.filterClose'|trans|striptags }}">
+    </button>
+</div>
 {% endblock %}
 
 {% block component_filter_panel_items_container %}
-    {# 1. Crimson header banner at top of filter panel #}
-    <div class="filter-panel-header-banner">
-        {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
-    </div>
+{# 1. Crimson header banner at top of filter panel #}
+<div class="filter-panel-header-banner">
+    {{ 'zanders.listing.shoppingOptions'|trans|default('SHOPPING OPTIONS') }}
+</div>
 
-    {# 2. Active Filters Container (Placed directly below SHOPPING OPTIONS banner as in reference) #}
-    {% set rootCatId = context.salesChannel.navigationCategoryId %}
-    {% set activeCat = page.category ?? (page.header.navigation.active ?? null) %}
-    {% set isSubcategory = activeCat and activeCat.parentId and activeCat.id != rootCatId %}
+{# 2. Active Filters Container (Placed directly below SHOPPING OPTIONS banner as in reference) #}
+<div class="filter-panel-active-container" data-zanders-active-filters="true"></div>
 
-    <div class="filter-panel-active-container{% if not isSubcategory %} is-initially-empty{% endif %}"
-         data-zanders-active-filters="true"
-         {% if isSubcategory %}
-         data-category-parent-url="{{ seoUrl('frontend.navigation.page', { navigationId: activeCat.parentId }) }}"
-         data-category-name="{{ activeCat.translated.name|default(activeCat.name) }}"
-         data-category-total="{{ page.listing.total|default(0) }}"
-         {% endif %}>
-        {% if isSubcategory %}
-            <div class="filter-active filter-active-category" data-filter-category="true">
-                <div class="filter-active-content">
-                    <span class="filter-active-group">CATEGORY :</span>
-                    <span class="filter-active-name">{{ activeCat.translated.name|default(activeCat.name) }}{% if page.listing and page.listing.total %} ({{ page.listing.total }}){% endif %}</span>
-                </div>
-                <a href="{{ seoUrl('frontend.navigation.page', { navigationId: activeCat.parentId }) }}"
-                   class="filter-active-remove"
-                   title="Remove Category filter"
-                   aria-label="Remove Category filter">&times;</a>
-            </div>
-            <a href="{{ seoUrl('frontend.navigation.page', { navigationId: activeCat.parentId }) }}"
-               class="filter-reset-all filter-active-clear-all">
-                Clear all
-            </a>
-        {% endif %}
-    </div>
+{# 3. Filter Items List Container #}
+<div class="filter-panel-items-container" role="list">
+    {% block component_filter_panel_items %}
+    {# Resolve relevant category links for the Category accordion (children -> parent siblings -> root tree) #}
+    {% set nav = page.navigation ?? (page.header ? page.header.navigation : null) %}
+    {% set activeId = shopware.navigation.id ?? context.salesChannel.navigationCategoryId %}
+    {% set categoryTree = nav ? nav.getChildren(activeId) : null %}
+    {% set categoryOptions = (categoryTree and categoryTree.tree|length > 0) ? categoryTree.tree : null %}
 
-    {# 3. Filter Items List Container #}
-    <div class="filter-panel-items-container" role="list">
-        {% block component_filter_panel_items %}
-            {# Resolve relevant category links for the Category accordion (children -> parent siblings -> root tree) #}
-            {% set nav = page.navigation ?? (page.header ? page.header.navigation : null) %}
-            {% set activeId = shopware.navigation.id ?? context.salesChannel.navigationCategoryId %}
-            {% set categoryTree = nav ? nav.getChildren(activeId) : null %}
-            {% set categoryOptions = (categoryTree and categoryTree.tree|length > 0) ? categoryTree.tree : null %}
+    {# If no children, try parent category siblings #}
+    {% if (not categoryOptions or categoryOptions|length == 0) and page.category and page.category.parentId and nav %}
+    {% set parentTree = nav.getChildren(page.category.parentId) %}
+    {% if parentTree and parentTree.tree|length > 0 %}
+    {% set categoryOptions = parentTree.tree %}
+    {% endif %}
+    {% endif %}
 
-            {# If no children, try parent category siblings #}
-            {% if (not categoryOptions or categoryOptions|length == 0) and page.category and page.category.parentId and nav %}
-                {% set parentTree = nav.getChildren(page.category.parentId) %}
-                {% if parentTree and parentTree.tree|length > 0 %}
-                    {% set categoryOptions = parentTree.tree %}
+    {# If still empty, use root navigation tree #}
+    {% if (not categoryOptions or categoryOptions|length == 0) and nav and nav.tree %}
+    {% set categoryOptions = nav.tree %}
+    {% endif %}
+
+    {% if categoryOptions and categoryOptions|length > 0 %}
+    <div class="filter-panel-item filter-category-item d-grid" role="listitem">
+        <button class="filter-panel-item-toggle btn" type="button" data-bs-toggle="collapse"
+            data-bs-target="#filter-category-collapse" aria-expanded="false" aria-controls="filter-category-collapse">
+            <span class="filter-category-title">{{ 'zanders.listing.filterCategory'|trans|default('Category') }}</span>
+            <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
+                <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8.50861 7.02L10.4786 5.05L13.6886 1.84C14.3586 1.16 13.8786 -5.32754e-09 12.9186 -4.72905e-08L6.68861 -3.19612e-07L1.07861 -5.64833e-07C0.118608 -6.06796e-07 -0.361392 1.16 0.318608 1.84L5.49861 7.02C6.31861 7.85 7.67861 7.85 8.50861 7.02Z"
+                        fill="#292D32" />
+                </svg>
+
+            </span>
+        </button>
+        <div class="filter-panel-item-dropdown collapse" id="filter-category-collapse">
+            <ul class="filter-category-list">
+                {% for item in categoryOptions %}
+                {% set catEntity = item.category ? item.category : item %}
+                {% if catEntity.active and not catEntity.visible is same as(false) %}
+                <li class="filter-category-list-item">
+                    <a href="{{ seoUrl('frontend.navigation.page', { navigationId: catEntity.id }) }}"
+                        class="filter-category-link{% if catEntity.id == activeId %} is-active{% endif %}">
+                        {{ catEntity.translated.name }}
+                    </a>
+                </li>
                 {% endif %}
-            {% endif %}
-
-            {# If still empty, use root navigation tree #}
-            {% if (not categoryOptions or categoryOptions|length == 0) and nav and nav.tree %}
-                {% set categoryOptions = nav.tree %}
-            {% endif %}
-
-            {% if categoryOptions and categoryOptions|length > 0 %}
-                <div class="filter-panel-item filter-category-item d-grid" role="listitem">
-                    <button class="filter-panel-item-toggle btn"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#filter-category-collapse"
-                            aria-expanded="false"
-                            aria-controls="filter-category-collapse">
-                        <span class="filter-category-title">{{ 'zanders.listing.filterCategory'|trans|default('Category') }}</span>
-                        <span class="icon icon-filter-panel-item-toggle" aria-hidden="true">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="6" viewBox="0 0 9 6">
-                                <polygon points="0,0 9,0 4.5,6" fill="currentColor"/>
-                            </svg>
-                        </span>
-                    </button>
-                    <div class="filter-panel-item-dropdown collapse" id="filter-category-collapse">
-                        <ul class="filter-category-list">
-                            {% for item in categoryOptions %}
-                                {% set catEntity = item.category ? item.category : item %}
-                                {% if catEntity.active and not catEntity.visible is same as(false) %}
-                                    <li class="filter-category-list-item">
-                                        <a href="{{ seoUrl('frontend.navigation.page', { navigationId: catEntity.id }) }}"
-                                           class="filter-category-link{% if catEntity.id == activeId %} is-active{% endif %}">
-                                            {{ catEntity.translated.name }}
-                                        </a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            {% endif %}
-
-            {{ parent() }}
-        {% endblock %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
+    {% endif %}
 
-    {# Active filters dynamic formatting script #}
-    <script>
-    (function() {
-        function formatActiveFilters() {
-            var container = document.querySelector('.filter-panel-active-container');
-            if (!container) return;
-
-            var catUrl = container.dataset.categoryParentUrl;
-            var catName = container.dataset.categoryName;
-            var catTotal = container.dataset.categoryTotal;
-
-            // Ensure category active filter is retained
-            if (catUrl && catName && !container.querySelector('.filter-active-category')) {
-                var catDiv = document.createElement('div');
-                catDiv.className = 'filter-active filter-active-category';
-                catDiv.setAttribute('data-filter-category', 'true');
-                catDiv.innerHTML = '<div class="filter-active-content">' +
-                    '<span class="filter-active-group">CATEGORY :</span>' +
-                    '<span class="filter-active-name">' + catName + (catTotal ? ' (' + catTotal + ')' : '') + '</span>' +
-                    '</div>' +
-                    '<a href="' + catUrl + '" class="filter-active-remove" aria-label="Remove category filter">&times;</a>';
-
-                var resetBtn = container.querySelector('.filter-reset-all');
-                if (resetBtn) {
-                    container.insertBefore(catDiv, resetBtn);
-                } else {
-                    container.appendChild(catDiv);
-                }
-            }
-
-            // Format active filter items
-            var buttons = container.querySelectorAll('.filter-active:not(.filter-active-category):not(.is-formatted)');
-            buttons.forEach(function(btn) {
-                btn.classList.add('is-formatted');
-                var id = btn.dataset.id;
-                var groupName = '';
-                var valName = btn.innerText.replace(/[×✕]/g, '').trim();
-
-                if (id) {
-                    var input = document.getElementById(id);
-                    if (input) {
-                        var itemWrap = input.closest('.filter-panel-item');
-                        if (itemWrap) {
-                            var toggle = itemWrap.querySelector('.filter-panel-item-toggle');
-                            if (toggle) {
-                                var titleEl = toggle.querySelector('.filter-category-title') || toggle;
-                                groupName = titleEl.innerText.replace(/[\n\r▼]/g, '').trim();
-                            }
-                        }
-                        if (input.dataset.label) {
-                            valName = input.dataset.label.trim();
-                        }
-                    }
-                }
-
-                if (!groupName) {
-                    groupName = 'FILTER';
-                }
-
-                btn.innerHTML = '<div class="filter-active-content">' +
-                    '<span class="filter-active-group">' + groupName + ':</span>' +
-                    '<span class="filter-active-name">' + valName + '</span>' +
-                    '</div>' +
-                    '<span class="filter-active-remove" aria-hidden="true">&times;</span>';
-            });
-
-            // Format "Clear all"
-            var resetAll = container.querySelector('.filter-reset-all');
-            if (resetAll) {
-                resetAll.innerText = 'Clear all';
-                resetAll.classList.add('filter-active-clear-all');
-            } else if (catUrl && !resetAll) {
-                var newReset = document.createElement('a');
-                newReset.className = 'filter-reset-all filter-active-clear-all';
-                newReset.href = catUrl;
-                newReset.innerText = 'Clear all';
-                container.appendChild(newReset);
-            }
-
-            var hasActiveItems = container.querySelectorAll('.filter-active').length > 0;
-            if (hasActiveItems) {
-                container.classList.remove('is-initially-empty');
-                container.style.display = 'flex';
-            } else {
-                container.classList.add('is-initially-empty');
-                container.style.display = 'none';
-            }
-        }
-
-        formatActiveFilters();
-        var container = document.querySelector('.filter-panel-active-container');
-        if (container && window.MutationObserver) {
-            var obs = new MutationObserver(function(mutations) {
-                var isOurChange = mutations.every(function(m) {
-                    return m.target && (m.target.classList && (m.target.classList.contains('filter-active-content') || m.target.classList.contains('is-formatted')));
-                });
-                if (!isOurChange) {
-                    formatActiveFilters();
-                }
-            });
-            obs.observe(container, { childList: true, subtree: true });
-        }
-    })();
-    </script>
+    {{ parent() }}
+    {% endblock %}
+</div>
 {% endblock %}
 
 {# Neutralize bottom active container so it doesn't render twice #}

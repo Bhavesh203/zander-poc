@@ -19,6 +19,8 @@
 #}
 {% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
 
+{% block page_checkout_progress %}{% endblock %}
+
 {% block page_checkout_container %}
     {% set cart = page.cart %}
     {% set lineItems = cart.lineItems %}

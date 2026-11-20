@@ -19,10 +19,17 @@ $grid-breakpoints: (
     custom: 1600px
 );
 
-// Container configuration (Default Shopware way: xs sets the container max-width without map sorting warnings)
+// Container variables from theme configuration
+$zanders-container-full-width: 0 !default;
+$zanders-container-max-width: 1440px !default;
+
+// Determine if full width is active (handles 1, true, '1', 'true')
+$is-zanders-full-width: ($zanders-container-full-width == 1 or $zanders-container-full-width == true or $zanders-container-full-width == '1' or $zanders-container-full-width == 'true');
+
+// Container configuration (Shopware sets container max-width on xs)
 $container-max-widths: (
-    xs: 1440px,
-    ) !default;
+    xs: if($is-zanders-full-width, 100%, if(type-of($zanders-container-max-width) == 'number' and unitless($zanders-container-max-width), #{$zanders-container-max-width}px, $zanders-container-max-width)),
+) !default;
 
 $container-padding-x: 28px !default;
 $grid-gutter-width: 28px !default;
@@ -39,3 +46,28 @@ $sw-font-family-base: 'Poppins',
 $font-family-base: $sw-font-family-base !default;
 $font-family-sans-serif: $sw-font-family-base !default;
 $headings-font-family: $sw-font-family-base !default;
+
+// ==============================================================================
+// Theme Variables from Admin Theme Configuration
+// ==============================================================================
+$white: #ffffff !default;
+$black: #000000 !default;
+
+// Default Shopware Theme Brand Colors (Configurable via Admin > Theme Colors)
+$sw-color-brand-primary: #991020 !default;
+$sw-color-brand-secondary: #282828 !default;
+$sw-color-buy-button: $sw-color-brand-primary !default;
+
+$primary: $sw-color-brand-primary !default;
+$secondary: $sw-color-brand-secondary !default;
+
+// Alias Zanders primary to Shopware default brand primary
+$zanders-color-primary: $sw-color-brand-primary !default;
+
+// Zanders Extended Colors (Configurable via Admin > Zanders Settings tab)
+$zanders-color-primary-dark: #7c0c19 !default;
+$zanders-color-primary-accent: #8b0000 !default;
+$zanders-color-dark-bg: #333333 !default;
+$zanders-color-dark-text: #222222 !default;
+$zanders-color-light-bg: #efefef !default;
+$zanders-color-border: #d4d4d4 !default;
