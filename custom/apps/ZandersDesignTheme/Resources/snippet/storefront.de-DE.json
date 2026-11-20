@@ -65,7 +65,22 @@
       "whatsThis": "Was ist das?",
       "requiredFields": "* Pflichtfelder",
       "loginButton": "ANMELDEN",
-      "forgotPassword": "Passwort vergessen?"
+      "forgotPassword": "Passwort vergessen?",
+      "sidebar": {
+        "title": "MY ACCOUNT",
+        "dashboard": "ACCOUNT DASHBOARD",
+        "information": "ACCOUNT INFORMATION",
+        "addresses": "ADDRESS BOOK",
+        "orders": "MY OPEN ORDERS",
+        "wishlist": "MY WISHLIST",
+        "newsletter": "NEWSLETTER SUBSCRIPTIONS",
+        "invoices": "MY INVOICES",
+        "backorders": "MY BACK ORDER LIST",
+        "updateFfl": "UPDATE FFL",
+        "resaleCert": "UPLOAD RESALE CERTIFICATE",
+        "taxCert": "TAX CERTIFICATES",
+        "paymentPortal": "PAYMENT PORTAL"
+      }
     }
   }
 }

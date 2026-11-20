@@ -1,0 +1,28 @@
+{#
+    Zanders Category / CMS Page Override
+    ==========================================================================
+    Ensures seamless 3-column layout on shop pages:
+    - On listing pages with sidebar: Breadcrumbs and Category Title are rendered
+      inside the center column (matching live site screenshots).
+    - On standard non-sidebar pages: preserves standard breadcrumb and CMS layout.
+#}
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block cms_breadcrumb %}
+    {% set activeCat = page.category ?? (page.header.navigation.active ?? null) %}
+    {% set rootId = context.salesChannel.navigationCategoryId %}
+    {% set isNotRoot = activeCat and activeCat.id != rootId %}
+
+    {% set hasSidebar = false %}
+    {% if page.cmsPage and page.cmsPage.sections %}
+        {% for sec in page.cmsPage.sections %}
+            {% if sec.type == 'sidebar' %}
+                {% set hasSidebar = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if not hasSidebar and isNotRoot and not page.landingPage %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

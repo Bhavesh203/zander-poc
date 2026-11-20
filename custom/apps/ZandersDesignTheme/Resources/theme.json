@@ -18,5 +18,194 @@
   "asset": [
     "@Storefront",
     "app/storefront/src/assets"
-  ]
+  ],
+  "config": {
+    "tabs": {
+      "zandersSettings": {
+        "label": {
+          "en-GB": "Zanders Settings",
+          "de-DE": "Zanders Einstellungen"
+        }
+      }
+    },
+    "blocks": {
+      "themeColors": {
+        "label": {
+          "en-GB": "Theme Colors",
+          "de-DE": "Theme Farben"
+        }
+      },
+      "zandersLayout": {
+        "label": {
+          "en-GB": "Layout & Container",
+          "de-DE": "Layout & Container"
+        }
+      },
+      "zandersThemeColors": {
+        "label": {
+          "en-GB": "Zanders Extended Colors",
+          "de-DE": "Zanders Erweiterte Farben"
+        }
+      },
+      "zandersContact": {
+        "label": {
+          "en-GB": "Contact & Store Info",
+          "de-DE": "Kontakt- & Shop-Informationen"
+        }
+      }
+    },
+    "fields": {
+      "zanders-container-full-width": {
+        "type": "switch",
+        "tab": "zandersSettings",
+        "block": "zandersLayout",
+        "order": 100,
+        "value": false,
+        "editable": true,
+        "label": {
+          "en-GB": "Enable Full Width Container",
+          "de-DE": "Volle Containerbreite aktivieren"
+        },
+        "helpText": {
+          "en-GB": "Expands container to 100% full width instead of fixed max-width.",
+          "de-DE": "Erweitert den Container auf 100% volle Breite anstelle der festen maximalen Breite."
+        }
+      },
+      "zanders-container-max-width": {
+        "type": "text",
+        "tab": "zandersSettings",
+        "block": "zandersLayout",
+        "order": 200,
+        "value": "1440px",
+        "editable": true,
+        "label": {
+          "en-GB": "Container Max Width (e.g. 1440px or 1600px)",
+          "de-DE": "Maximale Container-Breite (z.B. 1440px oder 1600px)"
+        }
+      },
+      "zanders-sidebar-right-show": {
+        "type": "switch",
+        "tab": "zandersSettings",
+        "block": "zandersLayout",
+        "order": 300,
+        "value": true,
+        "editable": true,
+        "label": {
+          "en-GB": "Show Right Sidebar",
+          "de-DE": "Rechte Seitenleiste anzeigen"
+        },
+        "helpText": {
+          "en-GB": "Enable or disable the right sidebar (Login, Compare, Recently Viewed) on shop and search pages.",
+          "de-DE": "Rechte Seitenleiste (Login, Produktvergleich, Zuletzt angesehen) auf Shop- und Suchseiten aktivieren oder deaktivieren."
+        }
+      },
+      "zanders-color-primary-dark": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 100,
+        "value": "#7c0c19",
+        "editable": true,
+        "label": {
+          "en-GB": "Primary Dark / Hover Red",
+          "de-DE": "Primär Dunkel / Hover Rot"
+        }
+      },
+      "zanders-color-primary-accent": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 200,
+        "value": "#8b0000",
+        "editable": true,
+        "label": {
+          "en-GB": "Primary Accent Red",
+          "de-DE": "Primär Akzentrot"
+        }
+      },
+      "zanders-color-dark-bg": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 300,
+        "value": "#333333",
+        "editable": true,
+        "label": {
+          "en-GB": "Dark Background (Headers, Sidebar)",
+          "de-DE": "Dunkler Hintergrund"
+        }
+      },
+      "zanders-color-dark-text": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 400,
+        "value": "#222222",
+        "editable": true,
+        "label": {
+          "en-GB": "Dark Text & Headings",
+          "de-DE": "Dunkler Text"
+        }
+      },
+      "zanders-color-light-bg": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 500,
+        "value": "#efefef",
+        "editable": true,
+        "label": {
+          "en-GB": "Light Background (Panels, Inputs)",
+          "de-DE": "Heller Hintergrund"
+        }
+      },
+      "zanders-color-border": {
+        "type": "color",
+        "tab": "zandersSettings",
+        "block": "zandersThemeColors",
+        "order": 600,
+        "value": "#d4d4d4",
+        "editable": true,
+        "label": {
+          "en-GB": "Border & Divider Color",
+          "de-DE": "Rahmenfarbe"
+        }
+      },
+      "sw-color-brand-primary": {
+        "type": "color",
+        "block": "themeColors",
+        "order": 100,
+        "value": "#991020",
+        "editable": true,
+        "label": {
+          "en-GB": "Primary brand color (Crimson Red)",
+          "de-DE": "Primäre Markenfarbe"
+        }
+      },
+      "sw-color-brand-secondary": {
+        "type": "color",
+        "block": "themeColors",
+        "order": 200,
+        "value": "#282828",
+        "editable": true,
+        "label": {
+          "en-GB": "Secondary brand color (Charcoal)",
+          "de-DE": "Sekundäre Markenfarbe"
+        }
+      },
+      "zanders-header-phone": {
+        "scss": false,
+        "type": "text",
+        "tab": "zandersSettings",
+        "block": "zandersContact",
+        "order": 100,
+        "value": "800-851-4373",
+        "editable": true,
+        "label": {
+          "en-GB": "Phone Number",
+          "de-DE": "Telefonnummer"
+        }
+      }
+    }
+  }
 }

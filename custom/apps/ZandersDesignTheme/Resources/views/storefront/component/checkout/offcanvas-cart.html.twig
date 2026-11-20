@@ -1,7 +1,7 @@
 {% sw_extends '@Storefront/storefront/component/checkout/offcanvas-cart.html.twig' %}
 
 {% block utilities_offcanvas_header %}
-    <div class="offcanvas-header d-flex align-items-center justify-content-between p-3 border-bottom bg-white">
+    <div class="offcanvas-header d-flex align-items-center justify-content-between border-bottom bg-white">
         <h4 class="offcanvas-cart-title m-0 fw-bold fs-5 text-dark">
             {{ 'zanders.cart.myCart'|trans|default('My Cart') }}
         </h4>
@@ -54,6 +54,9 @@
                                     </a>
                                 {% else %}
                                     {{ label }}
+                                {% endif %}
+                                {% if lineItem.deliveryInformation is defined and lineItem.deliveryInformation.stock is defined and lineItem.deliveryInformation.stock <= 0 %}
+                                    <span class="badge bg-warning text-dark zanders-cart-backorder-badge ms-1">BACKORDER</span>
                                 {% endif %}
                             </h6>
 

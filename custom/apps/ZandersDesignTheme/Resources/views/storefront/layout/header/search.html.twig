@@ -13,7 +13,16 @@
         </svg>
     </div>
     {% block layout_header_search_input %}
-    {{ parent() }}
+        <input
+            type="search"
+            id="header-main-search-input"
+            name="search"
+            class="form-control header-search-input"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder="Item, UPC, Desc, Etc"
+            aria-label="Item, UPC, Desc, Etc"
+            value="{{ page.searchTerm }}">
     {% endblock %}
 
     {% block layout_header_search_button %}

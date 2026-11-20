@@ -14,14 +14,14 @@ Matches Zanders design:
         font-family: 'Poppins', sans-serif;
         font-size: 28px;
         font-weight: 700;
-        color: #8c1d2f;
+        color: $zanders-color-primary-accent;
         letter-spacing: 0.5px;
         line-height: 1.2;
     }
 
     .zanders-account-title-rule {
         height: 2px;
-        background-color: #8c1d2f;
+        background-color: $zanders-color-primary-accent;
         width: 100%;
         margin-top: 4px;
     }
@@ -43,7 +43,7 @@ Matches Zanders design:
             font-family: 'Poppins', sans-serif;
             font-size: 24px;
             font-weight: 700;
-            color: #8c1d2f;
+            color: $zanders-color-primary-accent;
             letter-spacing: 0.8px;
             margin: 0;
         }
@@ -51,21 +51,21 @@ Matches Zanders design:
         .zanders-title-underline-red {
             width: 80px;
             height: 2px;
-            background-color: #8c1d2f;
+            background-color: $zanders-color-primary-accent;
         }
 
         .zanders-new-dealers-desc {
             font-size: 14px;
             line-height: 1.7;
-            color: #333333;
+            color: $zanders-color-dark-bg;
             max-width: 480px;
             margin: 0 auto;
         }
 
         button.btn.zanders-btn-new-dealer,
         .zanders-btn-new-dealer {
-            background-color: #8c1d2f;
-            border-color: #8c1d2f;
+            background-color: $zanders-color-primary-accent;
+            border-color: $zanders-color-primary-accent;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
@@ -79,8 +79,8 @@ Matches Zanders design:
 
             &:hover,
             &:focus {
-                background-color: #6e1322;
-                border-color: #6e1322;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
             }
         }
@@ -121,7 +121,7 @@ Matches Zanders design:
             margin-bottom: 6px;
 
             .text-danger {
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
             }
         }
 
@@ -132,13 +132,13 @@ Matches Zanders design:
             border-radius: 2px;
             padding: 10px 14px;
             font-size: 14px;
-            color: #333333;
+            color: $zanders-color-dark-bg;
             box-shadow: none;
             transition: background-color 0.2s ease, border-color 0.2s ease;
 
             &:focus {
                 background-color: #ffffff;
-                border-color: #8c1d2f;
+                border-color: $zanders-color-primary-accent;
                 outline: none;
             }
 
@@ -157,8 +157,8 @@ Matches Zanders design:
                 cursor: pointer;
 
                 &:checked {
-                    background-color: #8c1d2f;
-                    border-color: #8c1d2f;
+                    background-color: $zanders-color-primary-accent;
+                    border-color: $zanders-color-primary-accent;
                 }
             }
 
@@ -177,8 +177,8 @@ Matches Zanders design:
 
         button.btn.zanders-btn-login,
         .zanders-btn-login {
-            background-color: #8c1d2f;
-            border-color: #8c1d2f;
+            background-color: $zanders-color-primary-accent;
+            border-color: $zanders-color-primary-accent;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
@@ -193,8 +193,8 @@ Matches Zanders design:
 
             &:hover,
             &:focus {
-                background-color: #6e1322;
-                border-color: #6e1322;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
             }
         }
@@ -207,7 +207,7 @@ Matches Zanders design:
             transition: color 0.15s ease;
 
             &:hover {
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
                 text-decoration: underline;
             }
         }
@@ -226,7 +226,7 @@ Matches Zanders design:
         padding: 24px;
 
         .card-title {
-            color: #8c1d2f;
+            color: $zanders-color-primary-accent;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 20px;
@@ -234,15 +234,15 @@ Matches Zanders design:
 
         button.btn-primary,
         .btn-primary {
-            background-color: #8c1d2f;
-            border-color: #8c1d2f;
+            background-color: $zanders-color-primary-accent;
+            border-color: $zanders-color-primary-accent;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
 
             &:hover {
-                background-color: #6e1322;
-                border-color: #6e1322;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
             }
         }
     }

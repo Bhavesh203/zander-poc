@@ -1,0 +1,69 @@
+{
+    "sw-theme": {
+        "ZandersDesignTheme": {
+            "default": {
+                "themeColors": {
+                    "label": "Theme Farben",
+                    "default": {
+                        "sw-color-brand-primary": {
+                            "label": "Primäre Markenfarbe"
+                        },
+                        "sw-color-brand-secondary": {
+                            "label": "Sekundäre Markenfarbe"
+                        }
+                    }
+                }
+            },
+            "zandersSettings": {
+                "label": "Zanders Einstellungen",
+                "zandersLayout": {
+                    "label": "Layout & Container",
+                    "default": {
+                        "zanders-container-full-width": {
+                            "label": "Volle Containerbreite aktivieren",
+                            "helpText": "Erweitert den Container auf 100% volle Breite anstelle der festen maximalen Breite."
+                        },
+                        "zanders-container-max-width": {
+                            "label": "Maximale Container-Breite (z.B. 1440px oder 1600px)"
+                        },
+                        "zanders-sidebar-right-show": {
+                            "label": "Rechte Seitenleiste anzeigen",
+                            "helpText": "Rechte Seitenleiste (Login, Produktvergleich, Zuletzt angesehen) auf Shop- und Suchseiten aktivieren oder deaktivieren."
+                        }
+                    }
+                },
+                "zandersThemeColors": {
+                    "label": "Zanders Erweiterte Farben",
+                    "default": {
+                        "zanders-color-primary-dark": {
+                            "label": "Primär Dunkel / Hover Rot"
+                        },
+                        "zanders-color-primary-accent": {
+                            "label": "Primär Akzentrot"
+                        },
+                        "zanders-color-dark-bg": {
+                            "label": "Dunkler Hintergrund"
+                        },
+                        "zanders-color-dark-text": {
+                            "label": "Dunkler Text"
+                        },
+                        "zanders-color-light-bg": {
+                            "label": "Heller Hintergrund"
+                        },
+                        "zanders-color-border": {
+                            "label": "Rahmenfarbe"
+                        }
+                    }
+                },
+                "zandersContact": {
+                    "label": "Kontakt- & Shop-Informationen",
+                    "default": {
+                        "zanders-header-phone": {
+                            "label": "Telefonnummer"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

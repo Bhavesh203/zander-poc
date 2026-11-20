@@ -13,17 +13,36 @@ Matches Zanders design:
 
 .offcanvas.cart-offcanvas,
 .offcanvas.offcanvas-end.cart-offcanvas {
-    max-width: 420px;
-    width: 100%;
+    --bs-offcanvas-width: 420px;
+    width: var(--bs-offcanvas-width) !important;
+    max-width: 100% !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
     font-family: 'Poppins', sans-serif;
     background-color: #fcfcfc;
-    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.12);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.14);
     border-left: none;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    will-change: transform;
+
+    &.showing,
+    &.show:not(.hiding) {
+        transform: none !important;
+    }
+
+    &.hiding {
+        transform: translateX(100%) !important;
+    }
 
     .offcanvas-header {
         background-color: #ffffff;
         border-bottom: 1px solid #f0f0f0;
-        padding: 18px 24px;
+        padding: 16px 20px !important;
+        min-height: 65px;
+        box-sizing: border-box;
+        flex-shrink: 0;
 
         .offcanvas-cart-title {
             font-family: 'Poppins', sans-serif;
@@ -31,6 +50,7 @@ Matches Zanders design:
             font-weight: 700;
             color: #111111;
             margin: 0;
+            line-height: 1.2;
         }
 
         .btn-close {
@@ -51,6 +71,20 @@ Matches Zanders design:
         display: flex;
         flex-direction: column;
         background-color: #fafafa;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+        flex-grow: 1;
+        min-height: 0;
+        position: relative;
+
+        > .loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+        }
 
         .offcanvas-cart {
             display: flex;
@@ -118,7 +152,7 @@ Matches Zanders design:
                 transition: color 0.15s ease;
 
                 &:hover {
-                    color: #8c1d2f;
+                    color: $zanders-color-primary-accent;
                 }
             }
         }
@@ -130,6 +164,19 @@ Matches Zanders design:
             margin-bottom: 8px;
         }
 
+        .zanders-cart-backorder-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 2px 6px;
+            border-radius: 0;
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            vertical-align: middle;
+        }
+
         /* Circular Action Buttons */
         button.zanders-cart-btn-edit,
         .zanders-cart-btn-edit {
@@ -137,7 +184,7 @@ Matches Zanders design:
             height: 28px;
             min-width: 28px;
             border-radius: 50%;
-            background-color: #333333;
+            background-color: $zanders-color-dark-bg;
             color: #ffffff;
             border: none;
             display: inline-flex;
@@ -164,7 +211,7 @@ Matches Zanders design:
             height: 28px;
             min-width: 28px;
             border-radius: 50%;
-            background-color: #8c1d2f;
+            background-color: $zanders-color-primary-accent;
             color: #ffffff;
             border: none;
             display: inline-flex;
@@ -180,7 +227,7 @@ Matches Zanders design:
             }
 
             &:hover {
-                background-color: #6e1322;
+                background-color: $zanders-color-primary-dark;
                 transform: scale(1.08);
             }
         }
@@ -240,7 +287,7 @@ Matches Zanders design:
         color: #111111;
 
         .zanders-free-shipping-amount {
-            color: #8c1d2f;
+            color: $zanders-color-primary-accent;
             font-weight: 700;
         }
 
@@ -255,8 +302,8 @@ Matches Zanders design:
 .cart-offcanvas a.btn.zanders-btn-go-to-cart,
 a.btn.zanders-btn-go-to-cart,
 .zanders-btn-go-to-cart {
-    background-color: #8c1d2f;
-    border-color: #8c1d2f;
+    background-color: $zanders-color-primary-accent;
+    border-color: $zanders-color-primary-accent;
     color: #ffffff;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
@@ -270,8 +317,8 @@ a.btn.zanders-btn-go-to-cart,
 
     &:hover,
     &:focus {
-        background-color: #6e1322;
-        border-color: #6e1322;
+        background-color: $zanders-color-primary-dark;
+        border-color: $zanders-color-primary-dark;
         color: #ffffff;
         box-shadow: none;
     }

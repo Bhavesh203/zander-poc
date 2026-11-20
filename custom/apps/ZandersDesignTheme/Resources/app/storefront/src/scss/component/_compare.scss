@@ -21,7 +21,7 @@
         font-family: 'Poppins', sans-serif;
         font-size: 28px;
         font-weight: 700;
-        color: #991020;
+        color: $sw-color-brand-primary;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
@@ -30,7 +30,7 @@
 
     .zanders-compare-title-rule {
         height: 2px;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         width: 100%;
         margin-top: 8px;
     }
@@ -98,13 +98,13 @@
 
         &--clear {
             background-color: #ffffff;
-            border: 1px solid #991020;
-            color: #991020;
+            border: 1px solid $sw-color-brand-primary;
+            color: $sw-color-brand-primary;
 
             &:hover,
             &:focus {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -130,12 +130,12 @@
             transition: background-color 0.2s ease, border-color 0.2s ease;
 
             &:checked {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
             }
 
             &:focus {
-                border-color: #991020;
+                border-color: $sw-color-brand-primary;
                 box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.16);
             }
         }
@@ -167,7 +167,7 @@
         height: 72px;
         border-radius: 50%;
         background-color: rgba(153, 16, 32, 0.08);
-        color: #991020;
+        color: $sw-color-brand-primary;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -194,8 +194,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background-color: #991020;
-        border: 1px solid #991020;
+        background-color: $sw-color-brand-primary;
+        border: 1px solid $sw-color-brand-primary;
         color: #ffffff;
         font-size: 13px;
         font-weight: 700;
@@ -208,8 +208,8 @@
 
         &:hover,
         &:focus {
-            background-color: #7b0a17;
-            border-color: #7b0a17;
+            background-color: $zanders-color-primary-dark;
+            border-color: $zanders-color-primary-dark;
             color: #ffffff;
             box-shadow: none;
         }
@@ -242,7 +242,7 @@
             vertical-align: middle;
             font-size: 13.5px;
             line-height: 1.5;
-            color: #333333;
+            color: $zanders-color-dark-bg;
             word-break: break-word;
 
             &:last-child {
@@ -271,7 +271,7 @@
                 background-color: #ffffff;
                 vertical-align: top;
                 padding: 16px 14px 14px;
-                border-bottom: 2px solid #991020;
+                border-bottom: 2px solid $sw-color-brand-primary;
 
                 &.zanders-compare-corner-cell {
                     background-color: #fafafa;
@@ -293,7 +293,7 @@
                         padding: 12px 16px;
 
                         &:first-child {
-                            border-left: 3px solid #991020;
+                            border-left: 3px solid $sw-color-brand-primary;
                         }
                     }
 
@@ -301,7 +301,7 @@
                         font-family: 'Poppins', sans-serif;
                         font-size: 13.5px;
                         font-weight: 700;
-                        color: #991020;
+                        color: $sw-color-brand-primary;
                         letter-spacing: 0.6px;
                         text-transform: uppercase;
                         background-color: transparent;
@@ -350,7 +350,7 @@
                 .product-price {
                     font-size: 16px;
                     font-weight: 700;
-                    color: #991020;
+                    color: $sw-color-brand-primary;
                     margin: 0;
                 }
             }
@@ -398,7 +398,7 @@
         height: 32px;
         padding: 0 10px;
         border-radius: 999px;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         color: #ffffff;
         font-size: 13.5px;
         font-weight: 700;
@@ -434,8 +434,8 @@
 
             &:hover,
             &:focus {
-                background-color: #991020;
-                border-color: #991020;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
                 color: #ffffff;
                 transform: scale(1.08);
                 box-shadow: 0 2px 6px rgba(153, 16, 32, 0.25);
@@ -496,7 +496,7 @@
             transition: color 0.15s ease;
 
             &:hover {
-                color: #991020;
+                color: $sw-color-brand-primary;
             }
         }
 
@@ -571,7 +571,7 @@
             border-radius: 3px;
             font-size: 11.5px;
             line-height: 1.35;
-            color: #333333;
+            color: $zanders-color-dark-bg;
 
             .zanders-compare-variant-group {
                 color: #666666;
@@ -592,7 +592,7 @@
             border-top: 1px solid #efefef;
             font-size: 19px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
             line-height: 1.2;
         }
     }
@@ -607,8 +607,8 @@
         .btn-buy,
         .btn-light {
             width: 100%;
-            background-color: #991020;
-            border: 1px solid #991020;
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 12.5px;
@@ -622,8 +622,8 @@
 
             &:hover,
             &:focus {
-                background-color: #7b0a17;
-                border-color: #7b0a17;
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
                 color: #ffffff;
                 box-shadow: none;
             }
@@ -631,16 +631,17 @@
     }
 }
 
-// 5. Compare Offcanvas Drawer Styling (Aligned with Zanders Cart Drawer)
+// 5. Compare Offcanvas Drawer Styling (Classic Zanders B2B Design)
 .offcanvas:has(.zanders-compare-offcanvas) {
     font-family: 'Poppins', sans-serif;
-    background-color: #fafafa;
+    background-color: #ffffff;
+    border-left: 1px solid #e0e0e0;
 
     .offcanvas-body {
-        padding: 16px 20px 20px;
+        padding: 16px;
         display: flex;
         flex-direction: column;
-        background-color: #fafafa;
+        background-color: #ffffff;
     }
 }
 
@@ -648,46 +649,51 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 20px;
+    padding: 14px 18px;
     background-color: #ffffff;
-    border-bottom: 2px solid #991020;
+    border-bottom: 2px solid $sw-color-brand-primary;
 
     .zanders-compare-drawer-title-group {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 6px;
         min-width: 0;
     }
 
     .zanders-compare-drawer-title {
         font-family: 'Poppins', sans-serif;
-        font-size: 17px;
+        font-size: 15px;
         font-weight: 700;
         color: #111111;
         text-transform: uppercase;
         letter-spacing: 0.4px;
         margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
+    .zanders-compare-offcanvas-count,
     .zanders-compare-offcanvas-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 24px;
-        height: 24px;
-        padding: 0 7px;
-        border-radius: 999px;
-        background-color: #991020;
-        color: #ffffff;
-        font-size: 12px;
+        display: inline-block;
+        color: $sw-color-brand-primary;
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
         font-weight: 700;
         line-height: 1;
+        background: transparent !important;
+        padding: 0;
+        min-width: auto;
+        height: auto;
+        border-radius: 0 !important;
     }
 
     .btn-close {
         margin: 0;
-        padding: 8px;
-        opacity: 0.7;
+        padding: 6px;
+        opacity: 0.65;
+        border-radius: 0;
+        box-shadow: none !important;
         transition: opacity 0.15s ease, transform 0.15s ease;
 
         &:hover {
@@ -707,24 +713,24 @@
     .zanders-compare-offcanvas-items {
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        margin-bottom: 16px;
+        gap: 8px;
+        margin-bottom: 14px;
         border: 0;
         padding: 0;
     }
 
     .zanders-compare-offcanvas-card {
         background-color: #ffffff;
-        border: 1px solid #eaeaea;
-        border-radius: 6px;
-        padding: 12px;
+        border: 1px solid #e2e2e2;
+        border-radius: 0 !important;
+        padding: 10px 12px;
         margin: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        box-shadow: none !important;
+        transition: border-color 0.15s ease;
 
         &:hover {
-            border-color: #dddddd;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+            border-color: #bbbbbb;
+            box-shadow: none !important;
         }
 
         .zanders-compare-offcanvas-card-inner {
@@ -734,12 +740,13 @@
         }
 
         .zanders-compare-offcanvas-thumb {
-            flex: 0 0 72px;
-            width: 72px;
-            height: 68px;
-            padding: 6px;
-            border-radius: 4px;
-            background-color: #f8f8f8;
+            flex: 0 0 70px;
+            width: 70px;
+            height: 70px;
+            padding: 4px;
+            border-radius: 0 !important;
+            border: 1px solid #e8e8e8;
+            background-color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -755,8 +762,8 @@
             }
 
             .zanders-compare-offcanvas-placeholder {
-                width: 34px;
-                height: 34px;
+                width: 32px;
+                height: 32px;
                 opacity: 0.35;
                 display: block;
             }
@@ -767,7 +774,7 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .zanders-compare-offcanvas-top {
@@ -782,7 +789,7 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 700;
             line-height: 1.35;
             color: #111111;
@@ -791,37 +798,41 @@
             transition: color 0.15s ease;
 
             &:hover {
-                color: #991020;
+                color: $sw-color-brand-primary;
             }
         }
 
         .zanders-compare-offcanvas-remove {
-            flex: 0 0 26px;
-            width: 26px;
-            height: 26px;
-            padding: 0;
-            border-radius: 50%;
-            background-color: #f2f2f2;
-            border: 1px solid #e2e2e2;
-            color: #555555;
+            flex: 0 0 20px;
+            width: 20px;
+            height: 20px;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            background-color: transparent !important;
+            border: none !important;
+            color: #888888 !important;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             line-height: 1;
-            box-shadow: none;
-            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+            box-shadow: none !important;
+            cursor: pointer;
+            transition: color 0.15s ease, transform 0.15s ease;
 
             svg {
+                width: 13px;
+                height: 13px;
                 display: block;
+                stroke: currentColor;
             }
 
             &:hover,
             &:focus {
-                background-color: #991020;
-                border-color: #991020;
-                color: #ffffff;
-                transform: scale(1.06);
-                box-shadow: none;
+                background-color: transparent !important;
+                border: none !important;
+                color: $sw-color-brand-primary !important;
+                transform: scale(1.15);
+                box-shadow: none !important;
             }
         }
 
@@ -835,12 +846,12 @@
             display: inline-flex;
             align-items: center;
             gap: 3px;
-            padding: 1px 7px;
-            border-radius: 3px;
-            background-color: #f5f5f5;
-            border: 1px solid #e6e6e6;
-            font-size: 11px;
-            line-height: 1.4;
+            padding: 1px 6px;
+            border-radius: 0 !important;
+            background-color: #f7f7f7;
+            border: 1px solid #e2e2e2;
+            font-size: 10.5px;
+            line-height: 1.35;
 
             .zanders-compare-offcanvas-pill-group {
                 color: #666666;
@@ -859,34 +870,36 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 6px;
+            margin-top: 2px;
         }
 
         .zanders-compare-offcanvas-sku {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #666666;
             font-weight: 500;
         }
 
         .zanders-compare-offcanvas-price {
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
-            color: #991020;
+            color: $sw-color-brand-primary;
         }
 
         .zanders-compare-offcanvas-wishlist-row {
             padding-top: 4px;
-            border-top: 1px solid #f2f2f2;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 2px;
         }
 
         .zanders-compare-offcanvas-wishlist-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             padding: 2px 0;
             border: 0;
             background: transparent;
             color: #555555;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             text-decoration: none;
             cursor: pointer;
@@ -902,7 +915,7 @@
             }
 
             &.product-wishlist-added {
-                color: #991020;
+                color: $sw-color-brand-primary;
 
                 .icon-wishlist-added {
                     display: inline-flex;
@@ -916,7 +929,7 @@
 
             &:hover,
             &:focus {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 outline: none;
             }
         }
@@ -926,14 +939,14 @@
         text-align: center;
         padding: 40px 16px;
         color: #666666;
-        font-size: 13.5px;
+        font-size: 13px;
 
         .zanders-compare-offcanvas-empty-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 0;
             background-color: rgba(153, 16, 32, 0.08);
-            color: #991020;
+            color: $sw-color-brand-primary;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -948,46 +961,89 @@
     .zanders-compare-offcanvas-actions {
         margin-top: auto;
         padding-top: 14px;
-        border-top: 1px solid #e6e6e6;
+        border-top: 1px solid #e5e5e5;
+        background-color: #ffffff;
 
         .zanders-compare-offcanvas-hint {
-            font-size: 12px;
+            font-size: 11.5px;
             color: #666666;
             text-align: center;
             margin: 0 0 10px;
         }
 
-        .zanders-compare-offcanvas-cta {
-            width: 100%;
-            display: block;
-            font-size: 13.5px;
+        .zanders-compare-offcanvas-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .zanders-compare-offcanvas-clear {
+            font-family: 'Poppins', sans-serif;
+            font-size: 11.5px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px 16px;
-            border-radius: 3px;
-            text-align: center;
-            box-shadow: none;
+            letter-spacing: 0.3px;
+            color: $sw-color-brand-primary !important;
+            background: transparent !important;
+            border: none !important;
+            padding: 6px 0 !important;
+            text-decoration: underline !important;
+            cursor: pointer;
+            box-shadow: none !important;
+            transition: color 0.15s ease;
+
+            &:hover {
+                color: #7a0c19 !important;
+                text-decoration: none !important;
+            }
+        }
+
+        .zanders-compare-offcanvas-cta {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            height: 36px !important;
+            min-height: 36px !important;
+            max-height: 36px !important;
+            line-height: 34px !important;
+            padding: 0 22px !important;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            text-decoration: none !important;
+            white-space: nowrap;
+            margin-left: auto;
+            width: auto;
+
+            &:only-child {
+                margin: 0 auto;
+            }
 
             &.btn-primary {
-                background-color: #991020;
-                border-color: #991020;
-                color: #ffffff;
+                background-color: $sw-color-brand-primary !important;
+                border: 1px solid $sw-color-brand-primary !important;
+                color: #ffffff !important;
 
                 &:hover,
                 &:focus {
-                    background-color: #7b0a17;
-                    border-color: #7b0a17;
-                    color: #ffffff;
-                    box-shadow: none;
+                    background-color: #7a0c19 !important;
+                    border-color: #7a0c19 !important;
+                    color: #ffffff !important;
                 }
             }
 
+            &.btn-light,
             &.disabled {
-                background-color: #e6e6e6;
-                border-color: #dcdcdc;
-                color: #888888;
-                opacity: 1;
+                background-color: #e5e5e5 !important;
+                border: 1px solid #e5e5e5 !important;
+                color: #888888 !important;
+                cursor: not-allowed;
+                pointer-events: none;
             }
         }
     }
@@ -1005,7 +1061,7 @@
         height: 48px;
         padding: 0;
         border-radius: 50%;
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         border: 2px solid #ffffff;
         color: #ffffff;
         display: inline-flex;
@@ -1016,7 +1072,7 @@
 
         &:hover,
         &:focus {
-            background-color: #7b0a17;
+            background-color: $zanders-color-primary-dark;
             color: #ffffff;
             transform: translateY(-2px);
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
@@ -1278,7 +1334,7 @@
             gap: 16px;
             padding: 0 0 10px;
             margin: 0 0 14px;
-            border-bottom: 2px solid #991020;
+            border-bottom: 2px solid $sw-color-brand-primary;
 
             .zanders-compare-print-logo img {
                 max-height: 44px;
@@ -1294,7 +1350,7 @@
                 font-family: 'Poppins', sans-serif;
                 font-size: 16px;
                 font-weight: 700;
-                color: #991020;
+                color: $sw-color-brand-primary;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 line-height: 1.2;
@@ -1347,7 +1403,7 @@
 
                     td {
                         padding: 10px 6px;
-                        border-bottom: 2px solid #991020;
+                        border-bottom: 2px solid $sw-color-brand-primary;
 
                         &.zanders-compare-corner-cell {
                             background-color: #f7f7f7;
@@ -1366,7 +1422,7 @@
 
                             .accordion-button {
                                 font-size: 10.5px;
-                                color: #991020;
+                                color: $sw-color-brand-primary;
 
                                 &::after {
                                     display: none;

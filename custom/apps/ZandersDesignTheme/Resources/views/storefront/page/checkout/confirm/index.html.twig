@@ -1,0 +1,374 @@
+{#
+    Zanders Checkout Confirmation & Review Page Override
+    ==========================================================================
+    Extends `@Storefront/storefront/page/checkout/confirm/index.html.twig`
+    Clean 2-column layout matching theme container width and brand colors:
+    - Left Column (Main):
+      1. Branded Heading with crimson rule
+      2. Section 1: Shipping & Billing Address cards
+      3. Section 2: Payment & Shipping Method cards
+      4. Section 3: Ordered Products Overview with 60x60 constrained thumbnails
+      5. Section 4: Dealer Order Notes & Instructions
+    - Right Column (Aside):
+      Sticky Order Summary Card with totals, TOS checkbox, and Place Order CTA
+#}
+{% sw_extends '@Storefront/storefront/page/checkout/confirm/index.html.twig' %}
+
+{# 1. Multi-Step Progress Tracker #}
+{% block page_checkout_progress %}
+    {% sw_include '@Storefront/storefront/component/checkout/checkout-steps.html.twig' with {
+        activeStep: 'confirm'
+    } %}
+{% endblock %}
+
+{# 2. Branded Checkout Heading #}
+{% block page_checkout_confirm_header %}
+    <div class="zanders-checkout-heading-wrap">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h1 class="zanders-checkout-page-title">
+                    Review &amp; Place Order
+                </h1>
+                <p class="zanders-checkout-page-subtitle">
+                    Please review your shipping details, payment method, and items before placing your order.
+                </p>
+            </div>
+            <div class="zanders-checkout-items-count-badge">
+                {{ page.cart.lineItems|length }} {{ page.cart.lineItems|length == 1 ? 'Item' : 'Items' }}
+            </div>
+        </div>
+        <div class="zanders-checkout-title-rule"></div>
+    </div>
+{% endblock %}
+
+{# 3. Remove default top TOS box so it does not clutter the top of the page #}
+{% block page_checkout_confirm_tos %}{% endblock %}
+
+{# 4. Section 1: Address Cards #}
+{% block page_checkout_confirm_address %}
+    <div class="zanders-confirm-block zanders-confirm-address-block">
+        <div class="zanders-confirm-block-header">
+            <span class="zanders-confirm-step-badge">1</span>
+            <h2 class="zanders-confirm-block-title">SHIPPING &amp; BILLING ADDRESSES</h2>
+        </div>
+        <div class="zanders-confirm-block-body">
+            {% sw_include '@Storefront/storefront/page/checkout/confirm/confirm-address.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{# 5. Section 2: Payment & Shipping Methods #}
+{% block page_checkout_confirm_payment_shipping %}
+    <div class="zanders-confirm-block zanders-confirm-methods-block">
+        <div class="zanders-confirm-block-header">
+            <span class="zanders-confirm-step-badge">2</span>
+            <h2 class="zanders-confirm-block-title">PAYMENT &amp; SHIPPING METHODS</h2>
+        </div>
+        <div class="zanders-confirm-block-body">
+            <div class="row g-3">
+                {% block page_checkout_confirm_payment %}
+                    <div class="col-12 col-md-6 confirm-payment zanders-confirm-payment-col">
+                        {% sw_include '@Storefront/storefront/page/checkout/confirm/confirm-payment.html.twig' %}
+                    </div>
+                {% endblock %}
+
+                {% block page_checkout_confirm_shipping %}
+                    {% if feature('v6.8.0.0') %}
+                        {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\ProductDefinition::TYPE_PHYSICAL') %}
+                        {% set hasPhysicalItem = page.cart.lineItems.hasLineItemWithProductType(PHYSICAL_STATE) %}
+                    {% else %}
+                        {% set PHYSICAL_STATE = constant('Shopware\\Core\\Content\\Product\\State::IS_PHYSICAL') %}
+                        {% set hasPhysicalItem = page.cart.lineItems.hasLineItemWithState(PHYSICAL_STATE) %}
+                    {% endif %}
+
+                    {% if hasPhysicalItem %}
+                        <div class="col-12 col-md-6 confirm-shipping zanders-confirm-shipping-col">
+                            {% sw_include '@Storefront/storefront/page/checkout/confirm/confirm-shipping.html.twig' %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{# 6. Section 3: Ordered Products Overview & Section 4: Dealer Notes #}
+{% block page_checkout_confirm_product_table %}
+    <div class="zanders-confirm-block zanders-confirm-products-block">
+        <div class="zanders-confirm-block-header d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <span class="zanders-confirm-step-badge">3</span>
+                <h2 class="zanders-confirm-block-title">
+                    ITEMS IN YOUR ORDER ({{ page.cart.lineItems|length }})
+                </h2>
+            </div>
+            <a href="{{ path('frontend.checkout.cart.page') }}" class="btn zanders-confirm-edit-cart-link" title="Edit items in shopping cart">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>Edit Cart</span>
+            </a>
+        </div>
+
+        <div class="zanders-confirm-block-body p-0">
+            <div class="table-responsive zanders-confirm-table-wrap">
+                <table class="table zanders-confirm-table mb-0">
+                    <thead>
+                        <tr>
+                            <th class="zanders-col-thumb"><span class="visually-hidden">Image</span></th>
+                            <th class="zanders-col-info">Product Details</th>
+                            <th class="zanders-col-price text-end">Price</th>
+                            <th class="zanders-col-qty text-center">Qty</th>
+                            <th class="zanders-col-total text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lineItem in page.cart.lineItems %}
+                            {% set itemId = lineItem.id %}
+                            {% set refId = lineItem.referencedId %}
+                            {% set isProduct = (lineItem.type == 'product') %}
+                            {% set itemLabel = lineItem.label|trans|sw_sanitize %}
+                            {% set itemLabel = itemLabel !== '' ? itemLabel : lineItem.label %}
+                            {% set itemSku = lineItem.payload.productNumber ?? '' %}
+                            {% set detailUrl = (isProduct and refId) ? seoUrl('frontend.detail.page', { productId: refId }) : null %}
+
+                            <tr class="zanders-confirm-item-row">
+                                {# Thumbnail #}
+                                <td class="zanders-col-thumb">
+                                    <div class="zanders-confirm-thumb-box">
+                                        {% if lineItem.cover and lineItem.cover.url %}
+                                            {% if detailUrl %}
+                                                <a href="{{ detailUrl }}" title="{{ itemLabel }}">
+                                                    <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-confirm-thumb-img" style="width: 60px; height: 60px; max-width: 60px; max-height: 60px; object-fit: contain;">
+                                                </a>
+                                            {% else %}
+                                                <img src="{{ lineItem.cover.url }}" alt="{{ itemLabel }}" class="zanders-confirm-thumb-img" style="width: 60px; height: 60px; max-width: 60px; max-height: 60px; object-fit: contain;">
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="zanders-confirm-thumb-placeholder">
+                                                {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                {# Product Details #}
+                                <td class="zanders-col-info">
+                                    <div class="zanders-confirm-info-wrap">
+                                        {% if itemSku %}
+                                            <div class="zanders-confirm-item-sku">Item Number: <strong>{{ itemSku }}</strong></div>
+                                        {% endif %}
+
+                                        {% if detailUrl %}
+                                            <a href="{{ detailUrl }}" class="zanders-confirm-item-title" title="{{ itemLabel }}">
+                                                {{ itemLabel }}
+                                            </a>
+                                        {% else %}
+                                            <span class="zanders-confirm-item-title">{{ itemLabel }}</span>
+                                        {% endif %}
+
+                                        {% if lineItem.payload.features is defined and lineItem.payload.features|length > 0 %}
+                                            <div class="zanders-confirm-item-features small text-muted mt-1">
+                                                {% for feature in lineItem.payload.features %}
+                                                    <span>{{ feature.label }}: {{ feature.value }}</span>{% if not loop.last %} | {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </td>
+
+                                {# Unit Price #}
+                                <td class="zanders-col-price text-end">
+                                    <span class="zanders-confirm-price">
+                                        {{ lineItem.price ? (lineItem.price.unitPrice|currency) : '—' }}
+                                    </span>
+                                </td>
+
+                                {# Quantity #}
+                                <td class="zanders-col-qty text-center">
+                                    <span class="zanders-confirm-qty-badge">
+                                        {{ lineItem.quantity }}
+                                    </span>
+                                </td>
+
+                                {# Line Total #}
+                                <td class="zanders-col-total text-end">
+                                    <strong class="zanders-confirm-total">
+                                        {{ lineItem.price ? (lineItem.price.totalPrice|currency) : '—' }}
+                                    </strong>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Section 4: Dealer Order Notes (Placed cleanly inside left column) #}
+    <div class="zanders-confirm-block zanders-confirm-notes-block">
+        <div class="zanders-confirm-block-header">
+            <span class="zanders-confirm-step-badge">4</span>
+            <h2 class="zanders-confirm-block-title">ORDER NOTES &amp; DEALER INSTRUCTIONS</h2>
+        </div>
+        <div class="zanders-confirm-block-body">
+            <label class="form-label zanders-notes-label" for="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}">
+                Special Instructions, FFL Notes, Dock Hours, or PO Reference Number:
+            </label>
+            <textarea class="form-control zanders-notes-textarea"
+                      placeholder="Add any specific instructions for Zanders fulfillment team (optional)..."
+                      rows="3"
+                      id="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}"
+                      form="confirmOrderForm"
+                      name="{{ constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY') }}"></textarea>
+        </div>
+    </div>
+{% endblock %}
+
+{# 7. Empty page_checkout_additional so no extra sibling pushes the aside column down #}
+{% block page_checkout_additional %}{% endblock %}
+
+{# 8. Sticky Right Aside Summary Card with TOS & Place Order CTA inside confirmOrderForm #}
+{% block page_checkout_aside_actions %}
+    <div class="checkout-aside-action">
+        <form id="confirmOrderForm"
+              action="{{ confirmOrderFormAction }}"
+              data-checkout-customer-storage="true"
+              data-checkout-customer-storage-options="{{ { customerId: context.customer.id }|json_encode }}"
+              data-form-preserver="true"
+              data-form-preserver-options="{{ { ignoredElementNames: [constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::CUSTOMER_COMMENT_KEY'), 'tos', 'revocation'] }|json_encode }}"
+              data-form-handler="true"
+              data-form-handler-options="{{ { formFieldSelector: null }|json_encode }}"
+              data-form-add-history="true"
+              data-form-add-history-options="{{ formAddHistoryOptions|json_encode }}"
+              method="post">
+
+            <input type="text" name="hash" hidden="hidden" value="{{ page.cart.getHash }}" />
+
+            <div class="zanders-checkout-summary-card">
+                <div class="zanders-checkout-summary-header">
+                    ORDER SUMMARY
+                </div>
+
+                <div class="zanders-checkout-summary-body">
+                    {# Free shipping status badge #}
+                    {% set freeShippingThreshold = 500.00 %}
+                    {% set subtotalPrice = page.cart.price.positionPrice ?? 0 %}
+                    {% set freeShippingRemaining = (freeShippingThreshold - subtotalPrice) > 0 ? (freeShippingThreshold - subtotalPrice) : 0 %}
+
+                    {% if freeShippingRemaining > 0 %}
+                        <div class="zanders-shipping-threshold-banner">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            <span>Add <strong>{{ freeShippingRemaining|currency }}</strong> for <strong>FREE FREIGHT!</strong></span>
+                        </div>
+                    {% else %}
+                        <div class="zanders-shipping-threshold-banner is-qualified">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span><strong>FREE FREIGHT QUALIFIED!</strong></span>
+                        </div>
+                    {% endif %}
+
+                    {# Summary Cost Rows #}
+                    <div class="zanders-summary-cost-list">
+                        <div class="zanders-summary-row">
+                            <span class="zanders-summary-row-label">Subtotal</span>
+                            <span class="zanders-summary-row-val">{{ page.cart.price.positionPrice|currency }}</span>
+                        </div>
+
+                        <div class="zanders-summary-row">
+                            <span class="zanders-summary-row-label">
+                                Shipping ({{ context.shippingMethod ? context.shippingMethod.translated.name : 'Standard' }})
+                            </span>
+                            <span class="zanders-summary-row-val">
+                                {% set shippingCost = page.cart.shippingCosts ? page.cart.shippingCosts.totalPrice : 0 %}
+                                {% if shippingCost <= 0 %}
+                                    <strong class="text-success">FREE</strong>
+                                {% else %}
+                                    {{ shippingCost|currency }}
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if page.cart.price.calculatedTaxes is defined and page.cart.price.calculatedTaxes|length > 0 %}
+                            {% for taxItem in page.cart.price.calculatedTaxes %}
+                                <div class="zanders-summary-row">
+                                    <span class="zanders-summary-row-label">Tax ({{ taxItem.taxRate }}%)</span>
+                                    <span class="zanders-summary-row-val">{{ taxItem.tax|currency }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div class="zanders-summary-row zanders-summary-total-row">
+                            <span class="zanders-summary-row-label">Order Total</span>
+                            <span class="zanders-summary-row-val zanders-summary-total-val">
+                                {{ page.cart.price.totalPrice|currency }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {# Terms and Conditions Checkbox #}
+                    <div class="zanders-summary-tos">
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   class="form-check-input checkout-confirm-tos-checkbox{% if formViolations.getViolations('/tos') is not empty %} is-invalid{% endif %}"
+                                   required="required"
+                                   id="tos"
+                                   form="confirmOrderForm"
+                                   name="tos">
+                            <label for="tos" class="form-check-label">
+                                I have read and agree to the <a href="{{ path('frontend.cms.page', { id: config('core.basicInformation.tosPage') }) }}" target="_blank">Terms &amp; Conditions</a> and <a href="{{ path('frontend.cms.page', { id: config('core.basicInformation.revocationPage') }) }}" target="_blank">Cancellation Policy</a>.
+                            </label>
+                        </div>
+                    </div>
+
+                    {# Place Order Submit Button #}
+                    <div class="zanders-checkout-submit-wrap">
+                        <button id="confirmFormSubmit"
+                                class="btn zanders-confirm-order-submit-btn"
+                                form="confirmOrderForm"
+                                {% if page.cart.errors.blockResubmit %}disabled{% endif %}
+                                type="submit">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <span>PLACE ORDER</span>
+                        </button>
+                    </div>
+
+                    {# Trust Badges inside card #}
+                    <div class="zanders-summary-trust-footer">
+                        <div class="zanders-summary-trust-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>256-Bit SSL Encrypted Checkout</span>
+                        </div>
+                        <div class="zanders-summary-trust-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Authorized Zanders Dealer Portal</span>
+                        </div>
+                        <div class="zanders-summary-trust-item">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Orders $500+ Ship Free Freight</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{# 9. Empty page_checkout_aside_summary because it is integrated into page_checkout_aside_actions #}
+{% block page_checkout_aside_summary %}{% endblock %}

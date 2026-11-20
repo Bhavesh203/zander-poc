@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>General Settings</title>
+        <title lang="de-DE">Allgemeine Einstellungen</title>
+
+        <input-field type="bool">
+            <name>active</name>
+            <label>Enable Related Products Slider</label>
+            <label lang="de-DE">Ähnliche Produkte Slider aktivieren</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="text">
+            <name>title</name>
+            <label>Slider Title</label>
+            <label lang="de-DE">Slider Titel</label>
+            <defaultValue>ALTERNATIVE PRODUCTS</defaultValue>
+            <helpText>Title displayed above the related products carousel (e.g. ALTERNATIVE PRODUCTS or RELATED PRODUCTS).</helpText>
+            <helpText lang="de-DE">Titel über dem Karussell (z.B. ALTERNATIVE PRODUKTE oder ÄHNLICHE PRODUKTE).</helpText>
+        </input-field>
+
+        <input-field type="int">
+            <name>limit</name>
+            <label>Maximum Products Count</label>
+            <label lang="de-DE">Maximale Produktanzahl</label>
+            <defaultValue>12</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>showStockToggle</name>
+            <label>Show "Hide Out of Stock Items" Button</label>
+            <label lang="de-DE">"Nicht vorrätige Artikel ausblenden" Button anzeigen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>autoplay</name>
+            <label>Autoplay Slider</label>
+            <label lang="de-DE">Automatische Wiedergabe</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>autoplayTimeout</name>
+            <label>Autoplay Timeout (ms)</label>
+            <label lang="de-DE">Wiedergabe-Intervall (ms)</label>
+            <defaultValue>4000</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>speed</name>
+            <label>Slide Transition Speed (ms)</label>
+            <label lang="de-DE">Übergangsgeschwindigkeit (ms)</label>
+            <defaultValue>350</defaultValue>
+        </input-field>
+    </card>
+</config>
+

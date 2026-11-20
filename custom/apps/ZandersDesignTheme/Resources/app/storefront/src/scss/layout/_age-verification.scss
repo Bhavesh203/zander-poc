@@ -107,27 +107,27 @@ html.age-verification-modal-open {
             text-decoration: none;
 
             &.btn-age-yes {
-                background-color: #991020;
-                border: 2px solid #991020;
+                background-color: $sw-color-brand-primary;
+                border: 2px solid $sw-color-brand-primary;
                 color: #ffffff;
 
                 &:hover,
                 &:focus {
-                    background-color: #7b0a17;
-                    border-color: #7b0a17;
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
                     color: #ffffff;
                 }
             }
 
             &.btn-age-no {
                 background-color: #ffffff;
-                border: 2px solid #991020;
-                color: #991020;
+                border: 2px solid $sw-color-brand-primary;
+                color: $sw-color-brand-primary;
 
                 &:hover,
                 &:focus {
-                    background-color: #991020;
-                    border-color: #991020;
+                    background-color: $sw-color-brand-primary;
+                    border-color: $sw-color-brand-primary;
                     color: #ffffff;
                 }
             }

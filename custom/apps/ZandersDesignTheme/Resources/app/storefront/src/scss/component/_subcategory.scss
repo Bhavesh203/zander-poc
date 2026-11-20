@@ -97,11 +97,11 @@
                         &:focus-within {
                             > a.navigation-flyout-link.is-level-0,
                             > div.navigation-flyout-link.is-level-0 {
-                                background-color: #d2d2d2;
-                                color: #991020;
+                                background-color: $zanders-color-border;
+                                color: $sw-color-brand-primary;
 
                                 .zanders-catalog-caret {
-                                    color: #991020;
+                                    color: $sw-color-brand-primary;
                                 }
                             }
 
@@ -188,7 +188,7 @@
                         &:hover,
                         &:focus {
                             background-color: #cfcfcf;
-                            color: #991020;
+                            color: $sw-color-brand-primary;
                         }
                     }
 
@@ -209,7 +209,7 @@
     padding: 14px 16px 16px;
     background-color: #f8f8f8;
     border: 1px solid #e6e6e6;
-    border-top: 2px solid #991020;
+    border-top: 2px solid $sw-color-brand-primary;
     border-radius: 4px;
 
     .zanders-subcat-strip-header {
@@ -283,39 +283,39 @@
         .zanders-subcat-card-arrow {
             flex-shrink: 0;
             font-size: 13px;
-            color: #991020;
+            color: $sw-color-brand-primary;
         }
 
         &:hover,
         &:focus {
-            border-color: #991020;
-            border-left-color: #991020;
-            background-color: #fdf8f8;
-            color: #991020;
-            box-shadow: 0 2px 8px rgba(153, 16, 32, 0.08);
+            border-color: $sw-color-brand-primary;
+            border-left-color: $sw-color-brand-primary;
+            background-color: lighten($sw-color-brand-primary, 48%);
+            color: $sw-color-brand-primary;
+            box-shadow: 0 2px 8px rgba($sw-color-brand-primary, 0.08);
 
             .zanders-subcat-card-count {
-                background-color: rgba(153, 16, 32, 0.12);
-                color: #991020;
+                background-color: rgba($sw-color-brand-primary, 0.12);
+                color: $sw-color-brand-primary;
             }
         }
 
         &.is-active {
-            background-color: #991020;
-            border-color: #991020;
-            border-left-color: #6e1322;
-            color: #ffffff;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
+            border-left-color: $zanders-color-primary-dark;
+            color: $white;
 
             .zanders-subcat-card-count {
                 background-color: rgba(255, 255, 255, 0.22);
-                color: #ffffff;
+                color: $white;
             }
         }
 
         &--all {
             background-color: #f2f2f2;
-            border-left-color: #333333;
-            color: #111111;
+            border-left-color: $zanders-color-dark-bg;
+            color: $zanders-color-dark-text;
         }
     }
 }
@@ -339,7 +339,7 @@
             padding: 10px 14px;
             font-size: 13px;
             font-weight: 500;
-            color: #222222;
+            color: $zanders-color-dark-text;
             text-decoration: none;
             border-bottom: 1px solid #f0f0f0;
             border-left: 3px solid transparent;
@@ -347,20 +347,20 @@
 
             &:hover,
             &:focus {
-                background-color: #f8f4f5;
-                color: #991020;
-                border-left-color: rgba(153, 16, 32, 0.45);
+                background-color: lighten($sw-color-brand-primary, 48%);
+                color: $sw-color-brand-primary;
+                border-left-color: rgba($sw-color-brand-primary, 0.45);
             }
 
             &.is-active {
-                background-color: rgba(153, 16, 32, 0.08);
-                border-left-color: #991020;
-                color: #991020;
+                background-color: rgba($sw-color-brand-primary, 0.08);
+                border-left-color: $sw-color-brand-primary;
+                color: $sw-color-brand-primary;
                 font-weight: 700;
             }
 
             &.in-path {
-                color: #991020;
+                color: $sw-color-brand-primary;
                 font-weight: 600;
             }
         }

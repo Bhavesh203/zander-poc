@@ -3,6 +3,7 @@
     ==========================================================================
     Extends FroshProductCompare's `component/compare/compare-float.html.twig`
     to:
+    - Never render on checkout routes (distraction-free checkout)
     - Replace the default `bag-product` icon with Zanders' comparison scale SVG
     - Replace Bootstrap's `.bg-danger` utility class with a custom semantic
       badge class (`zanders-compare-float-badge`) so theme colors apply cleanly
@@ -11,9 +12,12 @@
 {% sw_extends '@Storefront/storefront/component/compare/compare-float.html.twig' %}
 
 {% block frosh_product_compare_float_button_inner %}
-    {% set buttonClasses = 'zanders-compare-float-btn' %}
-    {% set badgeClasses = 'zanders-compare-float-badge' %}
-    {{ parent() }}
+    {% set currentRoute = app.request ? app.request.attributes.get('_route') : '' %}
+    {% if not (currentRoute starts with 'frontend.checkout.') %}
+        {% set buttonClasses = 'zanders-compare-float-btn' %}
+        {% set badgeClasses = 'zanders-compare-float-badge' %}
+        {{ parent() }}
+    {% endif %}
 {% endblock %}
 
 {% block frosh_product_compare_float_icon %}

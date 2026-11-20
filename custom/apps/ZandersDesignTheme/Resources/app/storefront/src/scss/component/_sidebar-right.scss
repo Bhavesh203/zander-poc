@@ -1,0 +1,293 @@
+// ==============================================================================
+// ZANDERS SPORTING GOODS - RIGHT SIDEBAR COMPONENT
+// Matches https://shop2.gzanders.com live site 3-column layout
+// - Guest: LOGIN widget + RECENTLY VIEWED widget
+// - Logged In: COMPARE PRODUCTS widget + Order / Wishlist links + RECENTLY VIEWED
+// Uses Admin Theme Configuration Variables
+// ==============================================================================
+
+.zanders-sidebar-right {
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 24px;
+
+    // View containers
+    .zanders-sidebar-guest-view,
+    .zanders-sidebar-logged-in-view {
+        width: 100%;
+    }
+
+    // Box header & container
+    .zanders-sidebar-box {
+        background-color: $white;
+        margin-bottom: 16px;
+
+        &-header {
+            background-color: $zanders-color-dark-bg;
+            color: $white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 9px 12px;
+            line-height: 1.2;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+        }
+
+        &-body {
+            padding: 0;
+            background-color: $white;
+        }
+    }
+
+    // Guest Login Box (container with border)
+    .zanders-sidebar-login-box {
+        border: 1px solid $zanders-color-border;
+        margin-bottom: 18px;
+
+        .zanders-sidebar-box-body {
+            padding: 16px 14px;
+        }
+    }
+
+    // Compare and Recently Viewed Boxes (Flush B2B look from live site)
+    .zanders-sidebar-compare-box,
+    .zanders-sidebar-recent-box {
+        border: none;
+
+        .zanders-sidebar-box-body {
+            padding: 0;
+        }
+    }
+
+    // Input fields for Login
+    .zanders-sidebar-input {
+        background-color: $zanders-color-light-bg;
+        border: 1px solid $zanders-color-border;
+        border-radius: 0;
+        height: 36px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12.5px;
+        color: $zanders-color-dark-text;
+        padding: 6px 10px;
+        box-shadow: none;
+
+        &::placeholder {
+            color: lighten($zanders-color-dark-text, 35%);
+        }
+
+        &:focus {
+            background-color: $white;
+            border-color: $sw-color-brand-primary;
+            box-shadow: none;
+            outline: none;
+        }
+    }
+
+    // Login button
+    .zanders-sidebar-login-btn {
+        background-color: $sw-color-brand-primary;
+        border: 1px solid $sw-color-brand-primary;
+        color: $white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 0;
+        height: 34px;
+        min-width: 100px;
+        padding: 0 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: $zanders-color-primary-dark;
+            border-color: $zanders-color-primary-dark;
+            color: $white;
+            box-shadow: none;
+        }
+    }
+
+    // Action button wrappers
+    .zanders-sidebar-btn-wrap {
+        margin-bottom: 8px;
+
+        &:last-of-type {
+            margin-bottom: 16px;
+        }
+    }
+
+    // Full-width dark action buttons (VIEW MY OPEN ORDER, VIEW WISHLIST ITEMS)
+    .zanders-sidebar-dark-btn {
+        background-color: $zanders-color-dark-bg;
+        border: 1px solid $zanders-color-dark-bg;
+        color: $white;
+        font-family: 'Poppins', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 0;
+        text-decoration: none;
+        box-shadow: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+
+        &:hover,
+        &:focus {
+            background-color: lighten($zanders-color-dark-bg, 8%);
+            border-color: lighten($zanders-color-dark-bg, 8%);
+            color: $white;
+            text-decoration: none;
+            box-shadow: none;
+        }
+    }
+
+    // Compare Products Widget
+    .zanders-compare-items-list {
+        margin-bottom: 0;
+
+        .zanders-compare-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 0;
+            border-bottom: 1px solid $zanders-color-dark-bg; // Solid dark line divider between items
+
+            .zanders-compare-item-name {
+                font-family: 'Poppins', sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1.35;
+                color: $zanders-color-dark-text;
+                text-transform: uppercase;
+                flex: 1 1 auto;
+            }
+
+            .zanders-compare-item-remove {
+                all: unset;
+                cursor: pointer;
+                font-size: 16px;
+                line-height: 1;
+                color: $zanders-color-dark-text;
+                font-weight: 700;
+                flex: 0 0 auto;
+                padding: 0 2px;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: $sw-color-brand-primary;
+                }
+            }
+        }
+    }
+
+    .zanders-compare-empty-msg,
+    .zanders-recent-empty-msg {
+        font-family: 'Poppins', sans-serif;
+        font-size: 11px;
+        color: lighten($zanders-color-dark-text, 25%);
+        padding: 10px 0;
+        border-bottom: 1px solid $zanders-color-dark-bg;
+    }
+
+    .zanders-compare-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 16px;
+        padding: 4px 0 0 0;
+
+        .zanders-compare-clear-btn {
+            all: unset;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: $sw-color-brand-primary;
+            text-transform: uppercase;
+            text-decoration: underline !important;
+            text-decoration-color: $sw-color-brand-primary !important;
+            letter-spacing: 0.3px;
+
+            &:hover {
+                color: $zanders-color-primary-dark;
+            }
+        }
+
+        .zanders-compare-submit-btn {
+            background-color: $sw-color-brand-primary;
+            border: 1px solid $sw-color-brand-primary;
+            color: $white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 0;
+            padding: 6px 18px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: none;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+
+            &:hover,
+            &:focus {
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
+                color: $white;
+                text-decoration: none;
+                box-shadow: none;
+            }
+        }
+    }
+
+    // Recently Viewed list
+    .zanders-sidebar-recent-body {
+        padding: 0;
+
+        .zanders-sidebar-recent-item {
+            padding: 9px 0;
+            border-bottom: 1px solid $zanders-color-dark-bg; // Solid dark line divider
+
+            .zanders-sidebar-recent-link {
+                font-family: 'Poppins', sans-serif;
+                font-size: 11px;
+                font-weight: 700;
+                line-height: 1.35;
+                color: $zanders-color-dark-text;
+                text-transform: uppercase;
+                text-decoration: none;
+                display: block;
+                transition: color 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    color: $sw-color-brand-primary;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+}

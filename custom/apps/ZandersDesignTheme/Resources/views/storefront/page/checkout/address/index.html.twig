@@ -1,0 +1,47 @@
+{#
+    Zanders Checkout Dealer Details / Registration / Address Page
+    ==========================================================================
+    Clean, classic, standard 2-column layout:
+    - Full-width Stepper (Step 2: Details)
+    - Branded title & login collapse alert
+    - Fully styled registration card & input fields
+#}
+{% sw_extends '@Storefront/storefront/page/checkout/address/index.html.twig' %}
+
+{# Set Progress Stepper active step to 'address' #}
+{% block page_checkout_progress %}
+    {% sw_include '@Storefront/storefront/component/checkout/checkout-steps.html.twig' with {
+        activeStep: 'address'
+    } %}
+{% endblock %}
+
+{% block page_checkout_address_header %}
+    <div class="zanders-checkout-title-bar">
+        <h1 class="zanders-checkout-main-title">
+            Customer Information
+        </h1>
+        <p class="zanders-checkout-main-subtitle">
+            Please enter your billing and shipping address to proceed with your order.
+        </p>
+    </div>
+{% endblock %}
+
+{% block page_checkout_address_login_toggle %}
+    <div class="zanders-checkout-login-banner mb-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#991020" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span class="zanders-login-banner-text">Already an authorized Zanders dealer?</span>
+            </div>
+            <a href="#loginCollapse"
+               class="zanders-login-toggle-btn"
+               data-bs-toggle="collapse"
+               aria-expanded="{{ loginError ? 'true' : 'false' }}">
+                <span>Sign In Here &rarr;</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

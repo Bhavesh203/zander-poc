@@ -39,7 +39,7 @@ Zanders-styled Quick View modal for previewing products:
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 700;
-            color: #8c1d2f;
+            color: $zanders-color-primary-accent;
             letter-spacing: 0.8px;
             text-transform: uppercase;
         }
@@ -62,7 +62,7 @@ Zanders-styled Quick View modal for previewing products:
 
         .quickview-loading-spinner {
             .spinner-border {
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
                 width: 3rem;
                 height: 3rem;
                 border-width: 0.25rem;
@@ -132,8 +132,8 @@ Zanders-styled Quick View modal for previewing products:
 
                 &:hover,
                 &.is-active {
-                    border-color: #8c1d2f;
-                    box-shadow: 0 0 0 1px #8c1d2f;
+                    border-color: $zanders-color-primary-accent;
+                    box-shadow: 0 0 0 1px $zanders-color-primary-accent;
                 }
             }
         }
@@ -166,7 +166,7 @@ Zanders-styled Quick View modal for previewing products:
                 transition: color 0.2s ease;
 
                 &:hover {
-                    color: #8c1d2f;
+                    color: $zanders-color-primary-accent;
                 }
             }
         }
@@ -213,7 +213,7 @@ Zanders-styled Quick View modal for previewing products:
             .quickview-price-primary {
                 font-size: 24px;
                 font-weight: 700;
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
                 line-height: 1.2;
                 margin-bottom: 4px;
             }
@@ -223,18 +223,18 @@ Zanders-styled Quick View modal for previewing products:
                 gap: 16px;
                 font-size: 13px;
                 font-weight: 600;
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
 
                 .price-item {
                     display: inline-flex;
                     gap: 4px;
 
                     .price-lbl {
-                        color: #8c1d2f;
+                        color: $zanders-color-primary-accent;
                     }
 
                     .price-amt {
-                        color: #8c1d2f;
+                        color: $zanders-color-primary-accent;
                     }
                 }
             }
@@ -283,7 +283,7 @@ Zanders-styled Quick View modal for previewing products:
                     border: none;
                     font-size: 15px;
                     font-weight: 600;
-                    color: #333333;
+                    color: $zanders-color-dark-bg;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
@@ -333,8 +333,8 @@ Zanders-styled Quick View modal for previewing products:
             .qv-btn-add,
             .qv-btn-buy {
                 flex: 1 1 0;
-                background-color: #8c1d2f;
-                border: 1px solid #8c1d2f;
+                background-color: $zanders-color-primary-accent;
+                border: 1px solid $zanders-color-primary-accent;
                 color: #ffffff;
                 font-family: 'Poppins', sans-serif;
                 font-size: 13px;
@@ -355,8 +355,8 @@ Zanders-styled Quick View modal for previewing products:
 
                 &:hover,
                 &:focus {
-                    background-color: #6e1322;
-                    border-color: #6e1322;
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
                     color: #ffffff;
                     text-decoration: none;
                 }
@@ -404,7 +404,7 @@ Zanders-styled Quick View modal for previewing products:
                 }
 
                 &:hover {
-                    color: #8c1d2f;
+                    color: $zanders-color-primary-accent;
 
                     svg {
                         transform: scale(1.15);
@@ -414,7 +414,7 @@ Zanders-styled Quick View modal for previewing products:
                 &.product-wishlist-added,
                 &.is-wishlist,
                 &.is-active {
-                    color: #8c1d2f;
+                    color: $zanders-color-primary-accent;
                     font-weight: 600;
 
                     .icon-wishlist-not-added {
@@ -425,8 +425,8 @@ Zanders-styled Quick View modal for previewing products:
                         display: inline-flex;
 
                         svg {
-                            fill: #8c1d2f;
-                            stroke: #8c1d2f;
+                            fill: $zanders-color-primary-accent;
+                            stroke: $zanders-color-primary-accent;
                         }
                     }
                 }
@@ -435,12 +435,12 @@ Zanders-styled Quick View modal for previewing products:
             .qv-view-detail-link {
                 font-size: 13px;
                 font-weight: 600;
-                color: #8c1d2f;
+                color: $zanders-color-primary-accent;
                 text-decoration: none;
                 transition: color 0.2s ease;
 
                 &:hover {
-                    color: #6e1322;
+                    color: $zanders-color-primary-dark;
                     text-decoration: underline;
                 }
             }

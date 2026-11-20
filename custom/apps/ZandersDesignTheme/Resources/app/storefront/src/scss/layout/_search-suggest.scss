@@ -67,7 +67,7 @@ ul.search-suggest-container {
 
 // 1. Red Header Bar: Products (Count)
 .search-suggest-header {
-    background-color: #991020;
+    background-color: $sw-color-brand-primary;
     color: #ffffff;
     padding: 10px 18px;
     position: sticky;
@@ -104,7 +104,7 @@ ul.search-suggest-container {
     }
 
     .matches-bar-pill {
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         color: #ffffff;
         font-family: 'Poppins', sans-serif;
         font-size: 12px;
@@ -189,7 +189,7 @@ ul.search-suggest-container {
 
     // Highlight search term matches
     .search-highlight {
-        background-color: #991020;
+        background-color: $sw-color-brand-primary;
         color: #ffffff;
         font-weight: 700;
         padding: 0 3px;
@@ -231,23 +231,23 @@ ul.search-suggest-container {
         font-family: 'Poppins', sans-serif;
         font-size: 13px;
         font-weight: 600;
-        color: #991020;
+        color: $sw-color-brand-primary;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 6px;
 
         &:hover {
-            color: #7b0a17;
+            color: $zanders-color-primary-dark;
             text-decoration: underline;
         }
 
         .icon {
-            color: #991020;
-            fill: #991020;
+            color: $sw-color-brand-primary;
+            fill: $sw-color-brand-primary;
 
             svg {
-                fill: #991020;
+                fill: $sw-color-brand-primary;
             }
         }
     }

@@ -1,0 +1,82 @@
+{#
+    Zanders Checkout Multi-Step Progress Tracker
+    ==========================================================================
+    Props:
+    - activeStep: 'cart' | 'address' | 'confirm' | 'finish'
+#}
+{% set current = activeStep|default('address') %}
+
+<nav class="zanders-checkout-stepper-wrap" aria-label="Checkout Progress">
+    <ol class="zanders-checkout-stepper">
+
+        {# Step 1: Shopping Cart #}
+        {% set step1Done = current in ['address', 'confirm', 'finish'] %}
+        {% set step1Active = current == 'cart' %}
+        <li class="zanders-step-item{% if step1Done %} is-completed{% endif %}{% if step1Active %} is-active{% endif %}">
+            <a href="{{ path('frontend.checkout.cart.page') }}" class="zanders-step-node" title="Shopping Cart">
+                <span class="zanders-step-badge">
+                    {% if step1Done %}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    {% else %}
+                        1
+                    {% endif %}
+                </span>
+                <span class="zanders-step-text">Cart</span>
+            </a>
+        </li>
+
+        <li class="zanders-step-divider{% if current in ['address', 'confirm', 'finish'] %} is-filled{% endif %}" aria-hidden="true"></li>
+
+        {# Step 2: Customer / Address #}
+        {% set step2Done = current in ['confirm', 'finish'] %}
+        {% set step2Active = current == 'address' %}
+        <li class="zanders-step-item{% if step2Done %} is-completed{% endif %}{% if step2Active %} is-active{% endif %}">
+            <span class="zanders-step-node">
+                <span class="zanders-step-badge">
+                    {% if step2Done %}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    {% else %}
+                        2
+                    {% endif %}
+                </span>
+                <span class="zanders-step-text">Details</span>
+            </span>
+        </li>
+
+        <li class="zanders-step-divider{% if current in ['confirm', 'finish'] %} is-filled{% endif %}" aria-hidden="true"></li>
+
+        {# Step 3: Review & Payment #}
+        {% set step3Done = current == 'finish' %}
+        {% set step3Active = current == 'confirm' %}
+        <li class="zanders-step-item{% if step3Done %} is-completed{% endif %}{% if step3Active %} is-active{% endif %}">
+            <span class="zanders-step-node">
+                <span class="zanders-step-badge">
+                    {% if step3Done %}
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    {% else %}
+                        3
+                    {% endif %}
+                </span>
+                <span class="zanders-step-text">Review &amp; Pay</span>
+            </span>
+        </li>
+
+        <li class="zanders-step-divider{% if current == 'finish' %} is-filled{% endif %}" aria-hidden="true"></li>
+
+        {# Step 4: Order Placed #}
+        {% set step4Active = current == 'finish' %}
+        <li class="zanders-step-item{% if step4Active %} is-active is-completed{% endif %}">
+            <span class="zanders-step-node">
+                <span class="zanders-step-badge">4</span>
+                <span class="zanders-step-text">Confirmation</span>
+            </span>
+        </li>
+
+    </ol>
+</nav>

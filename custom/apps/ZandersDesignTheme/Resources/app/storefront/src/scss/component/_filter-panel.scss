@@ -1,7 +1,7 @@
 // ==============================================================================
 // ZANDERS SPORTING GOODS - SIDEBAR FILTER PANEL ("SHOPPING OPTIONS")
-// Clean accordion styling matching reference design
-// Zero !important declarations
+// Matches https://shop2.gzanders.com reference design (media_1795080748290_736fd176.png)
+// Uses Admin Theme Configuration Variables
 // ==============================================================================
 
 // Outer wrapper & CMS Element
@@ -9,13 +9,19 @@
     width: 100%;
     margin-bottom: 24px;
 
+    @include media-breakpoint-up(lg) {
+        width: 280px;
+        max-width: 280px;
+    }
+
     // Mobile trigger button (< 992px)
     .filter-panel-wrapper-toggle {
         display: none;
         width: 100%;
-        background-color: #8c1d2f;
-        border: 1px solid #8c1d2f;
-        color: #ffffff;
+        background-color: $sw-color-brand-primary;
+        border: 1px solid $sw-color-brand-primary;
+        color: $white;
+        font-family: 'Poppins', sans-serif;
         font-size: 13px;
         font-weight: 700;
         text-transform: uppercase;
@@ -26,20 +32,20 @@
         transition: background-color 0.2s ease, border-color 0.2s ease;
 
         .icon {
-            color: #ffffff;
+            color: $white;
             margin-right: 8px;
             vertical-align: -2px;
 
             svg {
-                fill: #ffffff;
+                fill: $white;
             }
         }
 
         &:hover,
         &:focus {
-            background-color: #6e1322;
-            border-color: #6e1322;
-            color: #ffffff;
+            background-color: $zanders-color-primary-dark;
+            border-color: $zanders-color-primary-dark;
+            color: $white;
         }
 
         @include media-breakpoint-down(lg) {
@@ -56,12 +62,13 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-color: #8c1d2f;
+        background-color: $sw-color-brand-primary;
         padding: 12px 18px;
         min-height: 52px;
 
         .filter-panel-offcanvas-title {
-            color: #ffffff;
+            color: $white;
+            font-family: 'Poppins', sans-serif;
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
@@ -92,25 +99,146 @@
 .filter-panel {
     display: block;
     width: 100%;
-    background-color: #ffffff;
-    border: 1px solid #d5d5d5;
+    background-color: $white;
+    box-shadow: 4px 4px 36px 0px #0000001F;
     border-radius: 0;
-    box-shadow: none;
     margin-bottom: 24px;
 
-    // Header Red Banner ("SHOPPING OPTIONS")
+    @include media-breakpoint-up(lg) {
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
+
+    // Header Crimson Banner ("SHOPPING OPTIONS")
     .filter-panel-header-banner {
-        background-color: #8c1d2f;
-        color: #ffffff;
+        background-color: $sw-color-brand-primary;
+        color: $white;
         text-align: center;
-        padding: 12px 16px;
-        font-size: 14px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13.5px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
         border-radius: 0;
-        line-height: 1.2;
+        line-height: 1;
         user-select: none;
+        padding: 0 10px;
+    }
+
+    // Active Filters Box (Matches 736fd176.png: Directly under red banner)
+    .filter-panel-active-container {
+        background-color: $zanders-color-light-bg;
+        border-bottom: 1px solid $zanders-color-dark-bg; // Dark divider line separating from accordions
+        display: none !important;
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+
+        &:not(:empty),
+        &:has(.filter-active),
+        &:has(.filter-reset-all) {
+            display: flex !important;
+        }
+
+        // Each Active Filter Row
+        .filter-active {
+            all: unset;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background-color: $zanders-color-light-bg;
+            border-bottom: 1px solid $zanders-color-border; // Thin divider between filter items
+            padding: 9px 12px;
+            margin: 0;
+            text-align: left;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.15s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: $zanders-color-dark-text;
+
+            &:hover {
+                background-color: darken($zanders-color-light-bg, 5%);
+            }
+
+            .filter-active-content {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 auto;
+                text-align: left;
+
+                .filter-active-group {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    color: $zanders-color-dark-text;
+                    letter-spacing: 0.3px;
+                    line-height: 1.2;
+                    margin-bottom: 2px;
+                }
+
+                .filter-active-name {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: $zanders-color-dark-text;
+                    line-height: 1.3;
+                }
+            }
+
+            .filter-active-remove,
+            span[aria-hidden="true"] {
+                flex: 0 0 auto;
+                font-size: 17px;
+                font-weight: 700;
+                line-height: 1;
+                color: $zanders-color-dark-text;
+                margin-left: 10px;
+                text-decoration: none;
+                transition: color 0.15s ease;
+            }
+
+            &:hover .filter-active-remove,
+            &:hover span[aria-hidden="true"] {
+                color: $sw-color-brand-primary;
+            }
+        }
+
+        // Clear all Link Row
+        .filter-reset-all,
+        .filter-active-clear-all {
+            all: unset;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: $sw-color-brand-primary;
+            text-transform: none;
+            text-decoration: underline !important;
+            text-decoration-color: $sw-color-brand-primary !important;
+            cursor: pointer;
+            margin-left: auto;
+            display: block;
+            text-align: right;
+            padding: 8px 12px;
+            transition: color 0.15s ease;
+
+            &:hover,
+            &:focus {
+                color: $zanders-color-primary-dark;
+                text-decoration: underline !important;
+            }
+        }
     }
 
     // Items list container
@@ -120,7 +248,7 @@
         width: 100%;
         margin: 0;
         padding: 0;
-        background-color: #ffffff;
+        background-color: $white;
     }
 
     // Individual filter item row
@@ -129,48 +257,52 @@
         width: 100%;
         margin: 0;
         padding: 0;
-        border-bottom: 1px solid #d5d5d5;
-        background-color: #ffffff;
+        border-bottom: 1px solid #000000;
+        background-color: $white;
         border-radius: 0;
 
         &:last-child {
             border-bottom: none;
         }
 
-        // Accordion Toggle Button
+        // Accordion Toggle Button (Matches 736fd176.png: Height ~36px, clean white row with dark title & black triangle caret)
         .filter-panel-item-toggle {
+            all: unset;
+            box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: space-between;
             width: 100%;
-            min-height: 40px;
-            padding: 10px 14px;
-            background-color: #ffffff;
-            color: #222222;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            text-align: left;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
+            height: 36px;
+            min-height: 36px;
+            padding: 0 12px;
+            background-color: $white;
             cursor: pointer;
-            transition: background-color 0.15s ease, color 0.15s ease;
+            user-select: none;
+            transition: background-color 0.15s ease;
 
             &:hover {
-                background-color: #f7f7f7;
-                color: #8c1d2f;
+                background-color: $zanders-color-light-bg;
             }
 
             &:focus,
             &:active {
                 outline: none;
                 box-shadow: none;
-                background-color: #f7f7f7;
             }
 
-            // Downward Caret Icon
+            .filter-category-title,
+            span:first-child {
+                font-family: 'Poppins', sans-serif;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                color: $zanders-color-dark-text;
+                line-height: 1.2;
+            }
+
+            // Downward Caret Icon (Solid black triangle ▼)
             .icon-filter-panel-item-toggle {
                 display: inline-flex;
                 align-items: center;
@@ -178,42 +310,24 @@
                 margin-left: auto;
                 width: 12px;
                 height: 12px;
-                color: #222222;
-                transition: transform 0.2s ease-in-out;
+                color: $zanders-color-dark-text;
                 flex-shrink: 0;
 
                 svg {
                     width: 9px;
                     height: 6px;
-                    fill: #222222;
-                    color: #222222;
-                    top: 0;
+                    fill: $zanders-color-dark-text;
+                    color: $zanders-color-dark-text;
                 }
             }
 
-            // When open / expanded
-            &[aria-expanded='true'],
-            &.show {
-                background-color: #fafafa;
-                color: #8c1d2f;
-
-                .icon-filter-panel-item-toggle {
-                    transform: rotate(180deg);
-
-                    svg {
-                        fill: #8c1d2f;
-                        color: #8c1d2f;
-                    }
-                }
-            }
-
-            // Filter count indicator (e.g. 2 selected)
+            // Filter count indicator (if present)
             .filter-multi-select-count {
                 display: inline-block;
                 margin-left: 6px;
                 font-size: 11px;
                 font-weight: 600;
-                color: #8c1d2f;
+                color: $sw-color-brand-primary;
             }
         }
 
@@ -221,28 +335,28 @@
         .filter-panel-item-dropdown {
             width: 100%;
             min-width: 100%;
-            background-color: #ffffff;
-            padding: 10px 14px 14px 14px;
+            background-color: $white;
+            padding: 8px 12px 12px 12px;
             border: none;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid $zanders-color-light-bg;
             border-radius: 0;
             box-shadow: none;
             max-height: 240px;
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: #c0c0c0 #f8f8f8;
+            scrollbar-color: lighten($zanders-color-border, 5%) $zanders-color-light-bg;
 
             &::-webkit-scrollbar {
                 width: 5px;
             }
 
             &::-webkit-scrollbar-track {
-                background: #f8f8f8;
+                background: $zanders-color-light-bg;
             }
 
             &::-webkit-scrollbar-thumb {
-                background-color: #c0c0c0;
-                border-radius: 3px;
+                background-color: lighten($zanders-color-border, 5%);
+                border-radius: 2px;
             }
         }
     }
@@ -261,23 +375,24 @@
                 .filter-category-link {
                     display: flex;
                     align-items: center;
-                    font-size: 13px;
-                    color: #444444;
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: $zanders-color-dark-text;
                     text-decoration: none;
                     padding: 4px 6px;
                     border-radius: 2px;
                     transition: background-color 0.15s ease, color 0.15s ease, padding-left 0.15s ease;
 
                     &:hover {
-                        background-color: #f7f7f7;
-                        color: #8c1d2f;
+                        background-color: $zanders-color-light-bg;
+                        color: $sw-color-brand-primary;
                         padding-left: 10px;
                     }
 
                     &.is-active {
                         font-weight: 700;
-                        color: #8c1d2f;
-                        background-color: #fef4f5;
+                        color: $sw-color-brand-primary;
+                        background-color: lighten($sw-color-brand-primary, 48%);
                     }
                 }
             }
@@ -292,7 +407,7 @@
 
         .filter-multi-select-list-item {
             margin: 0;
-            padding: 4px 0;
+            padding: 3px 0;
 
             .filter-multi-select-item {
                 display: flex;
@@ -306,34 +421,40 @@
                     height: 15px;
                     margin-top: 0;
                     margin-right: 8px;
-                    border: 1px solid #adb5bd;
+                    border: 1px solid lighten($zanders-color-dark-text, 35%);
                     border-radius: 2px;
+                    background-color: $white;
                     cursor: pointer;
                     flex-shrink: 0;
 
                     &:checked {
-                        background-color: #8c1d2f;
-                        border-color: #8c1d2f;
+                        background-color: $sw-color-brand-primary;
+                        border-color: $sw-color-brand-primary;
+                        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
                     }
 
                     &:focus {
-                        box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
-                        border-color: #8c1d2f;
+                        outline: none;
+                        box-shadow: none;
+                        border-color: $sw-color-brand-primary;
                     }
                 }
 
                 .filter-multi-select-item-label {
-                    font-size: 13px;
-                    color: #444444;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 12px;
+                    font-weight: 500;
+                    color: $zanders-color-dark-text;
                     cursor: pointer;
                     user-select: none;
                     padding: 0;
                     margin: 0;
                     width: auto;
+                    line-height: 1.3;
                     transition: color 0.15s ease;
 
                     &:hover {
-                        color: #8c1d2f;
+                        color: $sw-color-brand-primary;
                     }
                 }
             }
@@ -360,7 +481,7 @@
                 flex-direction: column;
                 flex: 1;
                 font-size: 11px;
-                color: #777777;
+                color: lighten($zanders-color-dark-text, 35%);
                 text-transform: uppercase;
                 margin-bottom: 0;
 
@@ -370,15 +491,15 @@
                     height: 32px;
                     font-size: 12px;
                     padding: 4px 8px;
-                    border: 1px solid #cccccc;
+                    border: 1px solid $zanders-color-border;
                     border-radius: 0;
-                    background-color: #ffffff;
+                    background-color: $white;
                     margin-top: 4px;
                     transition: border-color 0.15s ease;
 
                     &:focus {
-                        border-color: #8c1d2f;
-                        box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
+                        border-color: $sw-color-brand-primary;
+                        box-shadow: 0 0 0 2px rgba($sw-color-brand-primary, 0.2);
                         outline: none;
                     }
                 }
@@ -391,7 +512,7 @@
             .filter-range-divider {
                 align-self: flex-end;
                 padding-bottom: 8px;
-                color: #888888;
+                color: lighten($zanders-color-dark-text, 40%);
                 font-size: 14px;
                 font-weight: 700;
             }
@@ -400,7 +521,7 @@
 
     // Boolean filter (Free shipping, etc.)
     .filter-boolean {
-        padding: 10px 14px;
+        padding: 8px 12px;
 
         .form-check {
             display: flex;
@@ -415,27 +536,29 @@
                 height: 15px;
                 margin-top: 0;
                 margin-right: 8px;
-                border: 1px solid #adb5bd;
+                border: 1px solid lighten($zanders-color-dark-text, 35%);
                 border-radius: 2px;
                 cursor: pointer;
                 float: none;
 
                 &:checked {
-                    background-color: #8c1d2f;
-                    border-color: #8c1d2f;
+                    background-color: $sw-color-brand-primary;
+                    border-color: $sw-color-brand-primary;
                 }
 
                 &:focus {
-                    box-shadow: 0 0 0 2px rgba(140, 29, 47, 0.2);
-                    border-color: #8c1d2f;
+                    outline: none;
+                    box-shadow: none;
+                    border-color: $sw-color-brand-primary;
                 }
             }
 
             .filter-boolean-label {
-                font-size: 13px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 12px;
                 font-weight: 700;
                 text-transform: uppercase;
-                color: #222222;
+                color: $zanders-color-dark-text;
                 letter-spacing: 0.3px;
                 cursor: pointer;
                 user-select: none;
@@ -443,61 +566,46 @@
                 transition: color 0.15s ease;
 
                 &:hover {
-                    color: #8c1d2f;
+                    color: $sw-color-brand-primary;
                 }
-            }
-        }
-    }
-
-    // Active filters pills container
-    .filter-panel-active-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 10px 14px;
-        background-color: #fcfcfc;
-        border-top: 1px solid #e8e8e8;
-
-        &:empty {
-            display: none;
-            padding: 0;
-            border: none;
-        }
-
-        .filter-active {
-            display: inline-flex;
-            align-items: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8c1d2f;
-            background-color: #ffffff;
-            border: 1px solid #8c1d2f;
-            border-radius: 2px;
-            padding: 2px 8px;
-            line-height: 1.4;
-            transition: all 0.15s ease;
-
-            &:hover {
-                background-color: #8c1d2f;
-                color: #ffffff;
-            }
-        }
-
-        .filter-reset-all {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            color: #8c1d2f;
-            text-decoration: underline;
-            background: none;
-            border: none;
-            padding: 2px 4px;
-            cursor: pointer;
-
-            &:hover {
-                color: #6e1322;
             }
         }
     }
 }
 
+// ==============================================================================
+// Desktop Layout Row & Product Filter Sidebar Column (280px)
+// ==============================================================================
+@include media-breakpoint-up(lg) {
+    .zanders-shop-layout-row {
+        .zanders-sidebar-col--left {
+            flex: 0 0 calc(280px + var(--bs-gutter-x, 28px));
+            width: calc(280px + var(--bs-gutter-x, 28px));
+            max-width: calc(280px + var(--bs-gutter-x, 28px));
+        }
+
+        .zanders-main-col {
+            flex: 1 1 0;
+            width: auto;
+            min-width: 0;
+            max-width: none;
+        }
+    }
+
+    .cms-section-sidebar-sidebar-content {
+
+        &:has(.cms-element-sidebar-filter),
+        &:has(.filter-panel) {
+            flex: 0 0 calc(280px + var(--bs-gutter-x, 28px));
+            width: calc(280px + var(--bs-gutter-x, 28px));
+            max-width: calc(280px + var(--bs-gutter-x, 28px));
+
+            +.cms-section-sidebar-main-content {
+                flex: 1 1 0;
+                width: auto;
+                min-width: 0;
+                max-width: none;
+            }
+        }
+    }
+}

@@ -17,8 +17,8 @@
         <div class="zanders-compare-drawer-title-group">
             <h4 class="zanders-compare-drawer-title">
                 {{ 'froshProductCompare.offcanvas.header'|trans|sw_sanitize }}
+                <span class="zanders-compare-offcanvas-count">({{ compareCount }})</span>
             </h4>
-            <span class="zanders-compare-offcanvas-badge">{{ compareCount }}</span>
         </div>
         <button type="button"
                 class="btn-close js-offcanvas-close"
@@ -73,14 +73,60 @@
                     </p>
                 {% endif %}
 
-                {% block component_offcanvas_product_compare_actions_compare_now %}
-                    <a href="{{ path('frontend.compare.page') }}"
-                       class="btn btn-block begin-checkout-btn zanders-compare-offcanvas-cta{% if isCompareProductsNotEmpty and (compareCount > 1) %} btn-primary{% else %} btn-light disabled{% endif %}"
-                       title="{{ 'froshProductCompare.offcanvas.compareNow'|trans|striptags }}">
-                        {{ 'froshProductCompare.offcanvas.compareNow'|trans|sw_sanitize }}
-                    </a>
-                {% endblock %}
+                <div class="zanders-compare-offcanvas-actions-row">
+                    {% if isCompareProductsNotEmpty %}
+                        <button type="button"
+                                class="btn btn-link zanders-compare-offcanvas-clear js-compare-offcanvas-clear"
+                                title="Clear all compared products">
+                            Clear All
+                        </button>
+                    {% endif %}
+
+                    {% block component_offcanvas_product_compare_actions_compare_now %}
+                        <a href="{{ path('frontend.compare.page') }}"
+                           class="btn zanders-compare-offcanvas-cta{% if isCompareProductsNotEmpty and (compareCount > 1) %} btn-primary{% else %} btn-light disabled{% endif %}"
+                           title="{{ 'froshProductCompare.offcanvas.compareNow'|trans|striptags }}">
+                            {{ 'froshProductCompare.offcanvas.compareNow'|trans|sw_sanitize }}
+                        </a>
+                    {% endblock %}
+                </div>
             </div>
+
+            <script>
+                if (!window._zandersCompareClearBound) {
+                    window._zandersCompareClearBound = true;
+                    document.addEventListener('click', function(e) {
+                        var clearBtn = e.target && e.target.closest('.js-compare-offcanvas-clear');
+                        if (!clearBtn) return;
+                        e.preventDefault();
+                        try {
+                            window.localStorage.removeItem('compare-widget-added-products');
+                            if (window.document && window.document.$emitter) {
+                                window.document.$emitter.publish('changedProductCompare', { products: [] });
+                            }
+                            var drawer = clearBtn.closest('.zanders-compare-offcanvas');
+                            if (drawer) {
+                                var itemsContainer = drawer.querySelector('.zanders-compare-offcanvas-items');
+                                if (itemsContainer) {
+                                    itemsContainer.innerHTML = '<div class="zanders-compare-offcanvas-empty"><p>' +
+                                        {{ 'froshProductCompare.general.empty'|trans|json_encode|raw }} +
+                                        '</p></div>';
+                                }
+                                var actions = drawer.querySelector('.zanders-compare-offcanvas-actions');
+                                if (actions) {
+                                    actions.remove();
+                                }
+                            }
+                            var headerCount = document.querySelector('.zanders-compare-drawer-header .zanders-compare-offcanvas-count');
+                            if (headerCount) {
+                                headerCount.textContent = '(0)';
+                            }
+                        } catch (err) {
+                            console.error('Error clearing compare products:', err);
+                        }
+                    });
+                }
+            </script>
         {% endblock %}
     </div>
 {% endblock %}

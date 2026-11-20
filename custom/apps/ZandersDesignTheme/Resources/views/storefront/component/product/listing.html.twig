@@ -243,9 +243,9 @@
 
                                         <button type="button"
                                                 class="zanders-view-btn js-zanders-view-btn"
-                                                data-zanders-view="compact"
-                                                title="Compact List View"
-                                                aria-label="Compact List View"
+                                                data-zanders-view="simple"
+                                                title="Simple View"
+                                                aria-label="Simple View"
                                                 aria-pressed="false">
                                             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
                                                 <rect x="0.5" y="2" width="15" height="1.8" rx="0.4"></rect>
@@ -393,15 +393,18 @@
     <script>
     (function() {
         var VIEW_STORAGE_KEY = 'zanders_listing_view';
-        var VALID_VIEWS = ['grid', 'list', 'compact'];
+        var VALID_VIEWS = ['grid', 'list', 'simple', 'compact'];
 
         /**
          * Reads the saved product listing view mode from localStorage.
-         * @returns {string} One of 'grid', 'list', or 'compact'
+         * @returns {string} One of 'grid', 'list', or 'simple'
          */
         function getSavedView() {
             try {
                 var saved = localStorage.getItem(VIEW_STORAGE_KEY);
+                if (saved === 'compact') {
+                    saved = 'simple';
+                }
                 if (VALID_VIEWS.indexOf(saved) !== -1) {
                     return saved;
                 }
@@ -410,21 +413,28 @@
         }
 
         /**
-         * Applies the active view mode class (`is-view-grid`, `is-view-list`, `is-view-compact`)
+         * Applies the active view mode class (`is-view-grid`, `is-view-list`, `is-view-simple`, `is-view-compact`)
          * to the listing container and updates pressed states on the toolbar view buttons.
          * @param {HTMLElement} wrapper - The `.cms-element-product-listing-wrapper` element
-         * @param {string} viewMode - Target view mode ('grid' | 'list' | 'compact')
+         * @param {string} viewMode - Target view mode ('grid' | 'list' | 'simple' | 'compact')
          */
         function applyViewMode(wrapper, viewMode) {
+            var normalizedView = (viewMode === 'compact') ? 'simple' : viewMode;
             var listingEl = wrapper.querySelector('.cms-element-product-listing');
             if (listingEl) {
-                listingEl.classList.remove('is-view-grid', 'is-view-list', 'is-view-compact');
-                listingEl.classList.add('is-view-' + viewMode);
+                listingEl.classList.remove('is-view-grid', 'is-view-list', 'is-view-compact', 'is-view-simple');
+                listingEl.classList.add('is-view-' + normalizedView);
+                // Also add is-view-compact for style backwards compatibility
+                if (normalizedView === 'simple') {
+                    listingEl.classList.add('is-view-compact');
+                }
             }
 
             var buttons = wrapper.querySelectorAll('.js-zanders-view-btn');
             buttons.forEach(function(btn) {
-                var isActive = btn.getAttribute('data-zanders-view') === viewMode;
+                var btnView = btn.getAttribute('data-zanders-view');
+                var isActive = (btnView === normalizedView) ||
+                               (normalizedView === 'simple' && btnView === 'compact');
                 btn.classList.toggle('is-active', isActive);
                 btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
             });

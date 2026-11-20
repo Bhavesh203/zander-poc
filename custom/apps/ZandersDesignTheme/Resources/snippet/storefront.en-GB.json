@@ -2,6 +2,9 @@
   "header": {
     "searchPlaceholder": "Item, UPC, Desc, Etc"
   },
+  "listing": {
+    "filterPanelResetAll": "Clear all"
+  },
   "account": {
     "myAccount": "My Account",
     "logout": "LogOut",
@@ -40,6 +43,9 @@
       "available": "Available",
       "inStock": "In stock",
       "outOfStock": "Out of stock",
+      "backOrder": "BACK ORDER",
+      "backorderBadge": "Backorder",
+      "outOfStockBackorder": "Out of Stock (Backorder)",
       "msrp": "MSRP",
       "map": "MAP",
       "qty": "Qty",
@@ -72,7 +78,22 @@
       "whatsThis": "What's This?",
       "requiredFields": "* Required Fields",
       "loginButton": "LOGIN",
-      "forgotPassword": "Forgot Your Password?"
+      "forgotPassword": "Forgot Your Password?",
+      "sidebar": {
+        "title": "MY ACCOUNT",
+        "dashboard": "ACCOUNT DASHBOARD",
+        "information": "ACCOUNT INFORMATION",
+        "addresses": "ADDRESS BOOK",
+        "orders": "MY OPEN ORDERS",
+        "wishlist": "MY WISHLIST",
+        "newsletter": "NEWSLETTER SUBSCRIPTIONS",
+        "invoices": "MY INVOICES",
+        "backorders": "MY BACK ORDER LIST",
+        "updateFfl": "UPDATE FFL",
+        "resaleCert": "UPLOAD RESALE CERTIFICATE",
+        "taxCert": "TAX CERTIFICATES",
+        "paymentPortal": "PAYMENT PORTAL"
+      }
     },
     "wishlist": {
       "loginRequired": "Please log in or register to add products to your wishlist.",

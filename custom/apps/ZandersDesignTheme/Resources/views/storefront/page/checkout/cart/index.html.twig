@@ -19,6 +19,8 @@
 #}
 {% sw_extends '@Storefront/storefront/page/checkout/cart/index.html.twig' %}
 
+{% block page_checkout_progress %}{% endblock %}
+
 {% block page_checkout_container %}
     {% set cart = page.cart %}
     {% set lineItems = cart.lineItems %}
@@ -150,6 +152,10 @@
                                                     </a>
                                                 {% else %}
                                                     <span class="zanders-cart-item-name">{{ itemLabel }}</span>
+                                                {% endif %}
+
+                                                {% if isProduct and lineItem.deliveryInformation is defined and lineItem.deliveryInformation.stock is defined and lineItem.deliveryInformation.stock <= 0 %}
+                                                    <span class="badge bg-warning text-dark zanders-cart-backorder-badge">BACKORDER</span>
                                                 {% endif %}
 
                                                 {% if isProduct %}
