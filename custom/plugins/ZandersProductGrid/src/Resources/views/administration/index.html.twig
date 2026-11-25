@@ -1,0 +1,360 @@
+{% sw_extends '@Administration/administration/index.html.twig' %}
+
+{% block administration_title %}
+    <title>Zanders Administration | Control Center</title>
+{% endblock %}
+
+{% block administration_head_scripts %}
+    {{ parent() }}
+
+    <style nonce="{{ cspNonce }}">
+        /* =============================================================================
+           ZANDERS SPORTING GOODS - CUSTOM ADMIN LOGIN EXPERIENCE
+           - Split Dual-Panel Card Design with Zanders Hero Banner
+           - Atmospheric Outdoor Background with Dark Crimson Overlay
+           - Clean White Modern Login Surface with Poppins Typography
+           - Custom Inputs with Crimson Focus Rings & Solid Brand Red Action Button
+           - Responsive Mobile Stack (< 860px)
+           - Security Badge & SSL Verification
+           ============================================================================= */
+
+        /* Base Typography & Antialiasing */
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+        }
+
+        /* Initial Page Boot Loading Screen */
+        .sw-page-loading-screen {
+            background-color: #0b0f19 !important;
+        }
+        .sw-page-loading-screen__circle {
+            stroke: #991020 !important;
+        }
+
+        /* Ambient Page Background: Darkened Outdoor Backdrop */
+        .sw-login {
+            min-height: 100vh !important;
+            background: 
+                linear-gradient(135deg, rgba(11, 15, 25, 0.85) 0%, rgba(153, 16, 32, 0.42) 50%, rgba(11, 15, 25, 0.88) 100%),
+                url('{{ asset('bundles/zandersproductgrid/static/img/zanders-admin-banner.jpg', 'asset') }}') center / cover no-repeat fixed !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 32px 16px !important;
+            position: relative !important;
+            box-sizing: border-box !important;
+
+            /* Meteor Component Library CSS Variable Overrides */
+            --color-interaction-primary-default: #991020 !important;
+            --color-interaction-primary-hover: #800010 !important;
+            --color-interaction-primary-active: #660a14 !important;
+            --color-interaction-focus: rgba(153, 16, 32, 0.25) !important;
+            --color-border-brand-selected: #991020 !important;
+        }
+
+        /* Main Container */
+        .sw-login .sw-login__container {
+            position: relative !important;
+            z-index: 2 !important;
+            width: 960px !important;
+            max-width: 95vw !important;
+            margin: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 16px !important;
+            animation: zanders-login-entrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards !important;
+        }
+
+        @keyframes zanders-login-entrance {
+            from {
+                opacity: 0;
+                transform: translateY(22px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Hide standalone logo above card (prominently displayed on banner) */
+        .sw-login .sw-login__logo {
+            display: none !important;
+        }
+
+        /* Floating Dual-Panel Card */
+        .sw-login .sw-login__card {
+            position: relative !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: stretch !important;
+            width: 100% !important;
+            min-height: 530px !important;
+            background: #ffffff !important;
+            border-radius: 16px !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 
+                0 25px 60px -12px rgba(0, 0, 0, 0.55),
+                0 0 35px rgba(153, 16, 32, 0.2),
+                0 1px 3px rgba(0, 0, 0, 0.1) !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+        }
+
+        /* Left Hero Panel: Zanders Banner Image */
+        .sw-login .sw-login__card::before {
+            content: '' !important;
+            display: block !important;
+            width: 52% !important;
+            min-width: 440px !important;
+            flex-shrink: 0 !important;
+            background-image: url('{{ asset('bundles/zandersproductgrid/static/img/zanders-admin-banner.jpg', 'asset') }}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            position: relative !important;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.08) !important;
+        }
+
+        /* Right Panel: Clean White Form */
+        .sw-login .sw-login__card > * {
+            flex: 1 1 48% !important;
+            min-width: 0 !important;
+            padding: 44px 40px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+            background: #ffffff !important;
+        }
+
+        .sw-login .sw-login__card form.sw-login-login,
+        .sw-login .sw-login__card .sw-login-login {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+        }
+
+        /* Form Heading & Subtitle */
+        .sw-login .sw-login__heading {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 6px !important;
+            margin-bottom: 26px !important;
+            text-align: left !important;
+        }
+
+        .sw-login .sw-login__content-headline {
+            color: #111827 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 26px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.3px !important;
+            margin: 0 !important;
+            line-height: 1.25 !important;
+        }
+
+        .sw-login .sw-login__heading::after {
+            content: 'ADMIN CONTROL CENTER';
+            display: inline-block !important;
+            color: #991020 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            letter-spacing: 1.2px !important;
+            text-transform: uppercase !important;
+            background: #fdf2f2 !important;
+            border: 1px solid #fecaca !important;
+            padding: 4px 12px !important;
+            border-radius: 999px !important;
+            margin-top: 4px !important;
+        }
+
+        /* Input Labels */
+        .sw-login label,
+        .sw-login .mt-field__label,
+        .sw-login .mt-text-field label,
+        .sw-login .mt-password-field label {
+            color: #374151 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.4px !important;
+            text-transform: uppercase !important;
+            margin-bottom: 6px !important;
+        }
+
+        /* Form Inputs */
+        .sw-login input[type="text"],
+        .sw-login input[type="password"],
+        .sw-login .mt-field__input,
+        .sw-login .mt-text-field input,
+        .sw-login .mt-password-field input {
+            background-color: #f8fafc !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 8px !important;
+            color: #111827 !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 14px !important;
+            padding: 10px 14px !important;
+            height: 44px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease !important;
+        }
+
+        .sw-login input[type="text"]:focus,
+        .sw-login input[type="password"]:focus,
+        .sw-login .mt-field__input:focus,
+        .sw-login .mt-text-field input:focus,
+        .sw-login .mt-password-field input:focus {
+            background-color: #ffffff !important;
+            border-color: #991020 !important;
+            box-shadow: 0 0 0 3px rgba(153, 16, 32, 0.15) !important;
+            outline: none !important;
+        }
+
+        /* Password eye toggle */
+        .sw-login .mt-field__suffix,
+        .sw-login .mt-password-field__password-toggle,
+        .sw-login button[aria-label*="password"],
+        .sw-login .mt-icon {
+            color: #6b7280 !important;
+            transition: color 0.15s ease !important;
+        }
+
+        .sw-login .mt-field__suffix:hover,
+        .sw-login .mt-password-field__password-toggle:hover {
+            color: #111827 !important;
+        }
+
+        /* Checkbox */
+        .sw-login .mt-checkbox,
+        .sw-login .mt-checkbox label,
+        .sw-login .mt-checkbox__label {
+            color: #4b5563 !important;
+            font-size: 13px !important;
+            cursor: pointer !important;
+        }
+
+        .sw-login .mt-checkbox input[type="checkbox"]:checked {
+            background-color: #991020 !important;
+            border-color: #991020 !important;
+        }
+
+        /* Solid Crimson Login Button */
+        .sw-login button.sw-login__login-action,
+        .sw-login .mt-button.sw-login__login-action,
+        .sw-login .sw-login__submit button[type="submit"] {
+            background: #991020 !important;
+            border: 1px solid #991020 !important;
+            border-radius: 8px !important;
+            color: #ffffff !important;
+            font-family: 'Poppins', 'Roboto', sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.6px !important;
+            text-transform: uppercase !important;
+            height: 46px !important;
+            padding: 0 24px !important;
+            box-shadow: 0 4px 14px rgba(153, 16, 32, 0.3) !important;
+            cursor: pointer !important;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .sw-login button.sw-login__login-action:hover:not(:disabled),
+        .sw-login .mt-button.sw-login__login-action:hover:not(:disabled),
+        .sw-login .sw-login__submit button[type="submit"]:hover:not(:disabled) {
+            background: #800010 !important;
+            border-color: #800010 !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(153, 16, 32, 0.45) !important;
+        }
+
+        .sw-login button.sw-login__login-action:disabled,
+        .sw-login .mt-button.sw-login__login-action:disabled {
+            background: #e2e8f0 !important;
+            border-color: #cbd5e1 !important;
+            color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        /* Forgot password and back links */
+        .sw-login .sw-login__forgot-password-action,
+        .sw-login .sw-login__back-link,
+        .sw-login a {
+            color: #64748b !important;
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 500 !important;
+            text-decoration: none !important;
+            transition: color 0.15s ease !important;
+        }
+
+        .sw-login .sw-login__forgot-password-action:hover,
+        .sw-login .sw-login__back-link:hover,
+        .sw-login a:hover {
+            color: #991020 !important;
+            text-decoration: underline !important;
+        }
+
+        /* Overlay Loader */
+        .sw-login .sw-login__card > .mt-loader,
+        .sw-login .sw-login__card > .sw-login__loader {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(4px) !important;
+            z-index: 10 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        /* Security Notice Footer below Card */
+        .sw-login .sw-login__container::after {
+            content: '🔒 256-Bit SSL Secured • Authorized Personnel Only • Zanders Sporting Goods';
+            display: block !important;
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-size: 11.5px !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.4px !important;
+            text-align: center !important;
+            margin-top: 8px !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        /* Responsive Breakpoint: Mobile Stack */
+        @media (max-width: 860px) {
+            .sw-login .sw-login__container {
+                width: 100% !important;
+                max-width: 480px !important;
+            }
+
+            .sw-login .sw-login__card {
+                flex-direction: column !important;
+                min-height: auto !important;
+            }
+
+            .sw-login .sw-login__card::before {
+                width: 100% !important;
+                min-width: 0 !important;
+                height: 180px !important;
+                box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.08) !important;
+            }
+
+            .sw-login .sw-login__card > * {
+                padding: 32px 24px !important;
+            }
+        }
+    </style>
+{% endblock %}

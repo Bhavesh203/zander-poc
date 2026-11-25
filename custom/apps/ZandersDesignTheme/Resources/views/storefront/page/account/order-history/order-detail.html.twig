@@ -1,0 +1,173 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
+
+{% block page_account_order_item_detail_overview %}
+    {% set showTaxPrice = config('core.cart.columnTaxInsteadUnitPrice') %}
+    {% if not feature('v6.8.0.0') %}
+        {% set showTaxPrice = false %}
+    {% endif %}
+    {% set showSubtotal = config('core.cart.showSubtotal') %}
+
+    <div class="order-item-detail zanders-order-item-detail">
+        <div class="collapse" id="order{{ order.orderNumber }}">
+            <div class="order-detail-content zanders-order-detail-content pt-3">
+                {# Documents / Invoices #}
+                {% block page_account_order_documents_table %}
+                    {% if order.documents|length > 0 %}
+                        <div class="order-detail-content-body zanders-order-docs mb-3">
+                            {% sw_include '@Storefront/storefront/page/account/order-history/order-detail-document.html.twig' %}
+                        </div>
+                    {% endif %}
+                {% endblock %}
+
+                {# Table Header #}
+                {% block page_account_order_item_detail_table_header %}
+                    <div class="order-detail-content-header zanders-detail-header d-none d-md-block" aria-hidden="true">
+                        <div class="row align-items-center">
+                            <div class="col-6 order-header-name">{{ 'account.orderItemColumnName'|trans|default('PRODUCT') }}</div>
+                            <div class="col-2 text-center order-header-quantity">{{ 'account.orderItemColumnQuantity'|trans|default('QUANTITY') }}</div>
+                            <div class="col-2 text-end order-header-price">{{ 'account.orderItemColumnPrice'|trans|default('UNIT PRICE') }}</div>
+                            <div class="col-2 text-end order-header-total">{{ 'account.orderItemColumnTotal'|trans|default('SUBTOTAL') }}</div>
+                        </div>
+                    </div>
+                {% endblock %}
+
+                {# Line Items List (Clean, No Overlapping, No Awkward Wishlist Button) #}
+                {% block page_account_order_item_detail_table_body %}
+                    <div class="order-detail-content-body zanders-detail-items">
+                        <ul class="order-detail-content-list list-unstyled m-0">
+                            {% for lineItem in order.nestedLineItems %}
+                                <li class="line-item line-item-product is-order zanders-line-item-row">
+                                    <div class="row align-items-center g-3">
+                                        {# Product Info: Image + Title + SKU #}
+                                        <div class="col-12 col-md-6 d-flex align-items-center gap-3">
+                                            {# Product Image Thumbnail #}
+                                            <div class="zanders-item-thumbnail flex-shrink-0">
+                                                {% if lineItem.cover.url %}
+                                                    <img src="{{ lineItem.cover.url }}" alt="{{ lineItem.label }}" class="img-fluid" />
+                                                {% else %}
+                                                    <div class="zanders-item-placeholder">
+                                                        {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+
+                                            {# Title & SKU (Proper spacing, no collision) #}
+                                            <div class="zanders-item-info flex-grow-1 min-w-0">
+                                                <div class="zanders-item-title fw-bold">
+                                                    {% set detailUrl = lineItem.productId ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId }) : null %}
+                                                    {% if detailUrl %}
+                                                        <a href="{{ detailUrl }}" class="text-dark text-decoration-none">
+                                                            {{ lineItem.label }}
+                                                        </a>
+                                                    {% else %}
+                                                        {{ lineItem.label }}
+                                                    {% endif %}
+                                                </div>
+                                                {% if lineItem.payload.productNumber %}
+                                                    <div class="zanders-item-sku text-muted small mt-1">
+                                                        {{ 'checkout.cartItemInfoId'|trans|default('Product number:') }} <strong>{{ lineItem.payload.productNumber }}</strong>
+                                                    </div>
+                                                {% endif %}
+                                                {% if lineItem.payload.options is not empty %}
+                                                    <div class="zanders-item-options text-muted small mt-1">
+                                                        {% for option in lineItem.payload.options %}
+                                                            <span class="badge bg-light text-dark border me-1">{{ option.group }}: {{ option.option }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {# Quantity #}
+                                        <div class="col-4 col-md-2 text-md-center">
+                                            <span class="d-md-none text-muted small me-1">{{ 'account.orderItemColumnQuantity'|trans|default('Qty:') }}</span>
+                                            <span class="fw-semibold text-dark">{{ lineItem.quantity }}</span>
+                                        </div>
+
+                                        {# Unit Price #}
+                                        <div class="col-4 col-md-2 text-md-end">
+                                            <span class="d-md-none text-muted small me-1">{{ 'account.orderItemColumnPrice'|trans|default('Price:') }}</span>
+                                            <span class="fw-semibold text-dark">{{ lineItem.unitPrice|currency }}</span>
+                                        </div>
+
+                                        {# Subtotal #}
+                                        <div class="col-4 col-md-2 text-end">
+                                            <span class="d-md-none text-muted small me-1">{{ 'account.orderItemColumnTotal'|trans|default('Subtotal:') }}</span>
+                                            <span class="fw-bold text-dark">{{ lineItem.totalPrice|currency }}</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endblock %}
+
+                {# Summary & Delivery Info Footer #}
+                <div class="order-item-detail-footer zanders-detail-footer mt-4 pt-3 border-top">
+                    <div class="row g-4 justify-content-between align-items-start">
+                        {# Left: Delivery & Payment Details Card #}
+                        <div class="col-12 col-md-6 col-lg-5">
+                            <div class="zanders-summary-card p-3 rounded bg-light border">
+                                <h6 class="fw-bold text-uppercase small text-dark mb-3">{{ 'account.overviewProfileHeader'|trans|default('Order Information') }}</h6>
+                                <dl class="row g-2 mb-0 small">
+                                    <dt class="col-5 text-muted">{{ 'account.orderHeadline'|trans|default('Order date') }}:</dt>
+                                    <dd class="col-7 fw-semibold text-dark mb-1">{{ order.orderDateTime|date('d M Y') }}</dd>
+
+                                    <dt class="col-5 text-muted">{{ 'account.orderNumber'|trans|default('Order number') }}:</dt>
+                                    <dd class="col-7 fw-semibold text-dark mb-1">#{{ order.orderNumber }}</dd>
+
+                                    <dt class="col-5 text-muted">{{ 'account.orderItemPaymentMethod'|trans|default('Payment method') }}:</dt>
+                                    <dd class="col-7 fw-semibold text-dark mb-1">
+                                        {{ order.transactions|length > 0 ? order.transactions.last.paymentMethod.translated.name : '—' }}
+                                    </dd>
+
+                                    <dt class="col-5 text-muted">{{ 'account.orderItemShippingMethod'|trans|default('Shipping method') }}:</dt>
+                                    <dd class="col-7 fw-semibold text-dark mb-1">
+                                        {{ order.deliveries|length > 0 ? order.deliveries.first.shippingMethod.translated.name : '—' }}
+                                    </dd>
+
+                                    <dt class="col-5 text-muted">{{ 'account.orderItemTracking'|trans|default('Package tracking') }}:</dt>
+                                    <dd class="col-7 text-dark mb-0">
+                                        {% set trackingFound = false %}
+                                        {% for delivery in order.deliveries %}
+                                            {% if delivery.trackingCodes|length > 0 %}
+                                                {% set trackingFound = true %}
+                                                {{ delivery.trackingCodes|join(', ') }}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if not trackingFound %}
+                                            <span class="text-muted">{{ 'account.orderTrackingNotAvailable'|trans|default('Not available') }}</span>
+                                        {% endif %}
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        {# Right: Pricing Totals Summary Box #}
+                        <div class="col-12 col-md-6 col-lg-5 ms-auto">
+                            <div class="zanders-summary-card p-4 rounded bg-light border">
+                                <dl class="row g-2 mb-0">
+                                    <dt class="col-7 text-muted">{{ 'account.orderItemShippingcosts'|trans|default('Shipping costs') }}:</dt>
+                                    <dd class="col-5 text-end fw-semibold text-dark">{{ order.shippingTotal|currency }}</dd>
+
+                                    {% for calculatedTax in order.price.calculatedTaxes %}
+                                        <dt class="col-7 text-muted">
+                                            {{ 'checkout.summaryTaxInclude'|trans({ '%rate%': calculatedTax.taxRate })|default('incl. ' ~ calculatedTax.taxRate ~ '% VAT') }}:
+                                        </dt>
+                                        <dd class="col-5 text-end fw-semibold text-dark">{{ calculatedTax.tax|currency }}</dd>
+                                    {% endfor %}
+
+                                    <div class="col-12 my-2 border-top"></div>
+
+                                    <dt class="col-6 fs-6 fw-bold text-dark pt-1">{{ 'account.orderItemTotal'|trans|default('Total (gross)') }}:</dt>
+                                    <dd class="col-6 text-end fs-5 fw-bold zanders-price-total pt-1 mb-0">{{ order.amountTotal|currency }}</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

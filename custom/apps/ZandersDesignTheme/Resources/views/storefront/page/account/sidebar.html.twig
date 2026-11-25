@@ -72,20 +72,17 @@
                             {% endblock %}
 
                             {# 5. MY WISHLIST #}
-                            {% if config('core.cart.wishlistEnabled') %}
-                                <a href="{{ path('frontend.wishlist.page') }}"
-                                   title="{{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}"
-                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}"
-                                   {% if activeRoute is same as('frontend.wishlist.page') %} aria-current="page"{% endif %}>
-                                    {{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}
-                                </a>
-                            {% endif %}
+                            <a href="{{ path('frontend.wishlist.page') }}"
+                               title="{{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}"
+                               class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}"
+                               {% if activeRoute is same as('frontend.wishlist.page') %} aria-current="page"{% endif %}>
+                                {{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}
+                            </a>
 
                             {# 6. NEWSLETTER SUBSCRIPTIONS #}
-                            <a href="{{ path('frontend.account.newsletter.page') }}"
+                            <a href="{{ path('frontend.account.home.page') }}#account-newsletter"
                                title="{{ 'zanders.accountPage.sidebar.newsletter'|trans|default('NEWSLETTER SUBSCRIPTIONS') }}"
-                               class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.newsletter.page') %} is-active{% endif %}"
-                               {% if activeRoute is same as('frontend.account.newsletter.page') %} aria-current="page"{% endif %}>
+                               class="list-group-item list-group-item-action account-aside-item">
                                 {{ 'zanders.accountPage.sidebar.newsletter'|trans|default('NEWSLETTER SUBSCRIPTIONS') }}
                             </a>
 
@@ -135,69 +132,15 @@
                 {% endblock %}
 
                 {% block page_account_sidebar_footer %}
-                    {% if context.customer and not isGuest %}
-                        <div class="card-footer account-aside-footer">
-                            {% block page_account_sidebar_logout %}
-                                <a href="{{ path('frontend.account.logout.page') }}"
-                                   class="account-aside-logout-link"
-                                   title="{{ 'account.logout'|trans|default('LOGOUT') }}">
-                                    {{ 'account.logout'|trans|default('LOGOUT')|upper }}
-                                </a>
-                            {% endblock %}
-                        </div>
-                    {% endif %}
+                    {# Footer omitted to match exact reference design ending cleanly with PAYMENT PORTAL #}
                 {% endblock %}
             </div>
         </div>
 
     {% else %}
         {# ========================================================================= #}
-        {# 2. Header Dropdown Menu (Compact Header Dropdown)                         #}
+        {# 2. Header Dropdown Menu (Clean, Modern & Minimalist)                     #}
         {# ========================================================================= #}
-        <div class="header-account-menu zanders-header-account-menu">
-            <div class="card account-menu-inner">
-                {% if context.customer and not isGuest %}
-                    <div class="card-header account-aside-header zanders-account-aside-header">
-                        <div class="zanders-account-greeting">
-                            {{ 'account.greetings'|trans|sw_sanitize }}
-                            {{ context.customer.firstName }} {{ context.customer.lastName }}
-                        </div>
-                    </div>
-                {% endif %}
-
-                <nav class="list-group list-group-flush account-aside-list-group">
-                    <a href="{{ path('frontend.account.home.page') }}"
-                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.dashboard'|trans|default('ACCOUNT DASHBOARD') }}
-                    </a>
-                    <a href="{{ path('frontend.account.profile.page') }}"
-                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.information'|trans|default('ACCOUNT INFORMATION') }}
-                    </a>
-                    <a href="{{ path('frontend.account.address.page') }}"
-                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.addresses'|trans|default('ADDRESS BOOK') }}
-                    </a>
-                    <a href="{{ path('frontend.account.order.page') }}"
-                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.order') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.orders'|trans|default('MY OPEN ORDERS') }}
-                    </a>
-                    {% if config('core.cart.wishlistEnabled') %}
-                        <a href="{{ path('frontend.wishlist.page') }}"
-                           class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}">
-                            {{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}
-                        </a>
-                    {% endif %}
-                </nav>
-
-                {% if context.customer %}
-                    <div class="card-footer account-aside-footer">
-                        <a href="{{ path('frontend.account.logout.page') }}" class="account-aside-logout-link">
-                            {{ 'account.logout'|trans|default('LOGOUT')|upper }}
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+        {% sw_include '@Storefront/storefront/layout/header/account-menu.html.twig' %}
     {% endif %}
 {% endblock %}

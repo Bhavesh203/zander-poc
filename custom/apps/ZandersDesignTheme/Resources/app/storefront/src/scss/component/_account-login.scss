@@ -1,11 +1,13 @@
 /*
 Login / Register Page Design
 ==================================================
-Matches Zanders design:
+Matches live Zanders site (https://shop2.gzanders.com/customer/account/login/):
 - Page Header: Bold uppercase "LOGIN OR CREATE AN ACCOUNT" with full-width crimson underline rule
 - 2-Column Split:
   - Left: "NEW DEALERS" grey box with red underline bar, dealer qualification text, and solid crimson button
-  - Right: "REGISTERED CUSTOMERS" white box with dark underline bar, email/password inputs, remember me, solid crimson LOGIN button, and forgot password link
+  - Right: "REGISTERED CUSTOMERS" white box with dark underline bar, email/password inputs with eye toggle,
+    remember me with "What's this?" tooltip, solid crimson LOGIN button, and forgot password link
+- Collapsible New Dealer Registration Form below
 */
 
 .account-register .zanders-account-header,
@@ -14,16 +16,17 @@ Matches Zanders design:
         font-family: 'Poppins', sans-serif;
         font-size: 28px;
         font-weight: 700;
-        color: $zanders-color-primary-accent;
+        color: $sw-color-brand-primary;
+        text-transform: uppercase;
         letter-spacing: 0.5px;
         line-height: 1.2;
     }
 
     .zanders-account-title-rule {
-        height: 2px;
-        background-color: $zanders-color-primary-accent;
+        height: 3px;
+        background-color: $sw-color-brand-primary;
         width: 100%;
-        margin-top: 4px;
+        margin-top: 6px;
     }
 }
 
@@ -34,46 +37,55 @@ Matches Zanders design:
     /* Left Card: NEW DEALERS */
     .card.zanders-new-dealers-card,
     .zanders-new-dealers-card {
-        background-color: #f2f2f2;
+        background-color: #f5f5f5;
         border: none;
-        border-radius: 4px;
+        border-radius: 2px;
         box-shadow: none;
 
         .zanders-new-dealers-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
-            color: $zanders-color-primary-accent;
+            color: $sw-color-brand-primary;
             letter-spacing: 0.8px;
-            margin: 0;
+            text-transform: uppercase;
+            display: inline-block;
+            border-bottom: 3px solid $sw-color-brand-primary;
+            padding-bottom: 8px;
+            margin: 0 0 20px;
         }
 
         .zanders-title-underline-red {
-            width: 80px;
-            height: 2px;
-            background-color: $zanders-color-primary-accent;
+            display: none; // replaced by border-bottom on title
         }
 
         .zanders-new-dealers-desc {
-            font-size: 14px;
-            line-height: 1.7;
+            font-size: 14.5px;
+            line-height: 1.75;
             color: $zanders-color-dark-bg;
-            max-width: 480px;
+            max-width: 520px;
+            margin: 0 auto 24px;
+        }
+
+        .zanders-new-dealer-btn-wrap {
+            max-width: 456px;
             margin: 0 auto;
         }
 
         button.btn.zanders-btn-new-dealer,
         .zanders-btn-new-dealer {
-            background-color: $zanders-color-primary-accent;
-            border-color: $zanders-color-primary-accent;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 12px 36px;
+            padding: 12px 24px;
             border-radius: 2px;
+            max-width: 456px;
+            width: 100%;
             box-shadow: none;
             transition: background-color 0.2s ease, border-color 0.2s ease;
 
@@ -82,6 +94,7 @@ Matches Zanders design:
                 background-color: $zanders-color-primary-dark;
                 border-color: $zanders-color-primary-dark;
                 color: #ffffff;
+                box-shadow: none;
             }
         }
     }
@@ -91,27 +104,30 @@ Matches Zanders design:
     .zanders-registered-customers-card {
         background-color: #ffffff;
         border: 1px solid #e8e8e8;
-        border-radius: 4px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+        border-radius: 2px;
+        box-shadow: 2px 4px 28px 0 rgba(0, 0, 0, 0.08);
 
         .zanders-registered-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             color: #222222;
             letter-spacing: 0.5px;
-            margin: 0;
+            text-transform: uppercase;
+            display: inline-block;
+            border-bottom: 3px solid #222222;
+            padding-bottom: 8px;
+            margin: 0 0 16px;
         }
 
         .zanders-title-underline-dark {
-            width: 140px;
-            height: 2px;
-            background-color: #222222;
+            display: none; // replaced by border-bottom on title
         }
 
         .zanders-registered-subtitle {
             font-size: 14px;
             color: #555555;
+            margin-bottom: 24px;
         }
 
         .zanders-form-label {
@@ -121,24 +137,25 @@ Matches Zanders design:
             margin-bottom: 6px;
 
             .text-danger {
-                color: $zanders-color-primary-accent;
+                color: $sw-color-brand-primary;
             }
         }
 
         input.form-control.zanders-form-input,
         .zanders-form-input {
-            background-color: #f7f7f7;
-            border: 1px solid #e0e0e0;
+            background-color: #ffffff;
+            border: 1px solid #dcdcdc;
             border-radius: 2px;
             padding: 10px 14px;
             font-size: 14px;
             color: $zanders-color-dark-bg;
             box-shadow: none;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
             &:focus {
                 background-color: #ffffff;
-                border-color: $zanders-color-primary-accent;
+                border-color: $sw-color-brand-primary;
+                box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.12);
                 outline: none;
             }
 
@@ -147,47 +164,156 @@ Matches Zanders design:
             }
         }
 
+        /* Password input with show/hide toggle button */
+        .zanders-password-input-group {
+            display: flex;
+            align-items: stretch;
+            position: relative;
+
+            .zanders-form-input {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                border-right: 0;
+                flex: 1 1 auto;
+            }
+
+            .zanders-password-toggle-btn {
+                background-color: #f7f7f7;
+                border: 1px solid #dcdcdc;
+                border-left: 0;
+                border-top-right-radius: 2px;
+                border-bottom-right-radius: 2px;
+                padding: 0 14px;
+                color: #666666;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background-color 0.15s ease, color 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: #eeeeee;
+                    color: $sw-color-brand-primary;
+                    outline: none;
+                    box-shadow: none;
+                }
+
+                .zanders-eye-icon {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+
+        /* Remember Me & Tooltip Popover */
         .zanders-form-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
             .zanders-check-input {
                 width: 16px;
                 height: 16px;
-                margin-top: 2px;
+                margin: 0;
                 border-color: #cccccc;
                 border-radius: 2px;
                 cursor: pointer;
 
                 &:checked {
-                    background-color: $zanders-color-primary-accent;
-                    border-color: $zanders-color-primary-accent;
+                    background-color: $sw-color-brand-primary;
+                    border-color: $sw-color-brand-primary;
                 }
             }
 
             .zanders-check-label {
-                font-size: 13px;
-                color: #444444;
+                font-size: 13.5px;
+                color: #333333;
                 font-weight: 500;
                 cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                margin: 0;
+            }
+        }
+
+        .zanders-tooltip-wrap {
+            position: relative;
+            display: inline-block;
+
+            .zanders-tooltip-trigger {
+                color: #666666;
+                font-size: 13px;
+                font-weight: 500;
+                text-decoration: underline;
+                cursor: pointer;
+
+                &:hover,
+                &:focus {
+                    color: $sw-color-brand-primary;
+                }
+            }
+
+            .zanders-tooltip-bubble {
+                position: absolute;
+                bottom: calc(100% + 8px);
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #222222;
+                color: #ffffff;
+                padding: 8px 12px;
+                font-size: 12px;
+                line-height: 1.4;
+                font-weight: 400;
+                border-radius: 3px;
+                width: 250px;
+                text-align: left;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.2s ease, visibility 0.2s ease;
+                z-index: 100;
+                pointer-events: none;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 100%;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-width: 5px;
+                    border-style: solid;
+                    border-color: #222222 transparent transparent transparent;
+                }
+            }
+
+            &:hover .zanders-tooltip-bubble,
+            .zanders-tooltip-trigger:focus + .zanders-tooltip-bubble {
+                visibility: visible;
+                opacity: 1;
             }
         }
 
         .zanders-required-note {
-            font-size: 12px;
+            font-size: 12.5px;
             color: #777777;
         }
 
         button.btn.zanders-btn-login,
         .zanders-btn-login {
-            background-color: $zanders-color-primary-accent;
-            border-color: $zanders-color-primary-accent;
+            background-color: $sw-color-brand-primary;
+            border-color: $sw-color-brand-primary;
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
             font-size: 13px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 12px 48px;
+            padding: 12px 24px;
             border-radius: 2px;
-            min-width: 160px;
+            max-width: 230px;
+            width: 100%;
             box-shadow: none;
             transition: background-color 0.2s ease, border-color 0.2s ease;
 
@@ -196,18 +322,19 @@ Matches Zanders design:
                 background-color: $zanders-color-primary-dark;
                 border-color: $zanders-color-primary-dark;
                 color: #ffffff;
+                box-shadow: none;
             }
         }
 
         .zanders-link-recover {
             color: #222222;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             text-decoration: none;
             transition: color 0.15s ease;
 
             &:hover {
-                color: $zanders-color-primary-accent;
+                color: $sw-color-brand-primary;
                 text-decoration: underline;
             }
         }
@@ -219,38 +346,59 @@ Matches Zanders design:
 .zanders-register-collapse-wrapper {
     font-family: 'Poppins', sans-serif;
 
+    .zanders-register-heading {
+        color: $sw-color-brand-primary;
+        font-size: 20px;
+    }
+
     .card.register-card {
         border: 1px solid #e8e8e8;
-        border-radius: 4px;
+        border-radius: 2px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
         padding: 24px;
 
         .card-title {
-            color: $zanders-color-primary-accent;
+            color: $sw-color-brand-primary;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 20px;
+            font-size: 18px;
         }
 
-        button.btn-primary,
-        .btn-primary {
-            background-color: $zanders-color-primary-accent;
-            border-color: $zanders-color-primary-accent;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .register-submit {
+            display: flex;
+            justify-content: flex-end;
 
-            &:hover {
-                background-color: $zanders-color-primary-dark;
-                border-color: $zanders-color-primary-dark;
+            button.btn-primary,
+            .btn-primary {
+                max-width: 240px;
+                width: 100%;
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 11px 24px;
+                font-size: 13px;
+
+                &:hover {
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
+                }
             }
         }
     }
 }
 
+@include media-breakpoint-down(lg) {
+    .account-register .zanders-account-login-row,
+    .zanders-account-login-row {
+        gap: 24px;
+    }
+}
+
 @include media-breakpoint-down(sm) {
-    .account-register .zanders-account-page-header .zanders-account-page-title,
-    .zanders-account-page-header .zanders-account-page-title {
+    .account-register .zanders-account-header .zanders-account-title,
+    .zanders-account-header .zanders-account-title {
         font-size: 22px;
     }
 
@@ -260,7 +408,21 @@ Matches Zanders design:
         .zanders-new-dealers-card .zanders-new-dealers-title,
         .card.zanders-registered-customers-card .zanders-registered-title,
         .zanders-registered-customers-card .zanders-registered-title {
-            font-size: 20px;
+            font-size: 22px;
+        }
+
+        button.btn.zanders-btn-new-dealer,
+        .zanders-btn-new-dealer,
+        button.btn.zanders-btn-login,
+        .zanders-btn-login {
+            max-width: 100%;
+        }
+    }
+
+    .account-register .zanders-register-collapse-wrapper .card.register-card .register-submit {
+        button.btn-primary,
+        .btn-primary {
+            max-width: 100%;
         }
     }
 }

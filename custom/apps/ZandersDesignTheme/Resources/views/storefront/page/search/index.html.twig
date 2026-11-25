@@ -25,13 +25,13 @@
                 {# 2. Center Column: Breadcrumb + Search Title + Product Listing #}
                 <div class="cms-section-sidebar-main-content zanders-main-col col-12 {% if showRightSidebar %}col-lg-6 col-xl-7{% else %}col-lg-9 col-xl-10{% endif %}">
                     <div class="zanders-center-header">
-                        <nav aria-label="breadcrumb" class="zanders-inline-breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link">{{ 'general.home'|trans }}</a>
+                        <nav aria-label="breadcrumb" class="zanders-breadcrumb-nav">
+                            <ol class="breadcrumb zanders-breadcrumb-list">
+                                <li class="breadcrumb-item zanders-breadcrumb-item">
+                                    <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link" title="Home">Home</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    Search
+                                <li class="breadcrumb-item zanders-breadcrumb-item active" aria-current="page">
+                                    <span class="breadcrumb-current">Search</span>
                                 </li>
                             </ol>
                         </nav>

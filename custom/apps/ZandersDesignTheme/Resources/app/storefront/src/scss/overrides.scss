@@ -71,3 +71,23 @@ $zanders-color-dark-bg: #333333 !default;
 $zanders-color-dark-text: #222222 !default;
 $zanders-color-light-bg: #efefef !default;
 $zanders-color-border: #d4d4d4 !default;
+
+// Button variable overrides (normalizes Bootstrap button sizing)
+$btn-font-size: 0.8125rem !default;
+$btn-line-height: 1.35 !default;
+$btn-padding-y: 8px !default;
+$btn-padding-x: 18px !default;
+$btn-border-radius: 2px !default;
+
+$btn-font-size-lg: 0.875rem !default;
+$btn-line-height-lg: 1.35 !default;
+$btn-padding-y-lg: 11px !default;
+$btn-padding-x-lg: 24px !default;
+$btn-border-radius-lg: 2px !default;
+
+$btn-font-size-sm: 0.75rem !default;
+$btn-line-height-sm: 1.25 !default;
+$btn-padding-y-sm: 5px !default;
+$btn-padding-x-sm: 12px !default;
+$btn-border-radius-sm: 2px !default;
+

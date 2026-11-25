@@ -1,0 +1,171 @@
+// =============================================================================
+// Zanders Global Button Sizing & Standardization
+// - Normalizes default Bootstrap & Shopware button line-height and font sizes
+// - Prevents oversized / giant buttons across all forms and views
+// - Enforces Zanders brand red ($sw-color-brand-primary = #991020) and charcoal
+// =============================================================================
+
+.btn {
+    font-family: 'Poppins', 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    padding: 8px 18px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.35px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+    &:focus {
+        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.2);
+    }
+
+    &.disabled,
+    &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+}
+
+// Button Size Modifiers - Contained to prevent giant buttons
+.btn-lg {
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 11px 24px;
+    line-height: 1.35;
+    border-radius: 2px;
+}
+
+.btn-sm {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 5px 12px;
+    line-height: 1.25;
+    border-radius: 2px;
+}
+
+// Color Variants
+.btn-primary {
+    background-color: $sw-color-brand-primary;
+    border: 1px solid $sw-color-brand-primary;
+    color: #ffffff;
+
+    &:hover,
+    &:focus {
+        background-color: $zanders-color-primary-dark;
+        border-color: $zanders-color-primary-dark;
+        color: #ffffff;
+        box-shadow: none;
+    }
+}
+
+.btn-secondary {
+    background-color: #333333;
+    border: 1px solid #333333;
+    color: #ffffff;
+
+    &:hover,
+    &:focus {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+        box-shadow: none;
+    }
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid $sw-color-brand-primary;
+    color: $sw-color-brand-primary;
+
+    &:hover,
+    &:focus {
+        background-color: $sw-color-brand-primary;
+        border-color: $sw-color-brand-primary;
+        color: #ffffff;
+        box-shadow: none;
+    }
+}
+
+.btn-outline-secondary {
+    background-color: transparent;
+    border: 1px solid #cccccc;
+    color: #333333;
+
+    &:hover,
+    &:focus {
+        background-color: #333333;
+        border-color: #333333;
+        color: #ffffff;
+        box-shadow: none;
+    }
+}
+
+// Targeted fixes for oversized submit & action buttons across forms
+.register-submit,
+.address-form-submit,
+.profile-form-submit {
+
+    .btn,
+    .btn-primary,
+    button[type="submit"] {
+        max-width: 260px;
+        width: 100%;
+        padding: 11px 24px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+}
+
+.begin-checkout-btn {
+    max-width: 320px;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 11px 24px;
+}
+
+.checkout-aside-action .btn {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 20px;
+}
+
+// Product Action Buttons: ADD TO CART & BUY NOW (Desktop View Figma specs)
+.product-card-btn-add,
+.product-card-btn-buy,
+.qv-btn-add,
+.qv-btn-buy,
+.zanders-pdp-btn-buy {
+    font-family: 'Roboto', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0;
+
+    @include media-breakpoint-up(md) {
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 500 !important;
+        line-height: 100% !important;
+        letter-spacing: 0 !important;
+        text-transform: uppercase !important;
+    }
+}
+
+@include media-breakpoint-down(sm) {
+
+    .register-submit,
+    .address-form-submit,
+    .profile-form-submit {
+
+        .btn,
+        .btn-primary,
+        button[type="submit"] {
+            max-width: 100%;
+        }
+    }
+}

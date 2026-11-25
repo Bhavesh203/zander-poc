@@ -1,0 +1,97 @@
+{#
+    Zanders Clean Modern Account Dropdown Menu
+    ==========================================================================
+    Clean, minimalist, and lightweight account dropdown for top-bar & header.
+#}
+{% set isGuest = context.customer and context.customer.guest %}
+
+<div class="zanders-clean-account-menu">
+    {% if context.customer and not isGuest %}
+        {# Logged in customer header #}
+        <div class="clean-account-header">
+            <span class="clean-account-greeting">{{ 'account.greetings'|trans|sw_sanitize }}</span>
+            <span class="clean-account-name">{{ context.customer.firstName }} {{ context.customer.lastName }}</span>
+            {% if context.customer.email %}
+                <span class="clean-account-email">{{ context.customer.email }}</span>
+            {% endif %}
+        </div>
+
+        {# Navigation list #}
+        <ul class="clean-account-nav">
+            <li>
+                <a href="{{ path('frontend.account.home.page') }}" class="clean-account-link{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}">
+                    <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>{{ 'zanders.accountPage.sidebar.dashboard'|trans|default('Account Dashboard') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('frontend.account.profile.page') }}" class="clean-account-link{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}">
+                    <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>{{ 'zanders.accountPage.sidebar.information'|trans|default('Account Information') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('frontend.account.address.page') }}" class="clean-account-link{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}">
+                    <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>{{ 'zanders.accountPage.sidebar.addresses'|trans|default('Address Book') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('frontend.account.order.page') }}" class="clean-account-link{% if activeRoute starts with('frontend.account.order') %} is-active{% endif %}">
+                    <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span>{{ 'zanders.accountPage.sidebar.orders'|trans|default('My Orders') }}</span>
+                </a>
+            </li>
+            {% if config('core.cart.wishlistEnabled') %}
+            <li>
+                <a href="{{ path('frontend.wishlist.page') }}" class="clean-account-link{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}">
+                    <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                    <span>{{ 'zanders.accountPage.sidebar.wishlist'|trans|default('My Wishlist') }}</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+
+        {# Clean sign out link #}
+        <div class="clean-account-footer">
+            <a href="{{ path('frontend.account.logout.page') }}" class="clean-account-logout">
+                <svg class="clean-account-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>{{ 'account.logout'|trans|default('Sign Out') }}</span>
+            </a>
+        </div>
+    {% else %}
+        {# Logged out view #}
+        <div class="clean-account-unauth">
+            <div class="clean-account-unauth-title">{{ 'account.myAccount'|trans|default('My Account') }}</div>
+            <p class="clean-account-unauth-desc">Sign in to access your orders, account information, and fast checkout.</p>
+            <a href="{{ path('frontend.account.login.page') }}" class="btn btn-primary clean-account-btn-login">
+                {{ 'account.loginSubmit'|trans|default('Sign In') }}
+            </a>
+            <div class="clean-account-unauth-register">
+                <span>New dealer?</span>
+                <a href="{{ path('frontend.account.login.page') }}#register-form">Create an Account</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
