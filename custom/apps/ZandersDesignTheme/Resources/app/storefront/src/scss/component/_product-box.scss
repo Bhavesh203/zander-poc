@@ -372,13 +372,14 @@ Matches Zanders product card design:
             background-color: $sw-color-brand-primary;
             border: 1px solid $sw-color-brand-primary;
             color: $white;
-            font-size: 16px;
-            line-height: 19px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            font-family: 'Roboto', sans-serif !important;
+            font-size: 16px !important;
+            line-height: 100% !important;
+            font-weight: 500 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0 !important;
             border-radius: 2px;
-            padding: 12px;
+            padding: 9px 8px;
             text-align: center;
             white-space: nowrap;
             box-shadow: none;
@@ -429,13 +430,6 @@ Matches Zanders product card design:
 
         .product-card-action-buttons {
             gap: 8px;
-
-            .product-card-btn-add,
-            .product-card-btn-buy {
-                font-size: 13px;
-                line-height: 16px;
-                padding: 10px 6px;
-            }
         }
     }
 

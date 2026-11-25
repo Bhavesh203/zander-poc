@@ -33,18 +33,11 @@
                 {% set isNotRoot = activeCat and activeCat.id != rootId %}
 
                 <div class="zanders-center-header">
-                    <nav aria-label="breadcrumb" class="zanders-inline-breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link">{{ 'general.home'|trans }}</a>
-                            </li>
-                            {% if isNotRoot and activeCat %}
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    {{ activeCat.translated.name|default(activeCat.name) }}
-                                </li>
-                            {% endif %}
-                        </ol>
-                    </nav>
+                    {% sw_include '@Storefront/storefront/layout/breadcrumb.html.twig' with {
+                        category: activeCat,
+                        context: context,
+                        page: page
+                    } %}
 
                     {% if isNotRoot and activeCat %}
                         <h1 class="zanders-page-title">

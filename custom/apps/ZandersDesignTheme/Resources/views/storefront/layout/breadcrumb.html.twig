@@ -1,0 +1,80 @@
+{#
+    Zanders Breadcrumb Navigation
+    ==========================================================================
+    Matches https://shop2.gzanders.com:
+    - Starts with "Home" linking to homepage
+    - Filters out root ("zanders") and catalog container ("Catalog")
+    - Shows full category hierarchy: Home / Firearms / Rifles
+    - Appends Product title if on Product Detail Page
+    - Active item styled in bold Crimson (#991020)
+    - Clean "/" separators with proper spacing
+#}
+
+{% if not category and page.category %}
+    {% set category = page.category %}
+{% elseif not category and page.header.navigation.active %}
+    {% set category = page.header.navigation.active %}
+{% elseif not category and page.product and page.product.seoCategory %}
+    {% set category = page.product.seoCategory %}
+{% endif %}
+
+{% if category %}
+    {% set breadcrumbCategories = sw_breadcrumb_full(category, context) %}
+{% elseif categoryId %}
+    {% set breadcrumbCategories = sw_breadcrumb_full_by_id(categoryId, context) %}
+{% else %}
+    {% set breadcrumbCategories = [] %}
+{% endif %}
+
+{% set rootId = context.salesChannel.navigationCategoryId %}
+
+{# Filter out root store container and generic Catalog folder #}
+{% set cleanBreadcrumbs = [] %}
+{% for cat in breadcrumbCategories %}
+    {% set cName = cat.translated.name|default(cat.name) %}
+    {% if cat.id != rootId and cName|lower != 'zanders' and cName|lower != 'catalog' %}
+        {% set cleanBreadcrumbs = cleanBreadcrumbs|merge([cat]) %}
+    {% endif %}
+{% endfor %}
+
+{% set product = (page is defined and page.product is defined and page.product is not null) ? page.product : null %}
+{% set isPdp = product is not null %}
+
+<nav aria-label="breadcrumb" class="zanders-breadcrumb-nav">
+    <ol class="breadcrumb zanders-breadcrumb-list">
+        {# 1. Home Link #}
+        <li class="breadcrumb-item zanders-breadcrumb-item">
+            <a href="{{ path('frontend.home.page') }}" class="breadcrumb-link" title="Home">
+                Home
+            </a>
+        </li>
+
+        {# 2. Category Hierarchy #}
+        {% for cat in cleanBreadcrumbs %}
+            {% set cName = cat.translated.name|default(cat.name) %}
+            {% set isLast = loop.last and not isPdp %}
+            {% set categoryUrl = cat.seoUrl ?? seoUrl('frontend.navigation.page', { navigationId: cat.id }) %}
+
+            <li class="breadcrumb-item zanders-breadcrumb-item{% if isLast %} active{% endif %}"{% if isLast %} aria-current="page"{% endif %}>
+                {% if isLast %}
+                    <span class="breadcrumb-current">{{ cName }}</span>
+                {% elseif cat.type == 'folder' %}
+                    <span class="breadcrumb-folder">{{ cName }}</span>
+                {% else %}
+                    <a href="{{ categoryUrl }}"
+                       class="breadcrumb-link"
+                       title="{{ cName }}">
+                        {{ cName }}
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {# 3. Product Leaf Item (on Product Detail Page) #}
+        {% if isPdp %}
+            <li class="breadcrumb-item zanders-breadcrumb-item active" aria-current="page">
+                <span class="breadcrumb-current">{{ page.product.translated.name|default(page.product.name) }}</span>
+            </li>
+        {% endif %}
+    </ol>
+</nav>

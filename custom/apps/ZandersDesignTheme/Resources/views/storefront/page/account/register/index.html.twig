@@ -13,9 +13,9 @@
     {% set hasRegisterErrors = formViolations is defined and formViolations is not empty %}
     {% set showRegister = hasRegisterErrors or app.request.query.get('register') == '1' %}
 
-    <div class="row g-4 align-items-stretch mb-5 zanders-account-login-row">
+    <div class="row g-4 align-items-stretch mb-5 zanders-account-login-row" id="customer-login-container">
         {# Left Column: NEW DEALERS #}
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6 order-2 order-lg-1">
             <div class="card border-0 zanders-new-dealers-card h-100 p-4 p-md-5 d-flex flex-column justify-content-between align-items-center text-center">
                 <div class="w-100">
                     <h2 class="zanders-new-dealers-title text-uppercase fw-bold mb-2">
@@ -24,13 +24,13 @@
                     <div class="zanders-title-underline-red mb-4 mx-auto"></div>
 
                     <p class="zanders-new-dealers-desc mb-4">
-                        {{ 'zanders.accountPage.newDealersText'|trans|default('To Qualify As A Zanders Sporting Goods Dealer Is Simple. We Require A Signed Copy Of Your Federal Firearms License, A Copy Of Your Retail Merchant\'s License, And A Copy Of Any State License Your State May Require For Retail Gun Sales. For More Information Please Contact Us By Phone At 1-800-851-4373 Or Use The Contact Us Button Below.') }}
+                        {{ 'zanders.accountPage.newDealersText'|trans|default('To qualify as a Zanders Sporting Goods Dealer is simple. We require a signed copy of your Federal Firearms License, a copy of your Retail Merchant\'s License, and a copy of any State License your state may require for retail gun sales. For more information please contact us by phone at 1-800-851-4373 or use the contact us button below.') }}
                     </p>
                 </div>
 
-                <div class="mt-auto pt-3">
+                <div class="mt-auto pt-3 w-100 zanders-new-dealer-btn-wrap">
                     <button type="button"
-                            class="btn btn-primary zanders-btn-new-dealer"
+                            class="btn btn-primary zanders-btn-new-dealer w-100"
                             data-bs-toggle="collapse"
                             data-bs-target="#dealer-register-collapse"
                             aria-expanded="{{ showRegister ? 'true' : 'false' }}"
@@ -43,7 +43,7 @@
         </div>
 
         {# Right Column: REGISTERED CUSTOMERS #}
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6 order-1 order-lg-2">
             <div class="card zanders-registered-customers-card h-100 p-4 p-md-5">
                 {% sw_include '@Storefront/storefront/component/account/login.html.twig' %}
             </div>
@@ -54,8 +54,8 @@
     <div class="collapse{% if showRegister %} show{% endif %} mt-4 pt-4 border-top zanders-register-collapse-wrapper" id="dealer-register-collapse">
         <div class="zanders-registration-wrapper">
             <div class="d-flex align-items-center justify-content-between mb-4">
-                <h3 class="text-uppercase fw-bold m-0" style="color: #8c1d2f;">
-                    {{ 'account.registerPersonalHeader'|trans|sw_sanitize }}
+                <h3 class="text-uppercase fw-bold m-0 zanders-register-heading">
+                    {{ 'account.registerPersonalHeader'|trans|default('NEW DEALER REGISTRATION')|sw_sanitize }}
                 </h3>
                 <button type="button"
                         class="btn-close"
@@ -68,4 +68,3 @@
         </div>
     </div>
 {% endblock %}
-

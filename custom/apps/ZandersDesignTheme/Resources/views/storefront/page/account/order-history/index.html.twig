@@ -1,0 +1,89 @@
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
+
+{% block page_account_main_content %}
+    {% block page_account_orders %}
+        <div class="account-orders zanders-account-orders">
+            {# --- Header with Crimson Red Vertical Block --- #}
+            {% block page_account_orders_welcome %}
+                <div class="zanders-account-header">
+                    <div class="zanders-account-title-wrap">
+                        <span class="zanders-account-title-bar" aria-hidden="true"></span>
+                        <h1 class="zanders-account-title">
+                            {{ 'account.ordersTitle'|trans|sw_sanitize|default('MY OPEN ORDERS') }}
+                        </h1>
+                    </div>
+                    <div class="zanders-account-title-rule"></div>
+                </div>
+            {% endblock %}
+
+            {% block page_account_orders_main %}
+                <div class="account-orders-main zanders-orders-main">
+                    {% if page.orders.total == 0 %}
+                        {% block page_account_orders_info_empty %}
+                            <div class="zanders-orders-empty alert alert-info text-center py-4">
+                                <div class="mb-2">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.5">
+                                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                    </svg>
+                                </div>
+                                <p class="mb-3 fw-semibold text-dark">{{ 'account.ordersInfoEmpty'|trans|sw_sanitize }}</p>
+                                <a href="{{ path('frontend.home.page') }}" class="btn btn-primary zanders-btn-buy">
+                                    {{ 'account.overviewProfileOrderEmptyContinueShopping'|trans|default('Continue Shopping') }}
+                                </a>
+                            </div>
+                        {% endblock %}
+                    {% else %}
+                        {# Orders List using clean modern Cards #}
+                        {% block page_account_orders_overview %}
+                            <ul class="account-orders-overview list-unstyled m-0 p-0">
+                                {% block page_account_orders_table %}
+                                    {% block page_account_orders_table_body %}
+                                        {% for order in page.orders.entities %}
+                                            <li class="order-table mb-4" data-order-detail-loader="true">
+                                                {% sw_include '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+                                            </li>
+                                        {% endfor %}
+                                    {% endblock %}
+                                {% endblock %}
+                            </ul>
+                        {% endblock %}
+
+                        {# Pagination #}
+                        {% block page_account_orders_paging %}
+                            {% set totalPages = (page.orders.total / (page.orders.limit ?: 1))|round(0, 'ceil') %}
+
+                            {% if totalPages > 1 %}
+                                {% set formAjaxSubmitOptions = {
+                                    replaceSelectors: '.account-orders-main',
+                                    submitOnChange: true
+                                } %}
+
+                                <div class="account-orders-pagination mt-4">
+                                    <form class="account-orders-pagination-form"
+                                          action="{{ path('frontend.account.order.page') }}"
+                                          method="post"
+                                          data-form-ajax-submit="true"
+                                          data-form-ajax-submit-options="{{ formAjaxSubmitOptions|json_encode }}"
+                                          data-form-ajax-pagination="true">
+
+                                        <input type="hidden" name="p" value="1">
+
+                                        {% sw_include '@Storefront/storefront/component/pagination.html.twig' with { entities: page.orders } %}
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    {% endif %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+{% endblock %}
+
+{% block base_footer_inner %}
+    {% sw_include '@Storefront/storefront/layout/footer/footer.html.twig' with {
+        showVatNotice: false
+    } %}
+{% endblock %}

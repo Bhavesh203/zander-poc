@@ -59,34 +59,34 @@
 
 // 2. Desktop Account Sidebar (Exact Match to Reference Image)
 .zanders-account-aside {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Roboto', sans-serif;
     margin-bottom: 24px;
+    width: 100%;
+    max-width: 280px;
 
     .card.account-menu-inner {
-        border: 1px solid #e0e0e0;
+        border: 1px solid #333333;
         border-radius: 0;
         overflow: hidden;
         background-color: #ffffff;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        box-shadow: 4px 4px 36px 0px rgba(0, 0, 0, 0.12);
     }
 
     // Top Header: Solid Crimson Red banner with centered white uppercase title
     .card-header.zanders-account-aside-header {
-        background-color: $sw-color-brand-primary;
-        border-bottom: 0;
+        background-color: $sw-color-brand-primary; // #991020
         border-radius: 0;
-        padding: 14px 16px;
+        padding: 19px 14px;
         text-align: center;
         display: block;
+        margin: 0;
 
         .account-aside-title {
             color: #ffffff;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14.5px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            line-height: 1.2;
+            line-height: 21px;
             margin: 0;
         }
     }
@@ -99,22 +99,22 @@
         border-radius: 0;
 
         .account-aside-item {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
             width: 100%;
-            padding: 12px 18px;
+            padding: 16px;
             background-color: #ffffff;
             border: 0;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #000000;
             border-radius: 0;
-            font-family: 'Poppins', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            color: #333333;
+            color: #111111;
             text-decoration: none;
             text-align: left;
-            line-height: 1.35;
+            line-height: 19px;
             transition: background-color 0.15s ease, color 0.15s ease;
 
             &:hover,
@@ -125,9 +125,9 @@
             }
 
             &.is-active {
-                background-color: #f8f4f5;
-                color: $sw-color-brand-primary;
-                font-weight: 700;
+                background-color: #f5f5f5;
+                color: #111111;
+                font-weight: 500;
             }
 
             // Highlighted Item: PAYMENT PORTAL in Crimson Red
@@ -137,7 +137,7 @@
 
                 &:hover,
                 &:focus {
-                    background-color: #f8f4f5;
+                    background-color: #f7f7f7;
                     color: $zanders-color-primary-dark;
                 }
             }
@@ -148,161 +148,221 @@
         }
     }
 
-    // Footer with subtle Logout link
+    // Footer omitted to match reference design
     .card-footer.account-aside-footer {
-        padding: 11px 18px;
-        background-color: #f9fafb;
-        border-top: 1px solid #e0e0e0;
-        border-radius: 0;
-        text-align: center;
-
-        .account-aside-logout-link {
-            display: inline-block;
-            font-family: 'Poppins', sans-serif;
-            font-size: 11.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #666666;
-            text-decoration: none;
-            transition: color 0.15s ease;
-
-            &:hover,
-            &:focus {
-                color: $sw-color-brand-primary;
-                text-decoration: underline;
-            }
-        }
+        display: none !important;
     }
 }
 
-// 3. Header Account Dropdown
-.zanders-header-account-menu {
-    font-family: 'Poppins', sans-serif;
-    min-width: 220px;
-
-    .card.account-menu-inner {
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        overflow: hidden;
-        background-color: #ffffff;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-header.zanders-account-aside-header {
-        padding: 12px 16px;
-        background-color: $sw-color-brand-primary;
-        color: #ffffff;
-        font-weight: 700;
-        font-size: 13px;
-        border-bottom: 0;
-
-        .zanders-account-greeting {
-            color: #ffffff;
-            font-size: 13px;
-            font-weight: 700;
-            margin: 0;
-        }
-    }
-
-    .account-aside-list-group {
-        padding: 4px 0;
-
-        .account-aside-item {
-            display: block;
-            padding: 9px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #333333;
-            text-decoration: none;
-            transition: all 0.15s ease;
-
-            &:hover,
-            &:focus {
-                background-color: #f7f7f7;
-                color: $sw-color-brand-primary;
-                text-decoration: none;
-            }
-
-            &.is-active {
-                background-color: rgba(153, 16, 32, 0.06);
-                color: $sw-color-brand-primary;
-                font-weight: 700;
-            }
-        }
-    }
-
-    .card-footer.account-aside-footer {
-        padding: 8px 16px;
-        background-color: #f9fafb;
-        border-top: 1px solid #eeeeee;
-        text-align: center;
-
-        .account-aside-logout-link {
-            font-size: 11.5px;
-            font-weight: 700;
-            color: #666666;
-            text-decoration: none;
-
-            &:hover,
-            &:focus {
-                color: $sw-color-brand-primary;
-                text-decoration: underline;
-            }
-        }
-    }
-}
-
+// 3. Header Account Dropdown (Clean, Minimalist & Modern)
 .account-menu-dropdown {
-    min-width: 260px;
+    min-width: 230px;
+    max-width: 270px;
     padding: 0;
-    border: 0;
-    border-radius: 4px;
-    background-color: transparent;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    margin-top: 8px !important;
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 6px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden;
+    z-index: 1050;
 
-    .header-account-menu {
-        margin: 0;
-    }
-
-    .account-menu-login {
-        padding: 16px;
+    .zanders-clean-account-menu {
+        font-family: 'Roboto', sans-serif;
         background-color: #ffffff;
-        border: 1px solid #e4e4e4;
-        border-radius: 4px;
+        padding: 0;
+        margin: 0;
 
-        .account-menu-login-button {
-            width: 100%;
-            background-color: $sw-color-brand-primary;
-            border-color: $sw-color-brand-primary;
-            color: #ffffff;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            border-radius: 2px;
-            padding: 10px 16px;
+        // User info header
+        .clean-account-header {
+            padding: 14px 18px 12px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
 
-            &:hover,
-            &:focus {
-                background-color: $zanders-color-primary-dark;
-                border-color: $zanders-color-primary-dark;
-                color: #ffffff;
+            .clean-account-greeting {
+                display: block;
+                font-size: 11px;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                color: #888888;
+                margin-bottom: 2px;
+            }
+
+            .clean-account-name {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                color: #111111;
+                line-height: 1.3;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .clean-account-email {
+                display: block;
+                font-size: 12px;
+                color: #666666;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-top: 2px;
             }
         }
 
-        .account-menu-register {
-            margin-top: 10px;
-            font-size: 12.5px;
-            color: #555555;
+        // Clean link list
+        .clean-account-nav {
+            list-style: none;
+            padding: 6px 0;
+            margin: 0;
+
+            li {
+                padding: 0;
+                margin: 0;
+            }
+
+            .clean-account-link {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 9px 18px;
+                color: #333333;
+                font-size: 13.5px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: background-color 0.15s ease, color 0.15s ease;
+
+                .clean-account-icon {
+                    width: 16px;
+                    height: 16px;
+                    flex-shrink: 0;
+                    color: #777777;
+                    transition: color 0.15s ease, stroke 0.15s ease;
+                }
+
+                span {
+                    line-height: 1.3;
+                }
+
+                &:hover,
+                &:focus {
+                    background-color: #f7f7f7;
+                    color: #991020;
+
+                    .clean-account-icon {
+                        color: #991020;
+                        stroke: #991020;
+                    }
+                }
+
+                &.is-active {
+                    color: #991020;
+                    font-weight: 600;
+
+                    .clean-account-icon {
+                        color: #991020;
+                        stroke: #991020;
+                    }
+                }
+            }
+        }
+
+        // Clean divider & Sign Out
+        .clean-account-footer {
+            padding: 6px 0 8px;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 2px;
+
+            .clean-account-logout {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 9px 18px;
+                color: #666666;
+                font-size: 13.5px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: background-color 0.15s ease, color 0.15s ease;
+
+                .clean-account-icon {
+                    width: 16px;
+                    height: 16px;
+                    flex-shrink: 0;
+                    color: #888888;
+                    transition: color 0.15s ease;
+                }
+
+                &:hover,
+                &:focus {
+                    background-color: #fff5f5;
+                    color: #991020;
+
+                    .clean-account-icon {
+                        color: #991020;
+                        stroke: #991020;
+                    }
+                }
+            }
+        }
+
+        // Unauthenticated (logged out) state
+        .clean-account-unauth {
+            padding: 18px;
             text-align: center;
 
-            a {
-                color: $sw-color-brand-primary;
+            .clean-account-unauth-title {
+                font-size: 15px;
                 font-weight: 600;
-                text-decoration: underline;
+                color: #111111;
+                margin-bottom: 6px;
+            }
+
+            .clean-account-unauth-desc {
+                font-size: 12px;
+                line-height: 1.5;
+                color: #666666;
+                margin-bottom: 14px;
+            }
+
+            .clean-account-btn-login {
+                width: 100%;
+                background-color: #991020;
+                border: 1px solid #991020;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                padding: 9px 16px;
+                border-radius: 3px;
+                text-decoration: none;
+                display: inline-block;
+                transition: background-color 0.15s ease;
+
+                &:hover,
+                &:focus {
+                    background-color: #7c0c19;
+                    border-color: #7c0c19;
+                    color: #ffffff;
+                }
+            }
+
+            .clean-account-unauth-register {
+                margin-top: 12px;
+                font-size: 12px;
+                color: #777777;
+
+                a {
+                    color: #991020;
+                    font-weight: 600;
+                    text-decoration: underline;
+                    margin-left: 4px;
+
+                    &:hover {
+                        color: #7c0c19;
+                    }
+                }
             }
         }
     }
@@ -347,7 +407,7 @@
         margin: 0 0 10px;
         border-bottom: 2px solid $sw-color-brand-primary;
 
-        + p {
+        +p {
             font-size: 14px;
             color: #555555;
             margin: 0 0 24px;
@@ -527,6 +587,7 @@
 
 // 5. Your Profile Specifics (/account/profile)
 .account-profile {
+
     .account-profile-personal,
     .account-profile-credentials,
     .account-email,
@@ -635,125 +696,449 @@
     }
 }
 
-// 7. Order History & Order Detail Cards (/account/order)
-.account-orders,
-.account-overview-newest-order {
-    .order-wrapper {
-        background-color: #ffffff;
-        border: 1px solid #e4e4e4;
-        border-left: 4px solid $sw-color-brand-primary;
-        border-radius: 4px;
-        padding: 18px 20px;
-        margin-bottom: 18px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    }
+// 7. Order History Table & Cards (/account/order)
+// Exact visual match to reference screenshot:
+// - Header: "MY OPEN ORDERS" in crimson red with full-width crimson underline
+// - Table: Zebra-striped rows with dashed horizontal dividers
+// - Header: light grey #f2f2f2 with bold crimson red #991020 headers
+// - Action: crimson red "VIEW ORDER" link
+// =============================================================================
+// Orders Page & Order History Table (Exact Match to Reference Mockup)
+// =============================================================================
 
-    .order-item-header {
-        .order-table-header-heading {
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            color: #111111;
-            margin-bottom: 4px;
+.account-orders.zanders-account-orders,
+.account-orders {
+    .zanders-account-header {
+        margin-bottom: 24px;
+
+        .zanders-account-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-        .order-table-header-order-number {
-            font-size: 13px;
-            color: #555555;
-            margin-bottom: 12px;
+        .zanders-account-title-bar {
+            display: inline-block;
+            width: 14px;
+            height: 32px;
+            background-color: $sw-color-brand-primary; // #991020
+            flex-shrink: 0;
+        }
 
-            .order-table-header-label {
-                color: #222222;
-                font-weight: 600;
+        .zanders-account-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: $sw-color-brand-primary; // #991020
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .zanders-account-title-rule {
+            height: 2px;
+            background-color: $sw-color-brand-primary;
+            width: 100%;
+            margin-top: 10px;
+        }
+    }
+
+    .zanders-orders-empty {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 32px 20px;
+    }
+}
+
+// =============================================================================
+// 7. Zanders Orders Overview & Order Details (Clean, Attractive, High-End B2B Design)
+// =============================================================================
+
+// Order Wrapper Card
+.order-wrapper.zanders-order-wrapper,
+.order-wrapper {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid $sw-color-brand-primary; // #991020
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+        border-color: #cbd5e1;
+        border-left-color: $sw-color-brand-primary;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    // Top Header Row
+    .order-item-header {
+        .zanders-order-number-badge,
+        .order-table-header-order-number .order-table-body-value {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            background-color: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+
+        .zanders-order-date,
+        .order-table-header-heading {
+            font-size: 14px;
+            color: #475569;
+            font-weight: 500;
+            margin: 0;
+
+            strong {
+                color: #0f172a;
+                font-weight: 700;
             }
         }
 
+        .zanders-status-pill,
         .order-item-status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            padding: 5px 12px;
+            padding: 4px 12px;
             border-radius: 999px;
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.35px;
+            letter-spacing: 0.4px;
 
+            &.zanders-status-open,
             &.order-item-status-badge-open {
-                background-color: rgba(153, 16, 32, 0.12);
+                background-color: #fef2f2;
+                border: 1px solid #fecaca;
                 color: $sw-color-brand-primary;
             }
 
+            &.zanders-status-in_progress,
             &.order-item-status-badge-in_progress {
-                background-color: #e8f1fb;
-                color: #1a56a0;
+                background-color: #eff6ff;
+                border: 1px solid #bfdbfe;
+                color: #1d4ed8;
             }
 
+            &.zanders-status-completed,
             &.order-item-status-badge-completed {
-                background-color: #edf7f0;
-                color: #1b7a3d;
+                background-color: #f0fdf4;
+                border: 1px solid #bbf7d0;
+                color: #15803d;
             }
 
+            &.zanders-status-cancelled,
             &.order-item-status-badge-cancelled {
-                background-color: #f0f0f0;
-                color: #666666;
+                background-color: #f8fafc;
+                border: 1px solid #e2e8f0;
+                color: #64748b;
             }
         }
 
-        .order-table-header-order-table-header {
-            margin: 0;
-            padding: 8px 12px;
-            background-color: #f6f6f6;
-            border-top: 1px solid #e8e8e8;
-            border-bottom: 1px solid #e8e8e8;
-            font-size: 11.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            color: #555555;
-        }
-
-        .order-table-header-order-table-body {
-            margin: 0;
-            padding: 12px;
+        .zanders-context-menu-btn,
+        .order-table-header-context-menu {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            color: #64748b;
+            padding: 0;
+            display: inline-flex;
             align-items: center;
-            font-size: 13px;
-            color: #222222;
+            justify-content: center;
+            transition: all 0.15s ease;
+
+            &:hover,
+            &:focus {
+                background-color: #f1f5f9;
+                color: #0f172a;
+                border-color: #cbd5e1;
+            }
+        }
+    }
+
+    // Metadata Bar: Clean 4-Column Grid with Explicit Labels
+    .zanders-order-meta-grid,
+    .order-table-header-order-table-body {
+        margin: 16px 0 0 0;
+        padding: 16px 20px;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+
+        .zanders-meta-cell,
+        .order-table-header-order-table-body-cell:not(.order-item-actions) {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 160px;
+            min-width: 140px;
+
+            .zanders-meta-label,
+            .order-table-header-label {
+                display: block !important;
+                position: static !important;
+                width: auto !important;
+                height: auto !important;
+                clip: auto !important;
+                overflow: visible !important;
+                font-size: 11px !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                color: #64748b !important;
+                letter-spacing: 0.4px !important;
+                margin-bottom: 3px !important;
+            }
+
+            .zanders-meta-value,
+            .order-table-body-value {
+                font-size: 13.5px;
+                font-weight: 600;
+                color: #0f172a;
+            }
         }
 
+        .zanders-meta-action,
+        .order-item-actions {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .zanders-order-toggle-btn,
         .order-hide-btn {
             background-color: #ffffff;
-            border: 1px solid $sw-color-brand-primary;
-            border-radius: 2px;
+            border: 1.5px solid $sw-color-brand-primary;
+            border-radius: 4px;
             color: $sw-color-brand-primary;
+            font-family: 'Poppins', sans-serif;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.35px;
-            padding: 6px 14px;
-            transition: background-color 0.15s ease, color 0.15s ease;
+            letter-spacing: 0.4px;
+            padding: 8px 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
 
             &:hover,
-            &:focus,
+            &:focus {
+                background-color: $sw-color-brand-primary;
+                border-color: $sw-color-brand-primary;
+                color: #ffffff;
+                box-shadow: 0 2px 6px rgba(153, 16, 32, 0.2);
+            }
+
             &:not(.collapsed) {
                 background-color: $sw-color-brand-primary;
                 border-color: $sw-color-brand-primary;
                 color: #ffffff;
-                box-shadow: none;
+
+                .zanders-toggle-btn-view,
+                .order-view-btn-text {
+                    display: none !important;
+                }
+                .zanders-toggle-btn-hide,
+                .order-hide-btn-text {
+                    display: inline !important;
+                }
+            }
+
+            &.collapsed {
+                .zanders-toggle-btn-view,
+                .order-view-btn-text {
+                    display: inline !important;
+                }
+                .zanders-toggle-btn-hide,
+                .order-hide-btn-text {
+                    display: none !important;
+                }
             }
         }
     }
 
-    .order-item-detail {
-        margin-top: 14px;
-        padding-top: 14px;
-        border-top: 1px solid #e8e8e8;
+    // Hide raw vendor duplicate header that had no borders
+    .order-table-header-order-table-header {
+        display: none !important;
+    }
+}
 
-        .order-item-detail-summary {
-            background-color: #f8f8f8;
-            border: 1px solid #ececec;
-            border-radius: 3px;
-            padding: 14px 16px;
+// Collapsible Order Details & Line Items Styling
+.order-item-detail.zanders-order-item-detail,
+.order-item-detail {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid #e2e8f0;
+
+    // Header bar (PRODUCT | QUANTITY | UNIT PRICE | SUBTOTAL)
+    .zanders-detail-header,
+    .order-detail-content-header {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 10px 16px;
+        margin-bottom: 12px;
+        font-size: 11.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #475569;
+        letter-spacing: 0.5px;
+        display: block;
+    }
+
+    // Line Item Rows
+    .zanders-line-item-row,
+    .line-item.is-order {
+        padding: 16px 8px;
+        border-bottom: 1px solid #f1f5f9;
+        margin: 0;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        // Thumbnail
+        .zanders-item-thumbnail,
+        .line-item-info-img {
+            width: 64px;
+            min-width: 64px;
+            height: 64px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 3px;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            img,
+            .line-item-img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        // Details Container (NO TEXT COLLISION)
+        .zanders-item-info,
+        .line-item-details,
+        .line-item-details-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 3px;
+
+            .zanders-item-title,
+            .line-item-label {
+                display: block !important;
+                font-size: 14px !important;
+                font-weight: 700 !important;
+                color: #0f172a !important;
+                line-height: 1.4 !important;
+                margin-bottom: 2px !important;
+                text-decoration: none !important;
+
+                a {
+                    color: #0f172a !important;
+                    text-decoration: none !important;
+                    transition: color 0.15s ease;
+
+                    &:hover {
+                        color: $sw-color-brand-primary !important;
+                    }
+                }
+            }
+
+            .zanders-item-sku,
+            .line-item-product-number {
+                font-size: 12px !important;
+                color: #64748b !important;
+                font-weight: 500 !important;
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                line-height: 1.3 !important;
+            }
+
+            // Hide wishlist action in order history view
+            .product-wishlist-action,
+            .line-item-wishlist,
+            .btn-wishlist {
+                display: none !important;
+            }
+        }
+
+        .line-item-quantity {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .line-item-unit-price,
+        .line-item-unit-price-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .line-item-total-price,
+        .line-item-total-price-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+    }
+
+    // Detail Footer & Pricing Summary Cards
+    .zanders-detail-footer,
+    .order-item-detail-footer {
+        padding-top: 20px;
+        margin-top: 20px;
+        border-top: 1px solid #e2e8f0;
+
+        .zanders-summary-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px 22px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+            h6 {
+                color: #0f172a;
+                letter-spacing: 0.5px;
+            }
+
+            dt {
+                color: #64748b;
+                font-size: 13px;
+                font-weight: 500;
+            }
+
+            dd {
+                color: #0f172a;
+                font-size: 13.5px;
+                font-weight: 600;
+            }
+
+            .zanders-price-total {
+                color: $sw-color-brand-primary !important;
+                font-size: 20px !important;
+                font-weight: 700 !important;
+            }
         }
     }
 }
@@ -1040,4 +1425,3 @@
         }
     }
 }
-

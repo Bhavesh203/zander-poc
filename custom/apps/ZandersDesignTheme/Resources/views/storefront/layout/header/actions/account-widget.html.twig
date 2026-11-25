@@ -13,8 +13,17 @@
                 d="M8.7502 10.573C5.09707 10.573 2.12207 13.023 2.12207 16.0417C2.12207 16.2459 2.28249 16.4063 2.48665 16.4063H15.0137C15.2179 16.4063 15.3783 16.2459 15.3783 16.0417C15.3783 13.023 12.4033 10.573 8.7502 10.573Z"
                 fill="white" />
         </svg>
-
     </span>
     <span class="top-bar-text">{{ 'account.myAccount'|trans|sw_sanitize }}</span>
+    <svg class="account-menu-chevron" width="9" height="5" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L5 5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
 </button>
+{% endblock %}
+
+{% block layout_header_actions_account_widget_dropdown_menu %}
+<div class="dropdown-menu dropdown-menu-end account-menu-dropdown js-account-menu-dropdown"
+     aria-labelledby="accountWidget">
+    {% sw_include '@Storefront/storefront/layout/header/account-menu.html.twig' %}
+</div>
 {% endblock %}

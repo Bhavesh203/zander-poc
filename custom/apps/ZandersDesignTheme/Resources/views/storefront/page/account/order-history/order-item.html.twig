@@ -1,0 +1,162 @@
+{% sw_extends '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+
+{% block page_account_order_item_overview %}
+    {% set ORDER_TRANSACTION_STATE_OPEN = constant('Shopware\\Core\\Checkout\\Order\\Aggregate\\OrderTransaction\\OrderTransactionStates::STATE_OPEN') %}
+    {% set ORDER_TRANSACTION_STATE_FAILED = constant('Shopware\\Core\\Checkout\\Order\\Aggregate\\OrderTransaction\\OrderTransactionStates::STATE_FAILED') %}
+    {% set ORDER_TRANSACTION_STATE_REMINDED = constant('Shopware\\Core\\Checkout\\Order\\Aggregate\\OrderTransaction\\OrderTransactionStates::STATE_REMINDED') %}
+    {% set ORDER_TRANSACTION_STATE_CANCELLED = constant('Shopware\\Core\\Checkout\\Order\\Aggregate\\OrderTransaction\\OrderTransactionStates::STATE_CANCELLED') %}
+    {% set ORDER_TRANSACTION_STATE_UNCONFIRMED = constant('Shopware\\Core\\Checkout\\Order\\Aggregate\\OrderTransaction\\OrderTransactionStates::STATE_UNCONFIRMED') %}
+    {% set ALLOWED_TRANSACTION_STATES = constant('Shopware\\Core\\Checkout\\Order\\SalesChannel\\OrderService::ALLOWED_TRANSACTION_STATES') %}
+    {% set ORDER_STATE_OPEN = constant('Shopware\\Core\\Checkout\\Order\\OrderStates::STATE_OPEN') %}
+    {% set ORDER_STATE_CANCELLED = constant('Shopware\\Core\\Checkout\\Order\\OrderStates::STATE_CANCELLED') %}
+    {% set PRODUCT_LINE_ITEM_TYPE = constant('Shopware\\Core\\Checkout\\Cart\\LineItem\\LineItem::PRODUCT_LINE_ITEM_TYPE') %}
+
+    {% set states = [
+        ORDER_TRANSACTION_STATE_FAILED,
+        ORDER_TRANSACTION_STATE_REMINDED,
+        ORDER_TRANSACTION_STATE_UNCONFIRMED,
+        ORDER_TRANSACTION_STATE_CANCELLED
+    ] %}
+
+    {% set orderState = order.stateMachineState.technicalName %}
+    {% set allowOrderCancellation = orderState == ORDER_STATE_OPEN and config('core.cart.enableOrderRefunds') %}
+    {% if feature('v6.8.0.0') %}
+        {% set orderPaymentState = order.primaryOrderTransaction.stateMachineState.technicalName %}
+    {% else %}
+        {% set orderPaymentState = order.transactions.last.stateMachineState.technicalName %}
+    {% endif %}
+    {% set isPaymentNeeded = orderPaymentState in states and orderState != ORDER_STATE_CANCELLED %}
+
+    <article class="order-wrapper zanders-order-wrapper" aria-label="{{ 'account.orderItemAriaLabel'|trans({ '%order_number%': order.orderNumber }) }}">
+        {# --- 1. Order Header: Date, Order Number, Status, Context Menu --- #}
+        <div class="order-item-header zanders-order-item-header">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div class="d-flex align-items-center flex-wrap gap-3">
+                    <span class="zanders-order-number-badge">
+                        {{ 'account.orderNumber'|trans|default('Order') }} #{{ order.orderNumber }}
+                    </span>
+                    <span class="zanders-order-date text-muted">
+                        {{ 'account.orderHeadline'|trans|default('Order date') }}: <strong>{{ order.orderDateTime|date('d M Y') }}</strong>
+                    </span>
+                    <span class="badge zanders-status-pill zanders-status-{{ orderState|lower }}">
+                        {{ order.stateMachineState.translated.name }}
+                    </span>
+                </div>
+
+                {# Context Actions Menu (...) #}
+                <div class="order-table-header-context-menu-wrapper position-relative">
+                    {% block page_account_order_item_context_menu %}
+                        <button class="btn btn-sm btn-light zanders-context-menu-btn"
+                                type="button"
+                                id="accountOrderDropdown-{{ order.id }}"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                aria-label="{{ 'account.orderActions'|trans|sw_sanitize }}">
+                            {% sw_icon 'more-horizontal' %}
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-end shadow-sm zanders-context-dropdown">
+                            {% if orderState != ORDER_STATE_CANCELLED and orderPaymentState in ALLOWED_TRANSACTION_STATES %}
+                                <a class="dropdown-item" href="{{ path('frontend.account.edit-order.page', { orderId: order.id }) }}">
+                                    {{ 'account.orderContextMenuChangePayment'|trans|default('Change / Complete Payment') }}
+                                </a>
+                            {% endif %}
+
+                            {# Reorder #}
+                            <form action="{{ path('frontend.checkout.cart.reorder', { orderId: order.id }) }}"
+                                  method="post"
+                                  data-add-to-cart="true">
+                                <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                <button class="dropdown-item" type="submit">{{ 'account.orderContextMenuReorder'|trans|default('Reorder') }}</button>
+                            </form>
+
+                            {# Cancel #}
+                            {% if allowOrderCancellation %}
+                                {% set modalId = 'cancelOrderModal-' ~ order.id %}
+                                <button type="button"
+                                        class="dropdown-item text-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#{{ modalId }}">
+                                    {{ 'account.editOrderCancelOrderButton'|trans|default('Cancel Order') }}
+                                </button>
+                            {% endif %}
+                        </div>
+                        {% if allowOrderCancellation %}
+                            {% sw_include '@Storefront/storefront/page/account/order/cancel-order-modal.html.twig' %}
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            {# --- 2. Metadata Bar: 4 Clean Columns with Explicit Labels + Toggle Button --- #}
+            <div class="zanders-order-meta-grid">
+                {# Shipping Status #}
+                <div class="zanders-meta-cell">
+                    <span class="zanders-meta-label">{{ 'account.orderShippingStatus'|trans|default('Shipping Status') }}</span>
+                    <span class="zanders-meta-value">
+                        {% if feature('v6.8.0.0') %}
+                            {{ order.primaryOrderDelivery ? order.primaryOrderDelivery.stateMachineState.translated.name : '—' }}
+                        {% else %}
+                            {{ order.deliveries|length > 0 ? order.deliveries.first.stateMachineState.translated.name : '—' }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                {# Payment Status #}
+                <div class="zanders-meta-cell">
+                    <span class="zanders-meta-label">{{ 'account.orderPaymentStatus'|trans|default('Payment Status') }}</span>
+                    <span class="zanders-meta-value">
+                        {% if feature('v6.8.0.0') %}
+                            {{ order.primaryOrderTransaction ? order.primaryOrderTransaction.stateMachineState.translated.name : '—' }}
+                        {% else %}
+                            {{ order.transactions|length > 0 ? order.transactions.last.stateMachineState.translated.name : '—' }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                {# Payment Method #}
+                <div class="zanders-meta-cell">
+                    <span class="zanders-meta-label">{{ 'account.orderPaymentMethod'|trans|default('Payment Method') }}</span>
+                    <span class="zanders-meta-value">
+                        {% if feature('v6.8.0.0') %}
+                            {{ order.primaryOrderTransaction ? order.primaryOrderTransaction.paymentMethod.translated.name : '—' }}
+                        {% else %}
+                            {{ order.transactions|length > 0 ? order.transactions.last.paymentMethod.translated.name : '—' }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                {# Shipping Method #}
+                <div class="zanders-meta-cell">
+                    <span class="zanders-meta-label">{{ 'account.orderShippingMethod'|trans|default('Shipping Method') }}</span>
+                    <span class="zanders-meta-value">
+                        {% if feature('v6.8.0.0') %}
+                            {{ order.primaryOrderDelivery ? order.primaryOrderDelivery.shippingMethod.translated.name : '—' }}
+                        {% else %}
+                            {{ order.deliveries|length > 0 ? order.deliveries.first.shippingMethod.translated.name : '—' }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                {# Toggle Button #}
+                <div class="zanders-meta-action order-item-actions">
+                    <button class="btn zanders-order-toggle-btn order-hide-btn collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#order{{ order.orderNumber }}"
+                            aria-expanded="false"
+                            aria-controls="order{{ order.orderNumber }}"
+                            aria-label="{{ 'account.orderActionView'|trans|default('VIEW DETAILS') }}">
+                        <span class="zanders-toggle-btn-view order-view-btn-text">{{ 'account.orderActionView'|trans|default('VIEW DETAILS') }}</span>
+                        <span class="zanders-toggle-btn-hide order-hide-btn-text">{{ 'account.orderActionHide'|trans|default('HIDE DETAILS') }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# --- 3. Collapsible Order Detail Body --- #}
+        {% block page_account_order_item_detail %}
+            {% sw_include '@Storefront/storefront/page/account/order-history/order-detail.html.twig' %}
+        {% endblock %}
+    </article>
+{% endblock %}
