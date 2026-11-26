@@ -371,12 +371,92 @@
                     </div>
                 {% endblock %}
 
-                {% if searchResult.total > searchResult.limit %}
+                {% if totalItems > 0 %}
                     {% block element_product_listing_pagination_nav_bottom %}
-                        {% sw_include '@Storefront/storefront/component/pagination.html.twig' with {
-                            entities: searchResult,
-                            paginationLocation: 'bottom',
-                        } %}
+                        {% set searchQueryBottom = '' %}
+                        {% if searchResult.currentFilters.search is defined and searchResult.currentFilters.search %}
+                            {% set searchQueryBottom = '&search=' ~ searchResult.currentFilters.search %}
+                        {% endif %}
+                        {% set prevPageBottom = currentPage <= 1 ? 1 : (currentPage - 1) %}
+                        {% set nextPageBottom = currentPage >= totalPages ? totalPages : (currentPage + 1) %}
+
+                        {% set pStartBottom = currentPage - 2 %}
+                        {% if pStartBottom < 1 %}{% set pStartBottom = 1 %}{% endif %}
+                        {% set pEndBottom = pStartBottom + 4 %}
+                        {% if pEndBottom > totalPages %}
+                            {% set pEndBottom = totalPages %}
+                            {% set pStartBottom = pEndBottom - 4 %}
+                            {% if pStartBottom < 1 %}{% set pStartBottom = 1 %}{% endif %}
+                        {% endif %}
+
+                        <div class="cms-element-product-listing-actions zanders-listing-toolbar zanders-listing-toolbar--bottom mt-4">
+                            <div class="zanders-toolbar-row zanders-toolbar-row--top">
+                                <div class="zanders-toolbar-items-count">
+                                    Items {{ rangeStart }}-{{ rangeEnd }} Of {{ totalItems }}
+                                </div>
+
+                                <div class="zanders-toolbar-pagination">
+                                    <span class="zanders-toolbar-label">Page:</span>
+                                    <nav aria-label="{{ 'general.pagination.title'|trans|striptags }}"
+                                         class="pagination-nav listing-pagination-bottom"
+                                         data-pagination-location="bottom">
+                                        <ul class="pagination zanders-toolbar-pages">
+                                            <li class="page-item page-prev{% if currentPage <= 1 %} disabled{% endif %}">
+                                                <a href="?p={{ prevPageBottom }}{{ searchQueryBottom }}"
+                                                   class="page-link"
+                                                   data-page="{{ prevPageBottom }}"
+                                                   data-focus-id="prev-bottom"
+                                                   aria-label="{{ 'general.pagination.prev'|trans|striptags }}"
+                                                   {% if currentPage <= 1 %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                                    </svg>
+                                                </a>
+                                            </li>
+
+                                            {% for pageNum in pStartBottom..pEndBottom %}
+                                                {% set isActivePage = (currentPage == pageNum) %}
+                                                <li class="page-item{% if isActivePage %} active{% endif %}"{% if isActivePage %} aria-current="page"{% endif %}>
+                                                    <a href="?p={{ pageNum }}{{ searchQueryBottom }}"
+                                                       class="page-link"
+                                                       data-page="{{ pageNum }}"
+                                                       data-focus-id="{{ pageNum }}-bottom">
+                                                        <span class="visually-hidden">{{ 'general.pagination.page'|trans|sw_sanitize }}</span>{{ pageNum }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+
+                                            <li class="page-item page-next{% if currentPage >= totalPages %} disabled{% endif %}">
+                                                <a href="?p={{ nextPageBottom }}{{ searchQueryBottom }}"
+                                                   class="page-link"
+                                                   data-page="{{ nextPageBottom }}"
+                                                   data-focus-id="next-bottom"
+                                                   aria-label="{{ 'general.pagination.next'|trans|striptags }}"
+                                                   {% if currentPage >= totalPages %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+
+                                <div class="zanders-toolbar-show">
+                                    <label for="zandersLimitSelectBottom" class="zanders-toolbar-label">Show :</label>
+                                    <select id="zandersLimitSelectBottom"
+                                            class="zanders-toolbar-select js-zanders-limit-select"
+                                            aria-label="Items per page">
+                                        {% for opt in limitOptions %}
+                                            <option value="{{ opt }}"{% if opt == currentLimit %} selected{% endif %}>{{ opt }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="zanders-toolbar-label">per page</span>
+                                </div>
+                            </div>
+                        </div>
                     {% endblock %}
                 {% endif %}
             </div>

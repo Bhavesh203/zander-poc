@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- DAL Entity Definition -->
+        <service id="CustomBackorder\Core\Content\Backorder\BackorderDefinition">
+            <tag name="shopware.entity.definition" entity="custom_backorder"/>
+        </service>
+
+        <!-- Services -->
+        <service id="CustomBackorder\Service\BackorderCalculator"/>
+
+        <service id="CustomBackorder\Service\BackorderManager">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="CustomBackorder\Service\BackorderAllocationService">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <!-- Cart Processor & Validator -->
+        <service id="CustomBackorder\Core\Checkout\BackorderCartProcessor">
+            <argument type="service" id="CustomBackorder\Service\BackorderCalculator"/>
+            <argument type="service" id="CustomBackorder\Service\BackorderManager"/>
+            <tag name="shopware.cart.processor" priority="4500"/>
+        </service>
+
+        <service id="CustomBackorder\Core\Checkout\BackorderCartValidator">
+            <tag name="shopware.cart.validator"/>
+        </service>
+
+        <!-- Event Subscribers -->
+        <service id="CustomBackorder\Subscriber\OrderPlacedSubscriber">
+            <argument type="service" id="CustomBackorder\Service\BackorderManager"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="CustomBackorder\Subscriber\OrderCancelledSubscriber">
+            <argument type="service" id="CustomBackorder\Service\BackorderManager"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="CustomBackorder\Subscriber\StockUpdatedSubscriber">
+            <argument type="service" id="CustomBackorder\Service\BackorderAllocationService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+</container>
+

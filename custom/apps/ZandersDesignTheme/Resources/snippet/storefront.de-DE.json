@@ -2,7 +2,8 @@
   "account": {
     "myAccount": "Mein Konto",
     "logout": "Abmelden",
-    "loginSubmit": "Anmelden"
+    "loginSubmit": "Anmelden",
+    "orderTotal": "Gesamtbetrag"
   },
   "zanders": {
     "topBar": {
@@ -81,6 +82,12 @@
         "taxCert": "TAX CERTIFICATES",
         "paymentPortal": "PAYMENT PORTAL"
       }
+    },
+    "account": {
+      "printOrSavePdf": "Drucken / PDF speichern"
+    },
+    "pdp": {
+      "writeReview": "Bewertung schreiben"
     }
   }
 }

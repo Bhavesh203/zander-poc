@@ -212,6 +212,26 @@
                 <div class="col-12 col-lg-5 zanders-pdp-info-col">
                     <h1 class="zanders-pdp-title">{{ name }}</h1>
 
+                    {% if config('core.listing.showReview') %}
+                        {% set productReviews = page.extensions.zandersProductReviews ?? null %}
+                        {% set reviewTotal = productReviews ? productReviews.matrix.totalReviewCount : 0 %}
+                        <a href="#zanders-pdp-reviews" class="zanders-pdp-rating-summary">
+                            {% if product.ratingAverage %}
+                                {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                    points: product.ratingAverage,
+                                    style: 'text-primary'
+                                } %}
+                                <span class="zanders-pdp-rating-count">
+                                    ({{ reviewTotal }} {{ reviewTotal == 1 ? 'Review' : 'Reviews' }})
+                                </span>
+                            {% else %}
+                                <span class="zanders-pdp-rating-cta">
+                                    {{ 'zanders.pdp.writeReview'|trans|sw_sanitize }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+
                     <div class="zanders-pdp-meta-lines">
                         <div class="zanders-pdp-sku">
                             ITEM NUMBER: <span>{{ sku }}</span>
@@ -370,9 +390,9 @@
         {% set relatedProducts = (page.extensions.zandersRelatedProducts is defined and page.extensions.zandersRelatedProducts.products is defined)
             ? page.extensions.zandersRelatedProducts.products
             : altProducts %}
-        {% set relatedTitle = (page.extensions.zandersRelatedProducts is defined and page.extensions.zandersRelatedProducts.title is defined)
+        {% set relatedTitle = (page.extensions.zandersRelatedProducts is defined and page.extensions.zandersRelatedProducts.title is defined and page.extensions.zandersRelatedProducts.title != 'ALTERNATIVE PRODUCTS')
             ? page.extensions.zandersRelatedProducts.title
-            : 'ALTERNATIVE PRODUCTS' %}
+            : 'RELATED PRODUCTS' %}
         {% set relatedConfig = (page.extensions.zandersRelatedProducts is defined and page.extensions.zandersRelatedProducts.config is defined)
             ? page.extensions.zandersRelatedProducts.config
             : null %}
@@ -493,6 +513,27 @@
                 </table>
             </div>
         </section>
+
+        {# =====================================================================
+           4B. CUSTOMER REVIEWS & RATINGS
+           ===================================================================== #}
+        {% if config('core.listing.showReview') %}
+            <section id="zanders-pdp-reviews" class="zanders-pdp-reviews-section" aria-label="{{ 'detail.tabsReview'|trans|default('Reviews')|striptags }}">
+                <div class="zanders-pdp-section-header">
+                    <h2 class="zanders-pdp-section-title">{{ 'detail.tabsReview'|trans|default('REVIEWS')|sw_sanitize }}</h2>
+                    <div class="zanders-pdp-section-rule"></div>
+                </div>
+
+                <div class="zanders-pdp-reviews-card">
+                    {% sw_include '@Storefront/storefront/component/review/review.html.twig' with {
+                        reviews: page.extensions.zandersProductReviews ?? null,
+                        product: product,
+                        ratingSuccess: app.request.get('success'),
+                        redirectTo: 'frontend.detail.page'
+                    } %}
+                </div>
+            </section>
+        {% endif %}
     </div>
 
     {# =====================================================================

@@ -1,17 +1,119 @@
 {#
     Zanders Account Overview Override
     ==========================================================================
-    Extends `@Storefront/storefront/page/account/index.html.twig` to add quick
-    Zanders-styled action links ("Edit Profile", "Manage Addresses") inside the
-    overview cards while preserving all core Shopware blocks and data.
+    Extends `@Storefront/storefront/page/account/index.html.twig` to:
+    - Render a balanced 2-column top row (Personal Profile + Newsletter Settings)
+      eliminating Shopware's default empty right-hand half-row.
+    - Keep Default Billing & Default Shipping side-by-side below.
+    - Render Your Newest Order cleanly without double-nested card borders, plus
+      a quick "View All Orders" link.
 #}
 {% sw_extends '@Storefront/storefront/page/account/index.html.twig' %}
 
-{% block page_account_overview_profile_actions_content %}
-    <a href="{{ path('frontend.account.profile.page') }}"
-       class="btn zanders-account-outline-btn"
-       title="{{ 'account.profileLink'|trans|striptags }}">
-        {{ 'account.profileLink'|trans|sw_sanitize }}
-    </a>
+{% block page_account_overview_main %}
+    <div class="row g-4 mb-4">
+        {% block page_account_overview_profile %}
+            <div class="col-12 col-lg-6 card-col account-overview-card account-overview-profile">
+                {% block page_account_overview_profile_card %}
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            {% block page_account_overview_profile_title %}
+                                <h2 class="card-title">
+                                    {{ 'account.overviewProfileHeader'|trans|sw_sanitize }}
+                                </h2>
+                            {% endblock %}
+
+                            <div class="zanders-overview-card-content">
+                                {% block page_account_overview_profile_content %}
+                                    <p class="fw-semibold text-dark mb-1">
+                                        {% if context.customer.salutation and context.customer.salutation.salutationKey != 'not_specified' %}
+                                            {{ context.customer.salutation.translated.displayName }}
+                                        {% endif %}
+                                        {% if context.customer.title %}
+                                            {{ context.customer.title }}
+                                        {% endif %}
+                                        {{ context.customer.firstName }} {{ context.customer.lastName }}
+                                    </p>
+                                {% endblock %}
+
+                                {% block page_account_overview_profile_company %}
+                                    {% sw_include '@Storefront/storefront/component/account/customer-overview-personal-company.html.twig' with {
+                                        customer: context.customer,
+                                    } %}
+                                {% endblock %}
+
+                                {% block page_account_overview_profile_email %}
+                                    <p class="text-muted mb-0">
+                                        {{ context.customer.email|decodeIdnEmail }}
+                                    </p>
+                                {% endblock %}
+                            </div>
+
+                            {% block page_account_overview_profile_actions %}
+                                <div class="card-actions mt-auto pt-3">
+                                    {% block page_account_overview_profile_actions_content %}
+                                        <a href="{{ path('frontend.account.profile.page') }}"
+                                           class="btn zanders-account-outline-btn"
+                                           title="{{ 'account.profileLink'|trans|striptags }}">
+                                            {{ 'account.profileLink'|trans|sw_sanitize }}
+                                        </a>
+                                    {% endblock %}
+                                </div>
+                            {% endblock %}
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {# Newsletter Settings paired side-by-side with Personal Profile #}
+        <div class="col-12 col-lg-6 card-col account-overview-card account-overview-newsletter">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="card-title">
+                        {{ 'account.newsletterTitle'|trans|sw_sanitize }}
+                    </h2>
+
+                    <div class="js-newsletter-wrapper zanders-overview-card-content">
+                        {% sw_include '@Storefront/storefront/page/account/newsletter.html.twig' with { newsletterAccountPagelet: page.getNewsletterAccountPagelet() } %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
+{% block page_account_overview_newsletter %}
+    {# Rendered side-by-side inside page_account_overview_main above #}
+{% endblock %}
+
+{% block page_account_overview_newest_order %}
+    {% if page.newestOrder %}
+        <div class="account-overview-newest-order zanders-overview-newest-order mt-2">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                {% block page_account_overview_newest_order_title %}
+                    <h2 class="zanders-overview-section-heading m-0">
+                        {{ 'account.overviewNewestOrderHeader'|trans|sw_sanitize }}
+                    </h2>
+                {% endblock %}
+                <a href="{{ path('frontend.account.order.page') }}" class="zanders-overview-all-orders-link">
+                    {{ 'account.ordersLink'|trans|sw_sanitize }} &rarr;
+                </a>
+            </div>
+
+            {% block page_account_overview_newest_order_content %}
+                {% block page_account_overview_newest_order_table %}
+                    <div class="order-table">
+                        {% block page_account_overview_newest_order_table_body %}
+                            <div class="order-table-body" data-order-detail-loader="true">
+                                {% for order in [page.newestOrder] %}
+                                    {% sw_include '@Storefront/storefront/page/account/order-history/order-item.html.twig' %}
+                                {% endfor %}
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            {% endblock %}
+        </div>
+    {% endif %}
+{% endblock %}

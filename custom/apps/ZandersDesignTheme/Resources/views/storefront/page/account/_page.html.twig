@@ -10,6 +10,8 @@
 #}
 {% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
 
+{% block base_breadcrumb %}{% endblock %}
+
 {% block page_account %}
     {% set isLoggedInCustomer = context.customer is not null and not context.customer.guest %}
 
@@ -17,29 +19,27 @@
         {% if isLoggedInCustomer %}
             {# Mobile & Tablet Horizontal Account Navigation Tabs (<= 991.98px) #}
             <div class="col-12 d-lg-none">
-                <nav class="zanders-account-mobile-nav" aria-label="{{ 'zanders.accountPage.sidebar.title'|trans|default('MY ACCOUNT') }}">
+                <nav class="zanders-account-mobile-nav" aria-label="{{ 'account.myAccount'|trans|striptags }}">
                     <a href="{{ path('frontend.account.home.page') }}"
                        class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.dashboard'|trans|default('ACCOUNT DASHBOARD') }}
+                        {{ 'account.overviewLink'|trans|sw_sanitize }}
                     </a>
                     <a href="{{ path('frontend.account.profile.page') }}"
                        class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.information'|trans|default('ACCOUNT INFORMATION') }}
+                        {{ 'account.profileLink'|trans|sw_sanitize }}
                     </a>
                     <a href="{{ path('frontend.account.address.page') }}"
                        class="zanders-account-mobile-tab{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.addresses'|trans|default('ADDRESS BOOK') }}
+                        {{ 'account.addressLink'|trans|sw_sanitize }}
                     </a>
                     <a href="{{ path('frontend.account.order.page') }}"
                        class="zanders-account-mobile-tab{% if activeRoute starts with('frontend.account.order') or activeRoute is same as('frontend.account.edit-order.page') %} is-active{% endif %}">
-                        {{ 'zanders.accountPage.sidebar.orders'|trans|default('MY OPEN ORDERS') }}
+                        {{ 'account.ordersLink'|trans|sw_sanitize }}
                     </a>
-                    {% if config('core.cart.wishlistEnabled') %}
-                        <a href="{{ path('frontend.wishlist.page') }}"
-                           class="zanders-account-mobile-tab{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}">
-                            {{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}
-                        </a>
-                    {% endif %}
+                    <a href="{{ path('frontend.account.logout.page') }}"
+                       class="zanders-account-mobile-tab zanders-account-mobile-tab--logout">
+                        {{ 'account.logout'|trans|sw_sanitize }}
+                    </a>
                 </nav>
             </div>
         {% endif %}

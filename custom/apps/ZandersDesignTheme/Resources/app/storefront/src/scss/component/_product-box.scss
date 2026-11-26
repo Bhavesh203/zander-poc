@@ -93,7 +93,17 @@ Matches Zanders product card design:
     }
 
     .product-rating {
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 20px;
+        margin-bottom: 8px;
+
+        .product-review-rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
     }
 
     .product-name {
@@ -271,26 +281,42 @@ Matches Zanders product card design:
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            border: 0;
+            border: 1px solid transparent;
             background-color: $zanders-color-light-bg;
-            color: lighten($zanders-color-dark-text, 40%);
+            color: #4b5563;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             padding: 0;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
             cursor: pointer;
             line-height: 1;
 
+            .icon {
+                color: inherit !important;
+            }
+
             svg {
-                width: 24px;
-                height: 24px;
-                stroke: lighten($zanders-color-dark-text, 40%);
-                stroke-width: 2;
-                // fill: none;
+                width: 20px;
+                height: 20px;
                 pointer-events: none;
-                transition: transform 0.2s ease, stroke 0.2s ease, fill 0.2s ease;
+                color: inherit;
+                transition: transform 0.18s ease, color 0.18s ease;
+            }
+
+            .icon-heart,
+            .icon-heart-fill {
+                fill: currentColor;
+                stroke: none;
+            }
+
+            .icon-scale,
+            .icon-eye {
+                width: 18px;
+                height: 18px;
+                fill: none;
+                stroke: currentColor;
             }
 
             .icon-wishlist-added,
@@ -306,13 +332,13 @@ Matches Zanders product card design:
             }
 
             &:hover {
-                background-color: $sw-color-brand-primary;
-                border-color: $sw-color-brand-primary;
-                color: $white;
+                background-color: #fef2f2;
+                border-color: rgba($sw-color-brand-primary, 0.35);
+                color: $sw-color-brand-primary;
+                transform: translateY(-1px);
 
                 svg {
-                    stroke: $white;
-                    transform: scale(1.08);
+                    transform: scale(1.06);
                 }
             }
 
@@ -320,13 +346,10 @@ Matches Zanders product card design:
             &.is-wishlist,
             &.is-active,
             &.is-added-to-compare {
-                background-color: lighten($sw-color-brand-primary, 48%);
-                border-color: $sw-color-brand-primary;
-                color: $sw-color-brand-primary;
-
-                svg {
-                    stroke: $sw-color-brand-primary;
-                }
+                background-color: $sw-color-brand-primary;
+                border: 1.5px solid $sw-color-brand-primary;
+                color: #ffffff;
+                box-shadow: 0 4px 10px rgba(153, 16, 32, 0.25);
 
                 .icon-wishlist-not-added,
                 .wishlist-not-added {
@@ -338,23 +361,19 @@ Matches Zanders product card design:
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
+                    color: #ffffff;
+                }
 
-                    svg {
-                        stroke: $sw-color-brand-primary;
-                        fill: $sw-color-brand-primary;
-                    }
+                .icon,
+                svg {
+                    color: #ffffff !important;
                 }
 
                 &:hover {
-                    background-color: $sw-color-brand-primary;
-                    border-color: $sw-color-brand-primary;
-                    color: $white;
-
-                    .icon-wishlist-added svg,
-                    .wishlist-added svg {
-                        stroke: $white;
-                        fill: $white;
-                    }
+                    background-color: $zanders-color-primary-dark;
+                    border-color: $zanders-color-primary-dark;
+                    color: #ffffff;
+                    box-shadow: 0 6px 14px rgba(122, 13, 26, 0.3);
                 }
             }
         }
@@ -367,7 +386,9 @@ Matches Zanders product card design:
         width: 100%;
 
         .product-card-btn-add,
-        .product-card-btn-buy {
+        .product-card-btn-buy,
+        .product-card-btn-backorder,
+        .product-card-btn-outofstock {
             flex: 1 1 0;
             background-color: $sw-color-brand-primary;
             border: 1px solid $sw-color-brand-primary;
@@ -396,6 +417,31 @@ Matches Zanders product card design:
                 color: $white;
                 text-decoration: none;
                 box-shadow: none;
+            }
+        }
+
+        .product-card-btn-backorder {
+            background-color: $zanders-color-dark-bg;
+            border-color: $zanders-color-dark-bg;
+
+            &:hover,
+            &:focus {
+                background-color: #111111;
+                border-color: #111111;
+            }
+        }
+
+        .product-card-btn-outofstock {
+            background-color: #e2e8f0;
+            border-color: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+
+            &:hover,
+            &:focus {
+                background-color: #e2e8f0;
+                border-color: #cbd5e1;
+                color: #64748b;
             }
         }
     }

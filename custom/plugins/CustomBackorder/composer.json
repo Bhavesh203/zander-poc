@@ -1,0 +1,33 @@
+{
+    "name": "custom/backorder",
+    "description": "Shopware 6 Backorder Plugin — allows ordering out-of-stock or low-stock products with per-order tracking, limits, and oldest-first allocation.",
+    "version": "1.0.0",
+    "type": "shopware-platform-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zanders Sporting Goods"
+        }
+    ],
+    "require": {
+        "shopware/core": "~6.7.0",
+        "shopware/storefront": "~6.7.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "CustomBackorder\\CustomBackorder",
+        "label": {
+            "en-GB": "Custom Backorder",
+            "de-DE": "Benutzerdefinierte Nachbestellung"
+        },
+        "description": {
+            "en-GB": "Enables configurable product-level backorders, mixed-stock splitting, backorder limits, and stock replenishment allocation.",
+            "de-DE": "Ermöglicht konfigurierbare Nachbestellungen auf Produktebene, Teillieferungen, Limits und Bestandszuteilung."
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "CustomBackorder\\": "src/"
+        }
+    }
+}
+

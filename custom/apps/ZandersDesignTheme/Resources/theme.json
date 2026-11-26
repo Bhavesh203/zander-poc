@@ -205,6 +205,23 @@
           "en-GB": "Phone Number",
           "de-DE": "Telefonnummer"
         }
+      },
+      "zanders-enable-buy-now": {
+        "scss": false,
+        "type": "switch",
+        "tab": "zandersSettings",
+        "block": "zandersLayout",
+        "order": 400,
+        "value": true,
+        "editable": true,
+        "label": {
+          "en-GB": "Enable Buy Now Button",
+          "de-DE": "Sofort-Kaufen-Button aktivieren"
+        },
+        "helpText": {
+          "en-GB": "Show or hide the Buy Now button on product cards and quick view modals.",
+          "de-DE": "Sofort-Kaufen-Button auf Produktkarten und im Schnellansicht-Modal anzeigen oder ausblenden."
+        }
       }
     }
   }
