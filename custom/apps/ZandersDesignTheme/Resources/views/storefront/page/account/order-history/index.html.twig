@@ -3,15 +3,12 @@
 {% block page_account_main_content %}
     {% block page_account_orders %}
         <div class="account-orders zanders-account-orders">
-            {# --- Header with Crimson Red Vertical Block --- #}
+            {# --- Header --- #}
             {% block page_account_orders_welcome %}
                 <div class="zanders-account-header">
-                    <div class="zanders-account-title-wrap">
-                        <span class="zanders-account-title-bar" aria-hidden="true"></span>
-                        <h1 class="zanders-account-title">
-                            {{ 'account.ordersTitle'|trans|sw_sanitize|default('MY OPEN ORDERS') }}
-                        </h1>
-                    </div>
+                    <h1 class="zanders-account-title">
+                        {{ 'account.ordersTitle'|trans|sw_sanitize|default('ORDERS') }}
+                    </h1>
                     <div class="zanders-account-title-rule"></div>
                 </div>
             {% endblock %}

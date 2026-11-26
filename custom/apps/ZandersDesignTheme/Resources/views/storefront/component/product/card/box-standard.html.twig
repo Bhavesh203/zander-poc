@@ -32,7 +32,16 @@
 {% endblock %}
 
 {% block component_product_box_rating %}
-{# Rating hidden #}
+    {% if config('core.listing.showReview') %}
+        <div class="product-rating">
+            {% if product.ratingAverage %}
+                {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                    points: product.ratingAverage,
+                    style: 'text-primary'
+                } %}
+            {% endif %}
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block component_product_box_name %}
@@ -74,10 +83,8 @@
         <span class="meta-value">{{ availableStock }}</span>
         {% elseif stock is not null and stock > 0 %}
         <span class="meta-value">{{ stock }}</span>
-        {% elseif product.available and not product.isCloseout %}
-        <span class="meta-value">{{ 'zanders.productCard.inStock'|trans }}</span>
         {% else %}
-        <span class="meta-value text-muted">{{ 'zanders.productCard.outOfStock'|trans }}</span>
+        <span class="meta-value text-danger fw-semibold">{{ 'zanders.productCard.outOfStock'|trans|default('Out of stock') }}</span>
         {% endif %}
     </div>
 </div>
@@ -135,11 +142,15 @@
             <input type="hidden" name="product-name" value="{{ name }}">
 
             {# Quantity Selector: Qty: [ 00 ] #}
+            {% set minQty = product.minPurchase ?: 1 %}
+            {% set positiveStock = (product.availableStock is not null and product.availableStock > 0) ? product.availableStock : ((product.stock is not null and product.stock > 0) ? product.stock : 0) %}
+            {% set maxQty = product.maxPurchase ?: (positiveStock > 0 ? positiveStock : 100) %}
+            {% if maxQty < minQty %}{% set maxQty = minQty %}{% endif %}
             <div class="product-card-qty-row">
                 <label for="qty-{{ id }}" class="product-card-qty-label">{{ 'zanders.productCard.qty'|trans }}:</label>
                 <input type="number" id="qty-{{ id }}" name="lineItems[{{ id }}][quantity]"
-                    value="{{ product.minPurchase ?: 1 }}" min="{{ product.minPurchase ?: 1 }}"
-                    max="{{ product.maxPurchase ?: (product.availableStock ?: 100) }}"
+                    value="{{ minQty }}" min="{{ minQty }}"
+                    max="{{ maxQty }}"
                     step="{{ product.purchaseSteps ?: 1 }}" class="form-control product-card-qty-input" />
             </div>
 
@@ -186,21 +197,19 @@
                             title="{{ 'listing.addToWishlist'|trans|sw_sanitize }}" data-add-to-wishlist="true"
                             data-product-id="{{ id }}" data-add-to-wishlist-options="{{ addToWishlistOptions|json_encode }}">
                             <span class="icon-wishlist-not-added">
-
-                                <svg class="icon icon-heart" width="24" height="24" viewBox="0 0 24 24" fill="#A1A1A1"
-                                    xmlns="http://www.w3.org/2000/svg">
+                                <svg class="icon icon-heart" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path
                                         d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                        fill="#A1A1A1" />
+                                        fill="currentColor" />
                                 </svg>
-
                             </span>
                             <span class="icon-wishlist-added">
-                                <svg class="icon icon-heart-fill" width="24" height="24" viewBox="0 0 24 24" fill="#8c1d2f"
-                                    xmlns="http://www.w3.org/2000/svg">
+                                <svg class="icon icon-heart-fill" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path
                                         d="M16.44 3.10001C14.63 3.10001 13.01 3.98001 12 5.33001C10.99 3.98001 9.37 3.10001 7.56 3.10001C4.49 3.10001 2 5.60001 2 8.69001C2 9.88001 2.19 10.98 2.52 12C4.1 17 8.97 19.99 11.38 20.81C11.72 20.93 12.28 20.93 12.62 20.81C15.03 19.99 19.9 17 21.48 12C21.81 10.98 22 9.88001 22 8.69001C22 5.60001 19.51 3.10001 16.44 3.10001Z"
-                                        fill="#8c1d2f" />
+                                        fill="currentColor" />
                                 </svg>
                             </span>
                         </button>
@@ -243,24 +252,52 @@
                     </button>
                 </div>
 
-                {# Action Buttons: ADD TO CART & BUY NOW #}
+                {# Action Buttons: ADD TO CART & BUY NOW (or BACK ORDER / OUT OF STOCK) #}
+                {% set showBuyNow = theme_config('zanders-enable-buy-now') is not same as(false) %}
+                {% set customBackorderEnabled = product.translated.customFields.custom_backorder_enabled ?? product.customFields.custom_backorder_enabled ?? false %}
+                {% set cardPositiveStock = (product.availableStock is not null and product.availableStock > 0) ? product.availableStock : ((product.stock is not null and product.stock > 0) ? product.stock : 0) %}
+                {% set isCardInStock = cardPositiveStock > 0 %}
+                {% set isCardBackOrder = (not isCardInStock) and (customBackorderEnabled or not product.isCloseout) %}
+                {% set canDirectOrder = (not displayFrom) and (product.childCount <= 0) and config('core.listing.allowBuyInListing') %}
+
                 <div class="product-card-action-buttons">
-                    {% if displayBuyButton and config('core.listing.allowBuyInListing') %}
-                    <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
-                        class="btn btn-primary product-card-btn-add">
-                        {{ 'zanders.productCard.addToCart'|trans }}
-                    </button>
-                    <button type="button" class="btn btn-primary product-card-btn-buy"
-                        onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
-                        {{ 'zanders.productCard.buyNow'|trans }}
-                    </button>
+                    {% if isCardBackOrder %}
+                        {% if canDirectOrder %}
+                        <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
+                            class="btn btn-primary product-card-btn-backorder">
+                            {{ 'zanders.productCard.backOrder'|trans|default('BACK ORDER') }}
+                        </button>
+                        {% else %}
+                        <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-backorder">
+                            {{ 'zanders.productCard.backOrder'|trans|default('BACK ORDER') }}
+                        </a>
+                        {% endif %}
+                    {% elseif isCardInStock %}
+                        {% if canDirectOrder %}
+                        <button type="submit" name="redirectTo" value="frontend.cart.offcanvas"
+                            class="btn btn-primary product-card-btn-add">
+                            {{ 'zanders.productCard.addToCart'|trans }}
+                        </button>
+                        {% if showBuyNow %}
+                        <button type="button" class="btn btn-primary product-card-btn-buy"
+                            onclick="var f=this.closest('form'); if(f){ var r=f.querySelector('input[name=redirectTo]'); if(r) r.value='frontend.checkout.confirm.page'; HTMLFormElement.prototype.submit.call(f); }">
+                            {{ 'zanders.productCard.buyNow'|trans }}
+                        </button>
+                        {% endif %}
+                        {% else %}
+                        <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-add">
+                            {{ 'zanders.productCard.addToCart'|trans }}
+                        </a>
+                        {% if showBuyNow %}
+                        <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-buy">
+                            {{ 'zanders.productCard.buyNow'|trans }}
+                        </a>
+                        {% endif %}
+                        {% endif %}
                     {% else %}
-                    <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-add">
-                        {{ 'zanders.productCard.addToCart'|trans }}
-                    </a>
-                    <a href="{{ detailUrl }}" class="btn btn-primary product-card-btn-buy">
-                        {{ 'zanders.productCard.buyNow'|trans }}
-                    </a>
+                        <button type="button" class="btn btn-secondary product-card-btn-outofstock" disabled>
+                            {{ 'zanders.productCard.outOfStock'|trans|default('OUT OF STOCK')|upper }}
+                        </button>
                     {% endif %}
                 </div>
             </div>

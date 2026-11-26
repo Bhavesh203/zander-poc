@@ -5,6 +5,7 @@ namespace ZandersRelatedProductSlider\Subscriber;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Content\Product\SalesChannel\ProductAvailableFilter;
+use Shopware\Core\Content\Product\SalesChannel\Review\AbstractProductReviewLoader;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -24,6 +25,7 @@ class RelatedProductSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly SalesChannelRepository $productRepository,
         private readonly SystemConfigService $systemConfigService,
+        private readonly AbstractProductReviewLoader $productReviewLoader,
     ) {
     }
 
@@ -41,12 +43,26 @@ class RelatedProductSubscriber implements EventSubscriberInterface
         $context = $event->getSalesChannelContext();
         $salesChannelId = $context->getSalesChannelId();
 
+        if ($this->systemConfigService->getBool('core.listing.showReview', $salesChannelId)) {
+            try {
+                $reviews = $this->productReviewLoader->load(
+                    $event->getRequest(),
+                    $context,
+                    $product->getId(),
+                    $product->getParentId()
+                );
+                $page->addExtension('zandersProductReviews', $reviews);
+            } catch (\Throwable) {
+                // Reviews disabled or unavailable for this product
+            }
+        }
+
         $isActive = $this->systemConfigService->getBool('ZandersRelatedProductSlider.config.active', $salesChannelId);
         if (!$isActive) {
             return;
         }
 
-        $title = $this->systemConfigService->getString('ZandersRelatedProductSlider.config.title', $salesChannelId) ?: 'ALTERNATIVE PRODUCTS';
+        $title = $this->systemConfigService->getString('ZandersRelatedProductSlider.config.title', $salesChannelId) ?: 'RELATED PRODUCTS';
         $limit = $this->systemConfigService->getInt('ZandersRelatedProductSlider.config.limit', $salesChannelId);
         if ($limit <= 0) {
             $limit = 12;

@@ -1,184 +1,209 @@
 {% sw_extends '@Storefront/storefront/component/checkout/offcanvas-cart.html.twig' %}
 
+{% set isCartNotEmpty = (page.cart.lineItems|length > 0) %}
+
 {% block utilities_offcanvas_header %}
-    <div class="offcanvas-header d-flex align-items-center justify-content-between border-bottom bg-white px-4 py-3">
-        <h4 class="offcanvas-cart-title m-0 fw-bold fs-5 text-dark">
-            My Cart
-        </h4>
-        <button type="button"
-                class="btn-close js-offcanvas-close text-reset m-0"
-                data-bs-dismiss="offcanvas"
-                aria-label="{{ 'global.default.close'|trans|striptags }}">
-        </button>
-    </div>
+<div class="offcanvas-header zanders-cart-header d-flex align-items-center justify-content-between">
+    <h4 class="offcanvas-cart-title m-0">
+        {{ 'checkout.cartTitle'|trans|default('My Cart') }}
+    </h4>
+    <button type="button" class="btn-close js-offcanvas-close text-reset m-0" data-bs-dismiss="offcanvas"
+        aria-label="{{ 'global.default.close'|trans|striptags }}">
+    </button>
+</div>
 {% endblock %}
 
 {% block component_offcanvas_cart_header %}
-    {# Header is rendered above in utilities_offcanvas_header #}
+{# Header is rendered above in utilities_offcanvas_header #}
 {% endblock %}
 
 {% block component_offcanvas_cart_flashbags %}
-    {% if page.cart.lineItems|length > 0 %}
-        <div class="zanders-cart-updated-alert d-flex align-items-center gap-2 mb-3">
-            <svg class="flex-shrink-0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="m9 12 2 2 4-4"></path>
-            </svg>
-            <span class="zanders-cart-updated-text">Shopping cart updated.</span>
-        </div>
-    {% endif %}
-{% endblock %}
-
-{% block component_offcanvas_cart_items %}
-    <div class="offcanvas-cart-items-container mb-3">
-        {% for lineItem in page.cart.lineItems %}
-            {% if lineItem.type == 'product' %}
-                {% set label = lineItem.label|trans|sw_sanitize %}
-                {% set label = label !== '' ? label : lineItem.label %}
-                {% set detailUrl = lineItem.referencedId ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId }) : null %}
-                {% set isFirst = loop.first %}
-
-                <div class="card border zanders-cart-item-card js-cart-item mb-3 bg-white" data-line-item-id="{{ lineItem.id }}">
-                    <div class="d-flex align-items-start gap-3">
-                        {# Left: Product Image #}
-                        <div class="zanders-cart-item-img-wrapper flex-shrink-0 d-flex align-items-center justify-content-center">
-                            {% if lineItem.cover.url %}
-                                {% if detailUrl %}
-                                    <a href="{{ detailUrl }}" title="{{ label }}">
-                                        <img src="{{ lineItem.cover.url }}" alt="{{ label }}" class="img-fluid zanders-cart-item-img" />
-                                    </a>
-                                {% else %}
-                                    <img src="{{ lineItem.cover.url }}" alt="{{ label }}" class="img-fluid zanders-cart-item-img" />
-                                {% endif %}
-                            {% else %}
-                                <div class="zanders-cart-item-placeholder text-muted">
-                                    {% sw_icon 'placeholder' style { size: 'fluid' } %}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        {# Right: Info & Actions #}
-                        <div class="zanders-cart-item-info flex-grow-1 min-w-0">
-                            {# Title #}
-                            <h6 class="zanders-cart-item-title mb-1 text-uppercase fw-bold">
-                                {% if detailUrl %}
-                                    <a href="{{ detailUrl }}" class="text-dark text-decoration-none" title="{{ label }}">
-                                        {{ label }}
-                                    </a>
-                                {% else %}
-                                    {{ label }}
-                                {% endif %}
-                                {% if lineItem.deliveryInformation is defined and lineItem.deliveryInformation.stock is defined and lineItem.deliveryInformation.stock <= 0 %}
-                                    <span class="badge bg-warning text-dark zanders-cart-backorder-badge ms-1">BACKORDER</span>
-                                {% endif %}
-                            </h6>
-
-                            {# Quantity & Unit Price: 1 X £209.95 #}
-                            <div class="zanders-cart-item-price-qty mb-2">
-                                {{ lineItem.quantity }} X {{ lineItem.price.unitPrice|currency }}
-                            </div>
-
-                            {# Circular Action Dots / Buttons (Edit & Remove) #}
-                            <div class="zanders-cart-action-dots d-flex align-items-center gap-2 mb-2">
-                                {# Circle 1: Dark Charcoal Edit / Quantity Stepper Toggle #}
-                                <button type="button"
-                                        class="zanders-cart-dot zanders-cart-dot-edit{% if isFirst %} active{% endif %}"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#qty-collapse-{{ lineItem.id }}"
-                                        aria-expanded="{% if isFirst %}true{% else %}false{% endif %}"
-                                        aria-controls="qty-collapse-{{ lineItem.id }}"
-                                        title="{{ 'global.default.edit'|trans|default('Edit') }}"
-                                        aria-label="{{ 'global.default.edit'|trans|default('Edit') }}">
-                                </button>
-
-                                {# Circle 2: Crimson Remove Button #}
-                                {% if lineItem.removable %}
-                                    <form action="{{ path('frontend.checkout.line-item.delete', { id: lineItem.id }) }}"
-                                          method="post"
-                                          class="js-offcanvas-cart-remove-product m-0 p-0 d-inline-block">
-                                        <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                        <button type="submit"
-                                                class="zanders-cart-dot zanders-cart-dot-remove"
-                                                aria-label="{{ 'global.default.remove'|trans|default('Remove') }}"
-                                                title="{{ 'global.default.remove'|trans|default('Remove') }}"
-                                                data-product-id="{{ lineItem.id }}">
-                                        </button>
-                                    </form>
-                                {% endif %}
-                            </div>
-
-                            {# Quantity Stepper #}
-                            <div class="collapse zanders-cart-qty-collapse{% if isFirst %} show{% endif %}" id="qty-collapse-{{ lineItem.id }}">
-                                <form action="{{ path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) }}"
-                                      method="post"
-                                      class="js-offcanvas-cart-change-quantity m-0">
-                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                    <div class="input-group input-group-sm zanders-cart-qty-group">
-                                        <button type="button"
-                                                class="btn zanders-cart-qty-btn zanders-cart-qty-btn-minus"
-                                                onclick="var i=document.getElementById('input-qty-{{ lineItem.id }}'); var v=parseInt(i.value,10)||1; if(v>1){ i.value=v-1; i.dispatchEvent(new Event('change', {bubbles: true})); i.form.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {submitImmediately: true}})); }">-</button>
-                                        <input type="number"
-                                               id="input-qty-{{ lineItem.id }}"
-                                               name="quantity"
-                                               value="{{ lineItem.quantity }}"
-                                               min="{{ lineItem.quantityInformation.minPurchase ?: 1 }}"
-                                               max="{{ lineItem.quantityInformation.maxPurchase ?: 100 }}"
-                                               step="{{ lineItem.quantityInformation.purchaseSteps ?: 1 }}"
-                                               class="form-control text-center js-offcanvas-cart-change-quantity-number zanders-cart-qty-input" />
-                                        <button type="button"
-                                                class="btn zanders-cart-qty-btn zanders-cart-qty-btn-plus"
-                                                onclick="var i=document.getElementById('input-qty-{{ lineItem.id }}'); var v=parseInt(i.value,10)||1; var max=parseInt(i.max,10)||100; if(v<max){ i.value=v+1; i.dispatchEvent(new Event('change', {bubbles: true})); i.form.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {submitImmediately: true}})); }">+</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                {# Non-product line item (e.g. discount/voucher) #}
-                <div class="mb-3">
-                    {% sw_include '@Storefront/storefront/component/line-item/line-item.html.twig' with {
-                        displayMode: 'offcanvas',
-                        redirectTo: 'frontend.cart.offcanvas'
-                    } %}
-                </div>
+    {# Consume session flashes so they do not accumulate and leak onto the home page; only render errors/warnings #}
+    <div class="flashbags">
+        {% for type, messages in app.flashes %}
+            {% if type in ['danger', 'warning'] %}
+                {% set uniqueMessages = [] %}
+                {% for msg in messages %}
+                    {% if msg not in uniqueMessages %}
+                        {% set uniqueMessages = uniqueMessages|merge([msg]) %}
+                    {% endif %}
+                {% endfor %}
+                {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                    type: type,
+                    list: uniqueMessages,
+                    dismissible: true
+                } %}
             {% endif %}
         {% endfor %}
     </div>
 {% endblock %}
 
-{% block component_offcanvas_summary %}
-    {% set freeShippingThreshold = 500.00 %}
-    {% set subtotal = page.cart.price.positionPrice %}
-    {% set awayAmount = freeShippingThreshold - subtotal %}
+{% block component_offcanvas_cart_items %}
+{% if not isCartNotEmpty %}
+<div class="zanders-cart-empty text-center py-5 px-3 my-auto">
+    <div class="zanders-cart-empty-icon mb-3 mx-auto">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+    </div>
+    <h5 class="fw-bold text-dark mb-1">{{ 'checkout.emptyCart'|trans|default('Your cart is empty') }}</h5>
+    <p class="text-muted small mb-4">Add items to your cart to see them here.</p>
+    <button type="button" class="btn zanders-btn-continue-shopping" data-bs-dismiss="offcanvas">
+        {{ 'checkout.continueShopping'|trans|default('Continue Shopping') }}
+    </button>
+</div>
+{% else %}
+<div class="offcanvas-cart-items-container mb-3">
+    {% for lineItem in page.cart.lineItems %}
+    {% if lineItem.type == 'product' %}
+    {% set label = lineItem.label|trans|sw_sanitize %}
+    {% set label = label !== '' ? label : lineItem.label %}
+    {% set detailUrl = lineItem.referencedId ? seoUrl('frontend.detail.page', { productId: lineItem.referencedId }) :
+    null %}
 
-    <div class="zanders-cart-summary-box p-3 rounded mb-3 text-center">
-        {# Line 1: Cart Subtotal #}
-        <div class="zanders-cart-subtotal-text fw-bold text-dark fs-6 mb-1">
-            Cart Subtotal: {{ subtotal|currency }}
-        </div>
+    <div class="zanders-cart-item-card js-cart-item" data-line-item-id="{{ lineItem.id }}">
+        <div class="d-flex align-items-center gap-3">
+            {# Left: Clean Product Image #}
+            <div class="zanders-cart-item-img-wrapper flex-shrink-0">
+                {% if lineItem.cover.url %}
+                {% if detailUrl %}
+                <a href="{{ detailUrl }}" title="{{ label }}"
+                    class="d-flex align-items-center justify-content-center w-100 h-100">
+                    <img src="{{ lineItem.cover.url }}" alt="{{ label }}" class="zanders-cart-item-img" />
+                </a>
+                {% else %}
+                <img src="{{ lineItem.cover.url }}" alt="{{ label }}" class="zanders-cart-item-img" />
+                {% endif %}
+                {% else %}
+                <div class="zanders-cart-item-placeholder text-muted">
+                    {% sw_icon 'placeholder' style { size: 'fluid' } %}
+                </div>
+                {% endif %}
+            </div>
 
-        {# Line 2: Free Shipping Threshold Indicator #}
-        <div class="zanders-free-shipping-text">
-            {% if awayAmount > 0 %}
-                <span class="zanders-free-shipping-amount fw-bold">{{ awayAmount|currency }}</span>
-                <span class="zanders-free-shipping-label fw-bold text-dark">away from Free Shipping</span>
-            {% else %}
-                <span class="text-success fw-bold">You qualify for Free Shipping!</span>
-            {% endif %}
+            {# Right: Title, 1 X $price, Circular Edit & Remove Buttons #}
+            <div class="zanders-cart-item-info flex-grow-1 min-w-0">
+                <h6 class="zanders-cart-item-title">
+                    {% if detailUrl %}
+                    <a href="{{ detailUrl }}" title="{{ label }}">
+                        {{ label }}
+                    </a>
+                    {% else %}
+                    {{ label }}
+                    {% endif %}
+                    {% if lineItem.deliveryInformation is defined and lineItem.deliveryInformation.stock is defined and
+                    lineItem.deliveryInformation.stock <= 0 %} <span class="zanders-cart-backorder-badge ms-1">
+                        BACKORDER</span>
+                        {% endif %}
+                </h6>
+
+                <div class="zanders-cart-item-price-qty">
+                    {{ lineItem.quantity }} X {{ lineItem.price.unitPrice|currency }}
+                </div>
+
+                {# Two Circular Action Buttons: Charcoal Edit Icon + Crimson Remove 'X' Icon #}
+                <div class="zanders-cart-action-dots d-flex align-items-center gap-2">
+                    <button type="button" class="zanders-cart-dot zanders-cart-dot-edit collapsed"
+                        data-bs-toggle="collapse" data-bs-target="#qty-collapse-{{ lineItem.id }}" aria-expanded="false"
+                        aria-controls="qty-collapse-{{ lineItem.id }}"
+                        title="{{ 'global.default.edit'|trans|default('Edit quantity') }}"
+                        aria-label="{{ 'global.default.edit'|trans|default('Edit quantity') }}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+
+                    {% if lineItem.removable %}
+                    <form action="{{ path('frontend.checkout.line-item.delete', { id: lineItem.id }) }}" method="post"
+                        class="js-offcanvas-cart-remove-product m-0 p-0 d-inline-block">
+                        <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                        <button type="submit" class="zanders-cart-dot zanders-cart-dot-remove"
+                            aria-label="{{ 'global.default.remove'|trans|default('Remove item') }}"
+                            title="{{ 'global.default.remove'|trans|default('Remove item') }}"
+                            data-product-id="{{ lineItem.id }}">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff"
+                                stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                {# Collapsible Quantity Stepper (opens on Edit icon click) #}
+                <div class="collapse zanders-cart-qty-collapse" id="qty-collapse-{{ lineItem.id }}">
+                    <form action="{{ path('frontend.checkout.line-item.change-quantity', { id: lineItem.id }) }}"
+                        method="post" class="js-offcanvas-cart-change-quantity m-0">
+                        <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                        <div class="input-group input-group-sm zanders-cart-qty-group">
+                            <button type="button" class="btn zanders-cart-qty-btn zanders-cart-qty-btn-minus"
+                                aria-label="Decrease quantity"
+                                onclick="var i=document.getElementById('input-qty-{{ lineItem.id }}'); var v=parseInt(i.value,10)||1; if(v>1){ i.value=v-1; i.dispatchEvent(new Event('change', {bubbles: true})); i.form.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {submitImmediately: true}})); }">−</button>
+                            <input type="number" id="input-qty-{{ lineItem.id }}" name="quantity"
+                                value="{{ lineItem.quantity }}"
+                                min="{{ lineItem.quantityInformation.minPurchase ?: 1 }}"
+                                max="{{ lineItem.quantityInformation.maxPurchase ?: 100 }}"
+                                step="{{ lineItem.quantityInformation.purchaseSteps ?: 1 }}" aria-label="Quantity"
+                                class="form-control text-center js-offcanvas-cart-change-quantity-number zanders-cart-qty-input" />
+                            <button type="button" class="btn zanders-cart-qty-btn zanders-cart-qty-btn-plus"
+                                aria-label="Increase quantity"
+                                onclick="var i=document.getElementById('input-qty-{{ lineItem.id }}'); var v=parseInt(i.value,10)||1; var max=parseInt(i.max,10)||100; if(v<max){ i.value=v+1; i.dispatchEvent(new Event('change', {bubbles: true})); i.form.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {submitImmediately: true}})); }">+</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+    {% else %}
+    {# Non-product line item (e.g. discount/voucher) #}
+    <div class="mb-3">
+        {% sw_include '@Storefront/storefront/component/line-item/line-item.html.twig' with {
+        displayMode: 'offcanvas',
+        redirectTo: 'frontend.cart.offcanvas'
+        } %}
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block component_offcanvas_summary %}
+{% if isCartNotEmpty %}
+{% set freeShippingThreshold = 500.00 %}
+{% set subtotal = page.cart.price.positionPrice %}
+{% set awayAmount = freeShippingThreshold - subtotal %}
+
+<div class="zanders-cart-summary-box mt-auto">
+    <div class="zanders-cart-subtotal-text">
+        Cart Subtotal: {{ subtotal|currency }}
+    </div>
+    <div class="zanders-free-shipping-text">
+        {% if awayAmount > 0 %}
+        <span class="zanders-free-shipping-amount">{{ awayAmount|currency }}</span>
+        <span class="zanders-free-shipping-label">away from Free Shipping</span>
+        {% else %}
+        <span class="text-success fw-bold">You qualify for Free Shipping!</span>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block component_offcanvas_cart_actions %}
-    <div class="offcanvas-cart-actions mt-auto">
-        {# Primary Action Button: GO TO CART #}
-        <div class="d-grid mb-2">
-            <a href="{{ path('frontend.checkout.cart.page') }}"
-               class="btn w-100 zanders-btn-go-to-cart"
-               title="GO TO CART">
-                GO TO CART
-            </a>
-        </div>
+{% if isCartNotEmpty %}
+<div class="offcanvas-cart-actions zanders-cart-actions">
+    <div class="d-grid">
+        <a href="{{ path('frontend.checkout.cart.page') }}" class="btn w-100 zanders-btn-go-to-cart" title="GO TO CART">
+            GO TO CART
+        </a>
     </div>
+</div>
+{% endif %}
 {% endblock %}

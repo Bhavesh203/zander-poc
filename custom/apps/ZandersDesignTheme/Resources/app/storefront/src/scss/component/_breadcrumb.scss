@@ -6,10 +6,14 @@
 // - Active / leaf item highlighted in Zanders Red ($sw-color-brand-primary = #991020)
 // =============================================================================
 
+.cms-breadcrumb {
+    border: 0 !important;
+    margin-bottom: 0;
+}
+
 .zanders-breadcrumb-nav,
 .cms-breadcrumb {
     padding: 10px 0 14px 0;
-    margin-bottom: 14px;
     border-bottom: 1px solid #e5e5e5;
     background: transparent;
 
@@ -35,8 +39,8 @@
             padding: 0;
 
             // Clean "/" separator matching live site
-            & + .breadcrumb-item::before,
-            & + .zanders-breadcrumb-item::before {
+            &+.breadcrumb-item::before,
+            &+.zanders-breadcrumb-item::before {
                 content: "/";
                 padding: 0 10px;
                 color: #888888;
@@ -114,6 +118,7 @@
 
 // Mobile Breakpoint Adjustments
 @include media-breakpoint-down(md) {
+
     .zanders-breadcrumb-nav,
     .cms-breadcrumb {
         padding: 8px 0 10px;
@@ -123,11 +128,25 @@
         .zanders-breadcrumb-list {
             font-size: 12.5px;
 
-            .breadcrumb-item + .breadcrumb-item::before,
-            .zanders-breadcrumb-item + .zanders-breadcrumb-item::before {
+            .breadcrumb-item+.breadcrumb-item::before,
+            .zanders-breadcrumb-item+.zanders-breadcrumb-item::before {
                 padding: 0 6px;
                 font-size: 12.5px;
             }
         }
+    }
+}
+
+// Hide breadcrumbs on all account pages
+.is-ctl-account,
+.is-ctl-register,
+[class*="is-ctl-account"],
+body:has(.zanders-account-shell),
+body:has(.account-register),
+body:has(.account-recover-password),
+body:has(.account-reset-password),
+body:has(.account-guest-auth) {
+    .zanders-breadcrumb-nav {
+        display: none !important;
     }
 }

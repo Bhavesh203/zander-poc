@@ -1334,3 +1334,102 @@
         opacity: 1;
     }
 }
+
+// =========================================================================
+// PDP Rating Summary & Customer Reviews Section
+// =========================================================================
+.zanders-pdp-rating-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: $zanders-color-primary-accent;
+        text-decoration: none;
+    }
+
+    .product-review-rating {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+    .zanders-pdp-rating-count {
+        color: #64748b;
+    }
+
+    .zanders-pdp-rating-cta {
+        color: $zanders-color-primary-accent;
+        font-weight: 600;
+        text-decoration: underline;
+    }
+}
+
+.zanders-pdp-reviews-section {
+    margin-top: 36px;
+
+    .zanders-pdp-reviews-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 24px;
+
+        > .offcanvas-header {
+            display: none !important;
+        }
+
+        > .offcanvas-body {
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+
+        .product-detail-review-widget {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: $zanders-color-primary-accent;
+            border-color: $zanders-color-primary-accent;
+            font-weight: 600;
+            border-radius: 4px;
+
+            &:hover,
+            &:focus {
+                background-color: $zanders-color-primary-dark;
+                border-color: $zanders-color-primary-dark;
+            }
+        }
+
+        .progress-bar {
+            background-color: $zanders-color-primary-accent;
+        }
+
+        .product-detail-review-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #eef2f6;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+    }
+}
+
+@media (max-width: 767.98px) {
+    .zanders-pdp-reviews-section {
+        margin-top: 24px;
+
+        .zanders-pdp-reviews-card {
+            padding: 16px;
+        }
+    }
+}

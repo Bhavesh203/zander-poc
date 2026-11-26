@@ -13,6 +13,10 @@
     font-family: 'Poppins', sans-serif;
     border-top: 1px solid $zanders-color-dark-bg;
 
+    &.zanders-listing-toolbar--bottom {
+        margin: 28px 0 12px;
+    }
+
     .zanders-toolbar-row {
         display: flex;
         align-items: center;

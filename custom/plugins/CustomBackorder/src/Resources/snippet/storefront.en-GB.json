@@ -1,0 +1,13 @@
+{
+  "customBackorder": {
+    "badge": "Available on backorder",
+    "shipsNow": "Ships now",
+    "onBackorder": "On backorder",
+    "expectedRestock": "Estimated restock",
+    "error": {
+      "limitExceeded": "The requested quantity for \"%product%\" exceeds the allowed backorder limit.",
+      "mixedNotAllowed": "\"%product%\" cannot combine in-stock and backordered units in a single order."
+    }
+  }
+}
+

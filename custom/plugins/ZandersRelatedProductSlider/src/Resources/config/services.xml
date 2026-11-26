@@ -10,6 +10,7 @@
         <service id="ZandersRelatedProductSlider\Subscriber\RelatedProductSubscriber">
             <argument type="service" id="sales_channel.product.repository"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Review\ProductReviewLoader"/>
             <tag name="kernel.event_subscriber"/>
         </service>
     </services>

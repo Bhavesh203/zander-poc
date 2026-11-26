@@ -1,5 +1,33 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
+{% block base_flashbags %}
+    <div class="flashbags container">
+        {% for type, messages in app.flashes %}
+            {% set uniqueMessages = [] %}
+            {% for msg in messages %}
+                {% if msg not in uniqueMessages %}
+                    {% set uniqueMessages = uniqueMessages|merge([msg]) %}
+                {% endif %}
+            {% endfor %}
+            {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                type: type,
+                list: uniqueMessages,
+                dismissible: true,
+                announceOnLoad: true,
+                ariaLive: (type == 'danger' ? 'assertive' : 'polite')
+            } %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block base_breadcrumb %}
+    {% set currentRoute = activeRoute|default(app.request.attributes.get('_route')|default('')) %}
+    {% set currentPath = app.request.pathInfo|default('') %}
+    {% if not (currentRoute starts with 'frontend.account.') and not (currentPath starts with '/account') %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
 {% block base_body_inner %}
     {#
         Pre-paint Age Verification Check
@@ -60,16 +88,35 @@
          * Returns the sales-channel-scoped localStorage key used by Shopware for wishlist items.
          * @returns {string}
          */
-        function getWishlistStorageKey() {
-            return 'wishlist-' + (window.salesChannelId || '');
+        function getShopwareGuestWishlistKey() {
+            var scId = window.salesChannelId || {{ context.salesChannel.id|json_encode|raw }};
+            return 'wishlist-' + (scId || '');
         }
 
-        // Security/UX: clear any leftover guest wishlist entries when not logged in
-        if (!isCustomerLoggedIn) {
-            try {
-                localStorage.removeItem(getWishlistStorageKey());
-            } catch (e) {}
+        function getWishlistStorageKey() {
+            var scId = window.salesChannelId || {{ context.salesChannel.id|json_encode|raw }};
+            return 'zanders-wishlist-cache-' + (scId || '');
         }
+
+        function getShopwareWishlistStorage() {
+            try {
+                var basket = document.querySelector('#wishlist-basket');
+                if (basket && window.PluginManager && typeof window.PluginManager.getPluginInstanceFromElement === 'function') {
+                    return window.PluginManager.getPluginInstanceFromElement(basket, 'WishlistStorage');
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        // Prevent Shopware's PersistWishlistPlugin from thinking a logged-in customer has
+        // guest wishlist items to merge (which overwrites .cms-listing-row with the wishlist pagelet).
+        try {
+            localStorage.removeItem(getShopwareGuestWishlistKey());
+            localStorage.removeItem('wishlist-');
+            if (!isCustomerLoggedIn) {
+                localStorage.removeItem(getWishlistStorageKey());
+            }
+        } catch (e) {}
 
         /**
          * Reads the logged-in customer's wishlist product map from localStorage.
@@ -197,6 +244,15 @@
             }
 
             var products = getLocalWishlist();
+            var swStorage = getShopwareWishlistStorage();
+            if (swStorage && swStorage.products && typeof swStorage.products === 'object') {
+                var merged = Object.assign({}, products, swStorage.products);
+                products = merged;
+                if (Object.keys(swStorage.products).length > 0) {
+                    saveLocalWishlist(products);
+                }
+            }
+
             var buttons = document.querySelectorAll('.product-wishlist-btn');
             buttons.forEach(function(btn) {
                 var pid = btn.getAttribute('data-product-id');
@@ -205,18 +261,45 @@
                     if (cls) pid = cls[1];
                 }
                 if (pid) {
-                    var isAdded = Boolean(products[pid]);
+                    var isAdded = Boolean(products[pid]) || Boolean(swStorage && typeof swStorage.has === 'function' && swStorage.has(pid));
                     syncButtonState(btn, isAdded);
                 }
             });
             updateBadge(Object.keys(products).length);
         }
 
+        function bindShopwareWishlistEvents() {
+            var swStorage = getShopwareWishlistStorage();
+            if (!swStorage || !swStorage.$emitter || swStorage._zandersEventsBound) {
+                return false;
+            }
+            swStorage._zandersEventsBound = true;
+            ['Wishlist/onProductsLoaded', 'Wishlist/onProductAdded', 'Wishlist/onProductRemoved', 'Wishlist/onProductMerged'].forEach(function(evtName) {
+                swStorage.$emitter.subscribe(evtName, syncAllButtons);
+            });
+            syncAllButtons();
+            return true;
+        }
+
         // Initial sync of all wishlist buttons on page load
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', syncAllButtons);
+            document.addEventListener('DOMContentLoaded', function() {
+                syncAllButtons();
+                bindShopwareWishlistEvents();
+            });
         } else {
             syncAllButtons();
+            bindShopwareWishlistEvents();
+        }
+        if (isCustomerLoggedIn) {
+            setTimeout(function() {
+                bindShopwareWishlistEvents();
+                syncAllButtons();
+            }, 300);
+            setTimeout(function() {
+                bindShopwareWishlistEvents();
+                syncAllButtons();
+            }, 900);
         }
 
         // Capture-phase click handler for all `.product-wishlist-btn` triggers:
@@ -460,6 +543,91 @@
             if (!document.querySelector('.offcanvas.show, .offcanvas.showing')) {
                 document.documentElement.classList.remove('offcanvas-open');
             }
+            openCartQtyIds.clear();
+        });
+
+        /* Keep Cart Drawer quantity stepper open across AJAX quantity updates */
+        var openCartQtyIds = new Set();
+
+        document.addEventListener('shown.bs.collapse', function(e) {
+            if (e.target && e.target.classList.contains('zanders-cart-qty-collapse') && e.target.id) {
+                openCartQtyIds.add(e.target.id);
+            }
+        });
+
+        document.addEventListener('hidden.bs.collapse', function(e) {
+            if (e.target && e.target.classList.contains('zanders-cart-qty-collapse') && e.target.id) {
+                openCartQtyIds.delete(e.target.id);
+            }
+        });
+
+        function restoreOpenCartQtySteppers() {
+            if (openCartQtyIds.size === 0) return;
+            var offcanvas = document.querySelector('.cart-offcanvas');
+            if (!offcanvas) return;
+
+            openCartQtyIds.forEach(function(collapseId) {
+                var collapseEl = offcanvas.querySelector('#' + CSS.escape(collapseId));
+                if (collapseEl && !collapseEl.classList.contains('show')) {
+                    collapseEl.classList.add('show');
+                    var trigger = offcanvas.querySelector('[data-bs-target="#' + CSS.escape(collapseId) + '"]');
+                    if (trigger) {
+                        trigger.classList.remove('collapsed');
+                        trigger.setAttribute('aria-expanded', 'true');
+                    }
+                }
+            });
+        }
+
+        var cartObserver = new MutationObserver(function() {
+            restoreOpenCartQtySteppers();
+        });
+        cartObserver.observe(document.body, { childList: true, subtree: true });
+
+        /* =========================================================
+           Orders Page: Print / Save Single Order as PDF
+           ========================================================= */
+        function cleanupOrderPrintState() {
+            document.body.classList.remove('zanders-printing-single-order');
+            document.querySelectorAll('.order-wrapper.is-zanders-printing-order').forEach(function(el) {
+                el.classList.remove('is-zanders-printing-order');
+            });
+        }
+
+        window.addEventListener('afterprint', cleanupOrderPrintState);
+
+        document.addEventListener('click', function(e) {
+            var printBtn = e.target.closest('.js-zanders-print-order');
+            if (!printBtn) return;
+
+            e.preventDefault();
+            var orderWrapper = printBtn.closest('.order-wrapper');
+            if (!orderWrapper) return;
+
+            var orderNumber = printBtn.getAttribute('data-order-number');
+            var collapseEl = orderNumber
+                ? orderWrapper.querySelector('#order' + CSS.escape(orderNumber))
+                : orderWrapper.querySelector('.order-item-detail .collapse');
+
+            var wasCollapsed = collapseEl && !collapseEl.classList.contains('show');
+            if (wasCollapsed) {
+                collapseEl.classList.add('show');
+                var toggleBtn = orderWrapper.querySelector('.order-table-header-order-action-btn, [data-bs-target="#order' + CSS.escape(orderNumber || '') + '"]');
+                if (toggleBtn) {
+                    toggleBtn.classList.remove('collapsed');
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                }
+            }
+
+            cleanupOrderPrintState();
+            orderWrapper.classList.add('is-zanders-printing-order');
+            document.body.classList.add('zanders-printing-single-order');
+
+            window.requestAnimationFrame(function() {
+                window.setTimeout(function() {
+                    window.print();
+                }, 60);
+            });
         });
     })();
     </script>

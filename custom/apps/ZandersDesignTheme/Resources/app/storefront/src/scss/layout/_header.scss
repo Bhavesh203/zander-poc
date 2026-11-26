@@ -53,8 +53,8 @@ The header contains the shop logo, the search form and various actions like the 
 
     svg {
         display: block;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
 
         path {
             transition: fill 0.2s ease;
@@ -62,17 +62,14 @@ The header contains the shop logo, the search form and various actions like the 
     }
 }
 
-.header-cart-icon {
-    margin-right: 16px;
-}
-
 // Hover states
 .header-cart .header-actions-btn:hover,
 .header-wishlist .header-actions-btn:hover {
+
     .header-cart-icon,
     .header-wishlist-icon {
         border-color: $primary;
-        transform: scale(1.06);
+        // transform: scale(1.06);
 
         svg path {
             fill: $primary;
@@ -84,24 +81,21 @@ The header contains the shop logo, the search form and various actions like the 
 .header-wishlist .header-wishlist-badge,
 .header-cart .header-cart-badge {
     position: absolute;
-    top: -5px;
-    left: 22px;
-    right: auto;
+    top: -8px;
+    right: -4px;
     background-color: $zanders-color-primary-dark;
     color: $white;
-    font-family: 'Poppins', sans-serif;
     font-size: 11px;
-    font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    font-weight: 400;
+    min-width: 16px;
+    height: 16px;
     border-radius: 50px;
-    padding: 0 4px;
+    padding: 2px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
-    border: 1.5px solid $white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    margin: 0;
+    line-height: 14px;
 
     &:empty {
         display: none;
@@ -152,6 +146,7 @@ header .header-search-btn,
         position: relative;
         background-color: #E3E3E3;
         padding: 9px 16px;
+        align-items: center;
 
         .header-search-icon {
             display: flex;
@@ -175,6 +170,7 @@ header .header-search-btn,
     display: inline-flex;
     flex-direction: column;
     align-items: center;
+    margin-right: 16px;
 }
 
 .header-cart-mobile-label {
@@ -187,6 +183,7 @@ header .header-search-btn,
 
 // Always keep search bar visible across Desktop, Tablet, and Mobile (down to 320px)
 .header-search-col {
+
     .collapse,
     .collapse:not(.show) {
         display: block;

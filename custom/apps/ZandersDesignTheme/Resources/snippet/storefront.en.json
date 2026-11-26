@@ -8,7 +8,8 @@
   "account": {
     "myAccount": "My Account",
     "logout": "LogOut",
-    "loginSubmit": "Login"
+    "loginSubmit": "Login",
+    "orderTotal": "Order Total"
   },
   "zanders": {
     "topBar": {
@@ -99,6 +100,12 @@
       "loginRequired": "Please log in or register to add products to your wishlist.",
       "loginTitle": "Wishlist Is For Registered Customers",
       "loginDescription": "To view, save, and manage your wishlist, please log in or create an account."
+    },
+    "account": {
+      "printOrSavePdf": "Print / Save PDF"
+    },
+    "pdp": {
+      "writeReview": "Write a review"
     }
   }
 }

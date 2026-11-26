@@ -1,0 +1,71 @@
+{% sw_extends '@Storefront/storefront/page/account/addressbook/address-manager.html.twig' %}
+
+{% block address_base_list_create_address %}
+    <button type="button"
+            class="address-manager-modal-address-form btn btn-primary flex-shrink-0"
+            data-bs-toggle="modal"
+            data-bs-target="#zandersNewAddressModal">
+        {% sw_icon 'plus' style { size: 'sm', pack: 'solid' } %}
+        {{ 'account.addressCreateBtn'|trans|sw_sanitize }}
+    </button>
+
+    {# New Address Popup Modal #}
+    <div class="modal fade zanders-address-modal"
+         id="zandersNewAddressModal"
+         tabindex="-1"
+         aria-labelledby="zandersNewAddressModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="zandersNewAddressModalLabel">
+                        {{ 'account.addressCreateWelcome'|trans|sw_sanitize }}
+                    </h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="{{ 'global.default.close'|trans|striptags }}">
+                    </button>
+                </div>
+
+                <div class="modal-body account-address account-address-form">
+                    <form id="zandersNewAddressForm"
+                          method="post"
+                          action="{{ path('frontend.account.address.create') }}"
+                          data-form-handler="true">
+                        {% sw_include '@Storefront/storefront/component/address/address-personal.html.twig' with {
+                            data: null,
+                            prefix: 'address',
+                            accountType: ''
+                        } %}
+
+                        {% sw_include '@Storefront/storefront/component/address/address-form.html.twig' with {
+                            data: null,
+                            prefix: 'address',
+                            showFormCompany: true,
+                            scopeElementSelector: '#zandersNewAddressModal'
+                        } %}
+
+                        <p class="address-required-info required-fields mb-0 mt-2">
+                            {{ 'global.default.noteRequiredFields'|trans|sw_sanitize }}
+                        </p>
+                    </form>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button"
+                            class="btn btn-outline-secondary zanders-address-modal-cancel"
+                            data-bs-dismiss="modal">
+                        {{ 'global.default.cancel'|trans|default('Cancel') }}
+                    </button>
+                    <button type="submit"
+                            form="zandersNewAddressForm"
+                            class="btn btn-primary address-form-submit">
+                        {{ 'account.addressSaveChange'|trans|sw_sanitize }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

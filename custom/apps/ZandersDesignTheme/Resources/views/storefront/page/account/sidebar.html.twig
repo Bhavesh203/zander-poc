@@ -2,12 +2,8 @@
     Zanders Account Sidebar & Header Dropdown Menu Override
     ==========================================================================
     Extends `@Storefront/storefront/page/account/sidebar.html.twig` to render
-    a cohesive Zanders-branded account menu used in both:
-    - Desktop left sidebar (`not headerWidget`): solid crimson red "MY ACCOUNT"
-      header banner, 12 crisp uppercase navigation items with horizontal dividers,
-      highlighted "PAYMENT PORTAL", and clean logout action.
-    - Header account dropdown (`headerWidget`): compact crimson-accented menu
-      with greeting and quick navigation.
+    a cohesive Zanders-branded account menu with Shopware's default links:
+    - Overview, Personal profile, Addresses, Orders, and Sign out.
 #}
 {% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
 
@@ -16,123 +12,89 @@
 
     {% if not headerWidget %}
         {# ========================================================================= #}
-        {# 1. Desktop Account Sidebar (Exact Match to Reference Image)               #}
+        {# 1. Desktop Account Sidebar (Default Shopware Links Only)                  #}
         {# ========================================================================= #}
         <div class="account-aside zanders-account-aside">
             <div class="card account-menu-inner">
                 {% block page_account_sidebar_header %}
                     <div class="card-header account-aside-header zanders-account-aside-header">
                         <div class="account-aside-title">
-                            {{ 'zanders.accountPage.sidebar.title'|trans|default('MY ACCOUNT') }}
+                            {{ 'account.myAccount'|trans|default('MY ACCOUNT') }}
                         </div>
                     </div>
                 {% endblock %}
 
                 {% block page_account_sidebar_menu %}
-                    <nav class="list-group list-group-flush account-aside-list-group" aria-label="{{ 'zanders.accountPage.sidebar.title'|trans|default('MY ACCOUNT') }}">
-                        {% block page_account_sidebar_menu_inner %}
-                            {# 1. ACCOUNT DASHBOARD #}
-                            {% block page_account_sidebar_link_home %}
-                                <a href="{{ path('frontend.account.home.page') }}"
-                                   title="{{ 'zanders.accountPage.sidebar.dashboard'|trans|default('ACCOUNT DASHBOARD') }}"
-                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}"
-                                   {% if activeRoute is same as('frontend.account.home.page') %} aria-current="page"{% endif %}>
-                                    {{ 'zanders.accountPage.sidebar.dashboard'|trans|default('ACCOUNT DASHBOARD') }}
-                                </a>
+                    {% if not isGuest %}
+                        <nav class="list-group list-group-flush account-aside-list-group" aria-label="{{ 'account.myAccount'|trans|striptags }}">
+                            {% block page_account_sidebar_menu_inner %}
+                                {# 1. Overview #}
+                                {% block page_account_sidebar_link_home %}
+                                    <a href="{{ path('frontend.account.home.page') }}"
+                                       title="{{ 'account.overviewLink'|trans|striptags }}"
+                                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.home.page') %} is-active{% endif %}"
+                                       {% if activeRoute is same as('frontend.account.home.page') %} aria-current="page"{% endif %}>
+                                        {{ 'account.overviewLink'|trans|sw_sanitize }}
+                                    </a>
+                                {% endblock %}
+
+                                {# 2. Your profile #}
+                                {% block page_account_sidebar_link_profile %}
+                                    <a href="{{ path('frontend.account.profile.page') }}"
+                                       title="{{ 'account.profileLink'|trans|striptags }}"
+                                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}"
+                                       {% if activeRoute is same as('frontend.account.profile.page') %} aria-current="page"{% endif %}>
+                                        {{ 'account.profileLink'|trans|sw_sanitize }}
+                                    </a>
+                                {% endblock %}
+
+                                {# 3. Addresses #}
+                                {% block page_account_sidebar_link_address %}
+                                    <a href="{{ path('frontend.account.address.page') }}"
+                                       title="{{ 'account.addressLink'|trans|striptags }}"
+                                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}"
+                                       {% if activeRoute starts with('frontend.account.address.page') %} aria-current="page"{% endif %}>
+                                        {{ 'account.addressLink'|trans|sw_sanitize }}
+                                    </a>
+                                {% endblock %}
+
+                                {# 4. Orders #}
+                                {% block page_account_sidebar_link_orders %}
+                                    <a href="{{ path('frontend.account.order.page') }}"
+                                       title="{{ 'account.ordersLink'|trans|striptags }}"
+                                       class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.order') or activeRoute is same as('frontend.account.edit-order.page') %} is-active{% endif %}"
+                                       {% if activeRoute starts with('frontend.account.order') %} aria-current="page"{% endif %}>
+                                        {{ 'account.ordersLink'|trans|sw_sanitize }}
+                                    </a>
+                                {% endblock %}
                             {% endblock %}
-
-                            {# 2. ACCOUNT INFORMATION #}
-                            {% block page_account_sidebar_link_profile %}
-                                <a href="{{ path('frontend.account.profile.page') }}"
-                                   title="{{ 'zanders.accountPage.sidebar.information'|trans|default('ACCOUNT INFORMATION') }}"
-                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.account.profile.page') %} is-active{% endif %}"
-                                   {% if activeRoute is same as('frontend.account.profile.page') %} aria-current="page"{% endif %}>
-                                    {{ 'zanders.accountPage.sidebar.information'|trans|default('ACCOUNT INFORMATION') }}
-                                </a>
-                            {% endblock %}
-
-                            {# 3. ADDRESS BOOK #}
-                            {% block page_account_sidebar_link_address %}
-                                <a href="{{ path('frontend.account.address.page') }}"
-                                   title="{{ 'zanders.accountPage.sidebar.addresses'|trans|default('ADDRESS BOOK') }}"
-                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.address') %} is-active{% endif %}"
-                                   {% if activeRoute starts with('frontend.account.address.page') %} aria-current="page"{% endif %}>
-                                    {{ 'zanders.accountPage.sidebar.addresses'|trans|default('ADDRESS BOOK') }}
-                                </a>
-                            {% endblock %}
-
-                            {# 4. MY OPEN ORDERS #}
-                            {% block page_account_sidebar_link_orders %}
-                                <a href="{{ path('frontend.account.order.page') }}"
-                                   title="{{ 'zanders.accountPage.sidebar.orders'|trans|default('MY OPEN ORDERS') }}"
-                                   class="list-group-item list-group-item-action account-aside-item{% if activeRoute starts with('frontend.account.order') or activeRoute is same as('frontend.account.edit-order.page') %} is-active{% endif %}"
-                                   {% if activeRoute starts with('frontend.account.order') %} aria-current="page"{% endif %}>
-                                    {{ 'zanders.accountPage.sidebar.orders'|trans|default('MY OPEN ORDERS') }}
-                                </a>
-                            {% endblock %}
-
-                            {# 5. MY WISHLIST #}
-                            <a href="{{ path('frontend.wishlist.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}"
-                               class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('frontend.wishlist.page') %} is-active{% endif %}"
-                               {% if activeRoute is same as('frontend.wishlist.page') %} aria-current="page"{% endif %}>
-                                {{ 'zanders.accountPage.sidebar.wishlist'|trans|default('MY WISHLIST') }}
-                            </a>
-
-                            {# 6. NEWSLETTER SUBSCRIPTIONS #}
-                            <a href="{{ path('frontend.account.home.page') }}#account-newsletter"
-                               title="{{ 'zanders.accountPage.sidebar.newsletter'|trans|default('NEWSLETTER SUBSCRIPTIONS') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.newsletter'|trans|default('NEWSLETTER SUBSCRIPTIONS') }}
-                            </a>
-
-                            {# 7. MY INVOICES #}
-                            <a href="{{ path('frontend.account.order.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.invoices'|trans|default('MY INVOICES') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.invoices'|trans|default('MY INVOICES') }}
-                            </a>
-
-                            {# 8. MY BACK ORDER LIST #}
-                            <a href="{{ path('frontend.account.order.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.backorders'|trans|default('MY BACK ORDER LIST') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.backorders'|trans|default('MY BACK ORDER LIST') }}
-                            </a>
-
-                            {# 9. UPDATE FFL #}
-                            <a href="{{ path('frontend.account.profile.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.updateFfl'|trans|default('UPDATE FFL') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.updateFfl'|trans|default('UPDATE FFL') }}
-                            </a>
-
-                            {# 10. UPLOAD RESALE CERTIFICATE #}
-                            <a href="{{ path('frontend.account.profile.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.resaleCert'|trans|default('UPLOAD RESALE CERTIFICATE') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.resaleCert'|trans|default('UPLOAD RESALE CERTIFICATE') }}
-                            </a>
-
-                            {# 11. TAX CERTIFICATES #}
-                            <a href="{{ path('frontend.account.profile.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.taxCert'|trans|default('TAX CERTIFICATES') }}"
-                               class="list-group-item list-group-item-action account-aside-item">
-                                {{ 'zanders.accountPage.sidebar.taxCert'|trans|default('TAX CERTIFICATES') }}
-                            </a>
-
-                            {# 12. PAYMENT PORTAL (Red text highlighted) #}
-                            <a href="{{ path('frontend.account.order.page') }}"
-                               title="{{ 'zanders.accountPage.sidebar.paymentPortal'|trans|default('PAYMENT PORTAL') }}"
-                               class="list-group-item list-group-item-action account-aside-item payment-portal-item">
-                                {{ 'zanders.accountPage.sidebar.paymentPortal'|trans|default('PAYMENT PORTAL') }}
-                            </a>
-                        {% endblock %}
-                    </nav>
+                        </nav>
+                    {% endif %}
                 {% endblock %}
 
                 {% block page_account_sidebar_footer %}
-                    {# Footer omitted to match exact reference design ending cleanly with PAYMENT PORTAL #}
+                    {% if context.customer %}
+                        <div class="card-footer account-aside-footer">
+                            {% if not isGuest %}
+                                {% block page_account_sidebar_logout %}
+                                    <a href="{{ path('frontend.account.logout.page') }}"
+                                       class="btn btn-link account-aside-btn account-aside-logout-link">
+                                        {% sw_icon 'log-out' %}
+                                        <span>{{ 'account.logout'|trans|sw_sanitize }}</span>
+                                    </a>
+                                {% endblock %}
+                            {% else %}
+                                {% block page_account_sidebar_guest_abort %}
+                                    <a href="{{ path('frontend.account.logout.page') }}"
+                                       data-account-guest-abort-button="true"
+                                       class="btn btn-link account-aside-btn account-aside-logout-link">
+                                        {% sw_icon 'log-out' %}
+                                        <span>{{ 'account.guestAbort'|trans|sw_sanitize }}</span>
+                                    </a>
+                                {% endblock %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 {% endblock %}
             </div>
         </div>
